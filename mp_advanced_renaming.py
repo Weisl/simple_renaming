@@ -1,22 +1,3 @@
-# This sample script demonstrates a dynamic EnumProperty with custom icons.
-# The EnumProperty is populated dynamically with thumbnails of the contents of
-# a chosen directory in 'enum_previews_from_directory_items'.
-# Then, the same enum is displayed with different interfaces. Note that the
-# generated icon previews do not have Blender IDs, which means that they can
-# not be used with UILayout templates that require IDs,
-# such as template_list and template_ID_preview.
-#
-# Other use cases:
-# - make a fixed list of enum_items instead of calculating them in a function
-# - generate isolated thumbnails to use as custom icons in buttons
-#   and menu items
-#
-# For custom icons, see the template "ui_previews_custom_icon.py".
-#
-# For distributable scripts, it is recommended to place the icons inside the
-# script directory and access it relative to the py script file for portability:
-#
-#    os.path.join(os.path.dirname(__file__), "images")
 
 
 import os
@@ -40,7 +21,7 @@ from bpy.props import (
          
 class RenamingPanel(bpy.types.Panel):
     """Creates a renaming Panel"""
-    bl_label = "Renaming panel"
+    bl_label = "Advanced Renaming Panel"
     bl_idname = "RENAMING_panel"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
@@ -61,7 +42,6 @@ class RenamingPanel(bpy.types.Panel):
         
         row = layout.row()
         row.prop(wm, "rename_only_selection")
-        
         row = layout.row()
         row.label("Search and Replace")
         row = layout.row()
@@ -85,33 +65,44 @@ class RenamingPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("renaming.numerate")
         
+
         ###### TODO: rename data ########
         ###### TODO: rename Mat #######
         
-        
         row = layout.row()
-        row.label("add suffix by type")
+        row.prop(wm, "renaming_cut_size")
         row = layout.row()
-        row.prop(wm, "renaming_suffix_geometry")
-        row = layout.row()
-        row.prop(wm, "renaming_suffix_material")
-        row = layout.row()
-        row.prop(wm, "renaming_suffix_empty")
-        row = layout.row()
-        row.prop(wm, "renaming_suffix_curve")
-        row = layout.row()
-        row.prop(wm, "renaming_suffix_armature")
-        row = layout.row()
-        row.prop(wm, "renaming_suffix_group")
-        
-        row.operator("renaming.add_suffix_by_type")
+        row.operator("renaming.cut_string")
         
         # Check for string length
+        
+        box = layout.box()
+        row = box.row()
+        row.label("add suffix by type")
+        row = box.row()
+        row.prop(wm, "renaming_suffix_geometry")
+        row = box.row()
+        row.prop(wm, "renaming_suffix_material")
+        row = box.row()
+        row.prop(wm, "renaming_suffix_empty")
+        row = box.row()
+        row.prop(wm, "renaming_suffix_curve")
+        row = box.row()
+        row.prop(wm, "renaming_suffix_armature")
+        row = box.row()
+        row.prop(wm, "renaming_suffix_group")
+        row = box.row()
+        row.prop(wm, "renaming_suffix_latice")
+        row = box.row()
+        row.prop(wm, "renaming_suffix_data")
+        
+
+        
         
 class AddTypeSuffix(bpy.types.Operator):
     bl_idname="renaming.add_suffix_by_type"
     bl_label="Add type specific suffix"
-    
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
     
     def execute(self,context):
         wm = context.window_manager
@@ -141,10 +132,13 @@ class AddTypeSuffix(bpy.types.Operator):
         #if wm.renaming_suffix_armature is not '': 
         #if wm.renaming_suffix_group is not '': 
         return {'FINISHED'}
+           
        
 class SearchAndReplace(bpy.types.Operator):
     bl_idname="renaming.search_replace"
     bl_label="Search and Replace"
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+    
     type = StringProperty()
     
     def execute(self,context):
@@ -158,11 +152,33 @@ class SearchAndReplace(bpy.types.Operator):
                 obj.name= str(obj.name).replace(wm.renaming_search, wm.renaming_replace)
                 obj.data.name = str(obj.name) + "_data"
         return{'FINISHED'}      
+
+def trimString(string, size):      
+    list1 = string
+    list2 = list1[:-size]
+    return ''.join(list2)
+    
+class TrimString(bpy.types.Operator):
+    bl_idname="renaming.cut_string"
+    bl_label="Trim the end of the string"
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+    
+    def execute(self,context):
+        wm = context.window_manager
+        if wm.rename_only_selection == True: 
+            for obj in context.selected_objects:
+                obj.name = trimString(obj.name, wm.renaming_cut_size)
+        else: 
+            for obj in bpy.data.objects:
+                obj.name = trimString(obj.name, wm.renaming_cut_size)
         
+        
+        return{'FINISHED'}             
 
 class Addsuffix(bpy.types.Operator):
     bl_idname="renaming.add_suffix"
-    bl_label="Add suffix"        
+    bl_label="Add suffix"  
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}    
 
     def execute(self,context):
         
@@ -185,6 +201,7 @@ class Addsuffix(bpy.types.Operator):
 class AddPrefix(bpy.types.Operator):
     bl_idname="renaming.add_prefix"
     bl_label="Add Prefix"    
+    bl_options = {'REGISTER', 'UNDO'}
     
 
     def execute(self,context):
@@ -205,6 +222,7 @@ class AddPrefix(bpy.types.Operator):
 class RenamingNumerate(bpy.types.Operator):
     bl_idname="renaming.numerate"
     bl_label="Numerate"    
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL' }
     
     
 
@@ -217,11 +235,11 @@ class RenamingNumerate(bpy.types.Operator):
         
         if wm.rename_only_selection == True: 
             for obj in context.selected_objects: 
-                obj.name = obj.name + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
+                obj.name = obj.name + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
                 i = i + 1 
         else: 
             for obj in bpy.data.objects:  
-                obj.name = obj.name + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
+                obj.name = obj.name + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
                 i = i + 1         
         
         return{'FINISHED'}  
@@ -256,17 +274,16 @@ def register():
             )          
     WindowManager.renaming_base_numerate = IntProperty(name="Step Size", default = 1)    
     WindowManager.renaming_digits_numerate = IntProperty(name="Length", default = 3)     
-            
-
+    WindowManager.renaming_cut_size = IntProperty(name="Letters to trim", default = 3)         
+    
     WindowManager.renaming_suffix_material = StringProperty(name='material', default = '')
     WindowManager.renaming_suffix_geometry = StringProperty(name='geometry', default = '')
     WindowManager.renaming_suffix_empty = StringProperty(name="empty", default = '')
     WindowManager.renaming_suffix_group = StringProperty(name="group", default = '')  
     WindowManager.renaming_suffix_curve = StringProperty(name="curve", default = '') 
     WindowManager.renaming_suffix_armature = StringProperty(name="armature", default = '')     
- 
-           
-
+    WindowManager.renaming_suffix_latice = StringProperty(name="latice", default = '')     
+    WindowManager.renaming_suffix_data = StringProperty(name="data", default = '')     
 
     bpy.utils.register_class(RenamingPanel)    
     bpy.utils.register_class(Addsuffix)
@@ -274,6 +291,7 @@ def register():
     bpy.utils.register_class(SearchAndReplace)    
     bpy.utils.register_class(RenamingNumerate)    
     bpy.utils.register_class(AddTypeSuffix)
+    bpy.utils.register_class(TrimString)
 
  
 
@@ -288,6 +306,7 @@ def unregister():
     bpy.utils.unregister_class(AddPrefix)
     bpy.utils.unregister_class(SearchAndReplace)    
     bpy.utils.unregister_class(RenamingNumerate)
+    bpy.utils.unregister_class(TrimString)
 
 
 
