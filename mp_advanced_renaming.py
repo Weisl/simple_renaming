@@ -92,11 +92,12 @@ class RenamingPanel(bpy.types.Panel):
         row = box.row()
         row.prop(wm, "renaming_suffix_group")
         row = box.row()
-        row.prop(wm, "renaming_suffix_latice")
+        row.prop(wm, "renaming_suffix_lattice")
         row = box.row()
         row.prop(wm, "renaming_suffix_data")
         
-
+        row = box.row()
+        row.operator("renaming.add_suffix_by_type")
         
         
 class AddTypeSuffix(bpy.types.Operator):
@@ -108,29 +109,49 @@ class AddTypeSuffix(bpy.types.Operator):
         wm = context.window_manager
         
         geo_suffix = wm.renaming_suffix_geometry
+        mat_suffix = wm.renaming_suffix_material
+        empt_suffix = wm.renaming_suffix_empty  
+        lattice_suffix = wm.renaming_suffix_lattice
+        curve_suffix = wm.renaming_suffix_curve
+        group_suffix = wm.renaming_suffix_group
+        armature_suffix = wm.renaming_suffix_armature
         
-        if geo_suffix is not '': 
+        
+        if geo_suffix is not '' or empt_suffix is not '' or LATTICE:
             for obj in bpy.data.objects:
-                if obj.type == 'MESH' and obj.name.endswith(geo_suffix) == False:
+                if geo_suffix is not '': 
+                    if obj.type == 'MESH' and obj.name.endswith(geo_suffix) == False:
                         obj.name = obj.name + geo_suffix
+                            
+                if empt_suffix is not '': 
+                    if obj.type == 'EMPTY' and obj.name.endswith(empt_suffix) == False:
+                        obj.name = obj.name + empt_suffix                        
         
-        mat_suffix = wm.renaming_suffix_material         
-        
+                if lattice_suffix is not '':
+                    if obj.type == 'LATTICE' and obj.name.endswith(lattice_suffix) == False:
+                        obj.name = obj.name + lattice_suffix    
+                if curve_suffix is not '': 
+                    if obj.type == 'CURVE' and obj.name.endswith(curve_suffix) == False:
+                        obj.name = obj.name + curve_suffix
         if mat_suffix is not '': 
             for mat in bpy.data.materials:
                 if mat.name.endswith(mat_suffix) == False:
                     mat.name = mat.name + mat_suffix
         
-        empt_suffix = wm.renaming_suffix_empty
         
-        if empt_suffix is not '': 
-            for empt in bpy.data.objects:
-                if empt.type == 'EMPTY' and empt.name.endswith(empt_suffix) == False:
-                        empt.name = empt.name + empt_suffix
-        #if wm.renaming_suffix_empty is not '': 
-        #if wm.renaming_suffix_curve is not '': 
-        #if wm.renaming_suffix_armature is not '': 
-        #if wm.renaming_suffix_group is not '': 
+
+                    
+        if group_suffix is not '':
+            for group in bpy.data.groups:
+                if group.name.endswith(group_suffix) == False:
+                    group.name = group.name + group_suffix
+                    
+        if armature_suffix is not '':
+            for armature in bpy.data.armatures:
+                if armature.name.endswith(armature_suffix) == False:
+                    armature.name = armature.name + armature_suffix
+                    
+
         return {'FINISHED'}
            
        
@@ -282,7 +303,7 @@ def register():
     WindowManager.renaming_suffix_group = StringProperty(name="group", default = '')  
     WindowManager.renaming_suffix_curve = StringProperty(name="curve", default = '') 
     WindowManager.renaming_suffix_armature = StringProperty(name="armature", default = '')     
-    WindowManager.renaming_suffix_latice = StringProperty(name="latice", default = '')     
+    WindowManager.renaming_suffix_lattice = StringProperty(name="lattice", default = '')     
     WindowManager.renaming_suffix_data = StringProperty(name="data", default = '')     
 
     bpy.utils.register_class(RenamingPanel)    
