@@ -1,4 +1,17 @@
-
+bl_info = {
+    "name": "MP Advanced Renaming",
+    "description": "This Addon offers advanced functionalities to rename a set of objects",
+    "author": "Matthias Patscheider",
+    "version": (0, 1),
+    "blender": (2, 78, 0),
+    "location": "View3D > Add > Mesh",
+    "warning": "In Development", # used for warning icon and text in addons panel
+    "wiki_url": "http://wiki.blender.org/index.php/Extensions:2.6/Py/"
+                "Scripts/My_Script",
+    "tracker_url": "http://developer.blender.org/maniphest/task/create/?project=3&type=Bug",
+    "support": "COMMUNITY",
+    "category": "Add Mesh"
+    }
 
 import os
 from os.path import *
@@ -22,10 +35,13 @@ from bpy.props import (
 class RenamingPanel(bpy.types.Panel):
     """Creates a renaming Panel"""
     bl_label = "Advanced Renaming Panel"
-    bl_idname = "RENAMING_panel"
-    bl_space_type = 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    bl_context = "scene"
+    #bl_idname = "RENAMING_panel"
+    #bl_space_type = 'PROPERTIES'
+    #bl_region_type = 'WINDOW'
+    #bl_context = "scene"
+    #bl_label = 'Custom Panel'
+    bl_space_type = 'VIEW_3D'  # Choosing Viewport
+    bl_region_type = 'TOOLS' # Choosing tools panel in viewport
     
     def draw(self, context):
         layout = self.layout
@@ -74,6 +90,29 @@ class RenamingPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("renaming.cut_string")
         
+        row = layout.row()
+        row.prop(wm, "renaming_suffix_data_02")
+        row = layout.row()
+        row.operator("renaming.dataname_from_obj")
+        
+
+
+
+class SuffixPanel(bpy.types.Panel):
+    """Creates a renaming Panel"""
+    bl_label = "Suffix Panel"
+    #bl_idname = "SUFFIX_panel"
+    #bl_space_type = 'PROPERTIES'
+    #bl_region_type = 'WINDOW'
+    #bl_context = "scene"        
+    #bl_label = 'Custom Panel'
+    bl_space_type = 'VIEW_3D'  # Choosing Viewport
+    bl_region_type = 'TOOLS' # Choosing tools panel in viewport
+    
+    def draw(self, context):
+        layout = self.layout
+        wm = context.window_manager
+        scene = context.scene
         # Check for string length
         
         box = layout.box()
@@ -98,8 +137,21 @@ class RenamingPanel(bpy.types.Panel):
         
         row = box.row()
         row.operator("renaming.add_suffix_by_type")
-        
-        
+    
+class UseObjectnameForData(bpy.types.Operator):        
+    bl_idname="renaming.dataname_from_obj"
+    bl_label="Data Suffix"
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}   
+
+    def execute(self,context):
+        wm = context.window_manager   
+        suffix_data = wm.renaming_suffix_data_02
+        for obj in bpy.data.objects:
+            if suffix_data is not '':
+                if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH') and obj.name.endswith(suffix_data) == False:
+                    obj.data.name = obj.name + suffix_data
+        return {'FINISHED'}
+    
 class AddTypeSuffix(bpy.types.Operator):
     bl_idname="renaming.add_suffix_by_type"
     bl_label="Add type specific suffix"
@@ -115,9 +167,10 @@ class AddTypeSuffix(bpy.types.Operator):
         curve_suffix = wm.renaming_suffix_curve
         group_suffix = wm.renaming_suffix_group
         armature_suffix = wm.renaming_suffix_armature
+        data_suffix = wm.renaming_suffix_data
         
         
-        if geo_suffix is not '' or empt_suffix is not '' or LATTICE:
+        if geo_suffix is not '' or empt_suffix is not '' or LATTICE or suffix_data is not '':
             for obj in bpy.data.objects:
                 if geo_suffix is not '': 
                     if obj.type == 'MESH' and obj.name.endswith(geo_suffix) == False:
@@ -133,6 +186,12 @@ class AddTypeSuffix(bpy.types.Operator):
                 if curve_suffix is not '': 
                     if obj.type == 'CURVE' and obj.name.endswith(curve_suffix) == False:
                         obj.name = obj.name + curve_suffix
+                
+                if suffix_data is not '':
+                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH') and obj.name.endswith(data_suffix) == False:
+                        obj.data.name = obj.name + data_suffix
+                        
+                        
         if mat_suffix is not '': 
             for mat in bpy.data.materials:
                 if mat.name.endswith(mat_suffix) == False:
@@ -151,6 +210,7 @@ class AddTypeSuffix(bpy.types.Operator):
                 if armature.name.endswith(armature_suffix) == False:
                     armature.name = armature.name + armature_suffix
                     
+        
 
         return {'FINISHED'}
            
@@ -264,9 +324,9 @@ class RenamingNumerate(bpy.types.Operator):
                 i = i + 1         
         
         return{'FINISHED'}  
-
-
-            
+  
+windowVariables = []
+  
 def register():
 
     ############################
@@ -282,7 +342,7 @@ def register():
             description="Which kind of object to rename",
             default={'OBJECT'},
             )
-
+    windowVariables
     
     WindowManager.renaming_search = StringProperty(name='Search', default = '')
     WindowManager.renaming_replace = StringProperty(name='Replace', default = '')
@@ -306,6 +366,8 @@ def register():
     WindowManager.renaming_suffix_lattice = StringProperty(name="lattice", default = '')     
     WindowManager.renaming_suffix_data = StringProperty(name="data", default = '')     
 
+    WindowManager.renaming_suffix_data_02 = StringProperty(name="data", default = '')  
+    
     bpy.utils.register_class(RenamingPanel)    
     bpy.utils.register_class(Addsuffix)
     bpy.utils.register_class(AddPrefix)
@@ -313,6 +375,8 @@ def register():
     bpy.utils.register_class(RenamingNumerate)    
     bpy.utils.register_class(AddTypeSuffix)
     bpy.utils.register_class(TrimString)
+    bpy.utils.register_class(UseObjectnameForData)
+    bpy.utils.register_class(SuffixPanel)
 
  
 
@@ -321,6 +385,27 @@ def register():
 
 def unregister():
 
+    del WindowManager.renaming_search
+    del WindowManager.renaming_object_types
+    del WindowManager.renaming_replace 
+    del WindowManager.renaming_suffix
+    del WindowManager.renaming_prefix
+    del WindowManager.rename_only_selection
+    del WindowManager.renaming_base_numerate  
+    del WindowManager.renaming_digits_numerate   
+    del WindowManager.renaming_cut_size       
+    
+    del WindowManager.renaming_suffix_material 
+    del WindowManager.renaming_suffix_geometry
+    del WindowManager.renaming_suffix_empty 
+    del WindowManager.renaming_suffix_group  
+    del WindowManager.renaming_suffix_curve 
+    del WindowManager.renaming_suffix_armature    
+    del WindowManager.renaming_suffix_lattice    
+    del WindowManager.renaming_suffix_data      
+    
+    del WindowManager.renaming_suffix_data_02  
+    
     bpy.utils.unregister_class(RenamingPanel)
     bpy.utils.unregister_class(AddTypeSuffix)
     bpy.utils.unregister_class(Addsuffix)
@@ -328,6 +413,8 @@ def unregister():
     bpy.utils.unregister_class(SearchAndReplace)    
     bpy.utils.unregister_class(RenamingNumerate)
     bpy.utils.unregister_class(TrimString)
+    bpy.utils.unregister_class(UseObjectnameForData)
+    bpy.utils.unregister_class(SuffixPanel)
 
 
 
