@@ -4,13 +4,13 @@ bl_info = {
     "author": "Matthias Patscheider",
     "version": (0, 1),
     "blender": (2, 78, 0),
-    "location": "View3D > Add > Mesh",
-    "warning": "In Development", # used for warning icon and text in addons panel
+    "location": "View3D > Tools > Misc",
+    "warning": "Beta", # used for warning icon and text in addons panel
     "wiki_url": "http://wiki.blender.org/index.php/Extensions:2.6/Py/"
                 "Scripts/My_Script",
     "tracker_url": "http://developer.blender.org/maniphest/task/create/?project=3&type=Bug",
     "support": "COMMUNITY",
-    "category": "Add Mesh"
+    "category": "Scene"
     }
 
 import os
@@ -73,6 +73,7 @@ class RenamingPanel(bpy.types.Panel):
         row.prop(wm, "renaming_suffix")
         row = layout.row()
         row.operator("renaming.add_suffix")
+        
         
         row = layout.row()
         row.prop(wm,"renaming_base_numerate")        
