@@ -235,11 +235,11 @@ class SearchAndReplace(bpy.types.Operator):
         if wm.rename_only_selection == True: 
             for obj in context.selected_objects:
                 obj.name = str(obj.name).replace(wm.renaming_search, wm.renaming_replace)
-                obj.data.name = str(obj.name) + "_data"
+                #obj.data.name = str(obj.name) + "_data"
         else: 
             for obj in bpy.data.objects:
                 obj.name= str(obj.name).replace(wm.renaming_search, wm.renaming_replace)
-                obj.data.name = str(obj.name) + "_data"
+                #obj.data.name = str(obj.name) + "_data"
         return{'FINISHED'}      
 
 def trimString(string, size):      
