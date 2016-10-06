@@ -6,9 +6,9 @@ bl_info = {
     "blender": (2, 78, 0),
     "location": "View3D > Tools > Misc",
     "warning": "Beta", # used for warning icon and text in addons panel
-    "wiki_url": "http://wiki.blender.org/index.php/Extensions:2.6/Py/"
+    "wiki_url": ""
                 "Scripts/My_Script",
-    "tracker_url": "http://developer.blender.org/maniphest/task/create/?project=3&type=Bug",
+    "tracker_url": "",
     "support": "COMMUNITY",
     "category": "Scene"
     }
