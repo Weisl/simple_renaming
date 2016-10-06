@@ -74,12 +74,12 @@ class RenamingPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("renaming.add_suffix")
         
-        
-        row = layout.row()
+        box = layout.box()
+        row = box.row()
         row.prop(wm,"renaming_base_numerate")        
-        row = layout.row()
+        row = box.row()
         row.prop(wm,"renaming_digits_numerate")
-        row = layout.row()
+        row = box.row()
         row.operator("renaming.numerate")
         
 
@@ -147,10 +147,16 @@ class UseObjectnameForData(bpy.types.Operator):
     def execute(self,context):
         wm = context.window_manager   
         suffix_data = wm.renaming_suffix_data_02
-        for obj in bpy.data.objects:
-            if suffix_data is not '':
-                if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH') and obj.name.endswith(suffix_data) == False:
-                    obj.data.name = obj.name + suffix_data
+        if wm.rename_only_selection == True:
+            for obj in bpy.context.selected_objects:
+                if suffix_data is not '':
+                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH') and obj.name.endswith(suffix_data) == False:
+                        obj.data.name = obj.name + suffix_data
+        else:
+            for obj in bpy.data.objects:
+                if suffix_data is not '':
+                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH') and obj.name.endswith(suffix_data) == False:
+                        obj.data.name = obj.name + suffix_data
         return {'FINISHED'}
     
 class AddTypeSuffix(bpy.types.Operator):
@@ -171,7 +177,7 @@ class AddTypeSuffix(bpy.types.Operator):
         data_suffix = wm.renaming_suffix_data
         
         
-        if geo_suffix is not '' or empt_suffix is not '' or LATTICE or suffix_data is not '':
+        if geo_suffix is not '' or empt_suffix is not '' or lattice_suffix is not '' or data_suffix is not '':
             for obj in bpy.data.objects:
                 if geo_suffix is not '': 
                     if obj.type == 'MESH' and obj.name.endswith(geo_suffix) == False:
@@ -188,7 +194,7 @@ class AddTypeSuffix(bpy.types.Operator):
                     if obj.type == 'CURVE' and obj.name.endswith(curve_suffix) == False:
                         obj.name = obj.name + curve_suffix
                 
-                if suffix_data is not '':
+                if data_suffix is not '':
                     if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH') and obj.name.endswith(data_suffix) == False:
                         obj.data.name = obj.name + data_suffix
                         
