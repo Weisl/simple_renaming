@@ -40,6 +40,7 @@ class RenamingPanel(bpy.types.Panel):
     #bl_region_type = 'WINDOW'
     #bl_context = "scene"
     #bl_label = 'Custom Panel'
+    
     bl_space_type = 'VIEW_3D'  # Choosing Viewport
     bl_region_type = 'TOOLS' # Choosing tools panel in viewport
     
@@ -58,8 +59,8 @@ class RenamingPanel(bpy.types.Panel):
         
         row = layout.row()
         row.prop(wm, "rename_only_selection")
-        row = layout.row()
-        row.label("Search and Replace")
+        row.separator()
+        
         row = layout.row()
         row.prop(wm, "renaming_search")
         row.prop(wm, "renaming_replace")
@@ -74,12 +75,12 @@ class RenamingPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("renaming.add_suffix")
         
-        box = layout.box()
-        row = box.row()
-        row.prop(wm,"renaming_base_numerate")        
-        row = box.row()
+        row = layout.row()
+        #row = box.row()
+        #row.prop(wm,"renaming_base_numerate")        
+        row = layout.row()
         row.prop(wm,"renaming_digits_numerate")
-        row = box.row()
+        row = layout.row()
         row.operator("renaming.numerate")
         
 
@@ -118,7 +119,7 @@ class SuffixPanel(bpy.types.Panel):
         
         box = layout.box()
         row = box.row()
-        row.label("add suffix by type")
+        row.label("Add Type Suffix")
         row = box.row()
         row.prop(wm, "renaming_suffix_geometry")
         row = box.row()
@@ -161,7 +162,7 @@ class UseObjectnameForData(bpy.types.Operator):
     
 class AddTypeSuffix(bpy.types.Operator):
     bl_idname="renaming.add_suffix_by_type"
-    bl_label="Add type specific suffix"
+    bl_label="Add Type Suffix"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
     
     def execute(self,context):
@@ -353,27 +354,27 @@ def register():
     
     WindowManager.renaming_search = StringProperty(name='Search', default = '')
     WindowManager.renaming_replace = StringProperty(name='Replace', default = '')
-    WindowManager.renaming_suffix = StringProperty(name="suffix", default = '')
+    WindowManager.renaming_suffix = StringProperty(name="Suffix", default = '')
     WindowManager.renaming_prefix = StringProperty(name="Prefix", default = '') 
     WindowManager.rename_only_selection = BoolProperty(
-            name="Only Selected Objects",
-            description="Rename only selected objects",
+            name="Selected Objects",
+            description="Rename Selected Objects",
             default=True,
             )          
     WindowManager.renaming_base_numerate = IntProperty(name="Step Size", default = 1)    
-    WindowManager.renaming_digits_numerate = IntProperty(name="Length", default = 3)     
-    WindowManager.renaming_cut_size = IntProperty(name="Letters to trim", default = 3)         
+    WindowManager.renaming_digits_numerate = IntProperty(name="Number Length", default = 3)     
+    WindowManager.renaming_cut_size = IntProperty(name="Trim Size", default = 3)         
     
-    WindowManager.renaming_suffix_material = StringProperty(name='material', default = '')
-    WindowManager.renaming_suffix_geometry = StringProperty(name='geometry', default = '')
-    WindowManager.renaming_suffix_empty = StringProperty(name="empty", default = '')
-    WindowManager.renaming_suffix_group = StringProperty(name="group", default = '')  
-    WindowManager.renaming_suffix_curve = StringProperty(name="curve", default = '') 
-    WindowManager.renaming_suffix_armature = StringProperty(name="armature", default = '')     
-    WindowManager.renaming_suffix_lattice = StringProperty(name="lattice", default = '')     
-    WindowManager.renaming_suffix_data = StringProperty(name="data", default = '')     
+    WindowManager.renaming_suffix_material = StringProperty(name='Material', default = '')
+    WindowManager.renaming_suffix_geometry = StringProperty(name='Geometry', default = '')
+    WindowManager.renaming_suffix_empty = StringProperty(name="Empty", default = '')
+    WindowManager.renaming_suffix_group = StringProperty(name="Group", default = '')  
+    WindowManager.renaming_suffix_curve = StringProperty(name="Curve", default = '') 
+    WindowManager.renaming_suffix_armature = StringProperty(name="Armature", default = '')     
+    WindowManager.renaming_suffix_lattice = StringProperty(name="Lattice", default = '')     
+    WindowManager.renaming_suffix_data = StringProperty(name="Data", default = '')     
 
-    WindowManager.renaming_suffix_data_02 = StringProperty(name="data", default = '')  
+    WindowManager.renaming_suffix_data_02 = StringProperty(name="Data", default = '')  
     
     bpy.utils.register_class(RenamingPanel)    
     bpy.utils.register_class(Addsuffix)
