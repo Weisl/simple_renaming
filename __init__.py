@@ -2,7 +2,7 @@ bl_info = {
     "name": "MP Advanced Renaming",
     "description": "This Addon offers advanced functionalities to rename a set of objects",
     "author": "Matthias Patscheider",
-    "version": (0, 0, 1),
+    "version": (0, 1),
     "blender": (2, 78, 0),
     "location": "View3D > Tools > Misc",
     "warning": "Beta", # used for warning icon and text in addons panel
@@ -398,8 +398,7 @@ def register():
     # addon updater code and configurations
 	# in case of broken version, try to register the updater first
 	# so that users can revert back to a working version
-	addon_updater_ops.register(bl_info)
-    
+    addon_updater_ops.register(bl_info)
     # addon properties and classes
     WindowManager.renaming_object_types = EnumProperty(
             name="Renaming Objects",
@@ -454,7 +453,7 @@ def register():
 
 def unregister():
 	# addon updater unregister
-	addon_updater_ops.unregister()
+    addon_updater_ops.unregister()
     
     #delete all the addon updaters and so one
     del WindowManager.renaming_search
