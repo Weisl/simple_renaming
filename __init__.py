@@ -2,7 +2,7 @@ bl_info = {
     "name": "MP Advanced Renaming",
     "description": "This Addon offers advanced functionalities to rename a set of objects",
     "author": "Matthias Patscheider",
-    "version": (0, 1),
+    "version": (0, 0, 1),
     "blender": (2, 78, 0),
     "location": "View3D > Tools > Misc",
     "warning": "Beta", # used for warning icon and text in addons panel
