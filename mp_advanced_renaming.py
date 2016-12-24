@@ -6,7 +6,7 @@ bl_info = {
     "blender": (2, 78, 0),
     "location": "View3D > Tools > Misc",
     "warning": "Beta", # used for warning icon and text in addons panel
-    "wiki_url": ""
+    "wiki_url": "http://matthias-patscheider.eu/"
                 "Scripts/My_Script",
     "tracker_url": "",
     "support": "COMMUNITY",
@@ -48,14 +48,6 @@ class RenamingPanel(bpy.types.Panel):
         layout = self.layout
         wm = context.window_manager
         scene = context.scene
-
-        #row = layout.row()
-        #row.prop(wm, "renaming_newName") 
-        
-        #row = layout.row()
-        #row.label("Multi Selection is possible")
-        #row = layout.row()
-        #row.prop(wm, "renaming_object_types") 
         
         row = layout.row()
         row.prop(wm, "rename_only_selection")
@@ -142,7 +134,8 @@ class SuffixPanel(bpy.types.Panel):
     
 class UseObjectnameForData(bpy.types.Operator):        
     bl_idname="renaming.dataname_from_obj"
-    bl_label="Data Suffix"
+    bl_label="Objectdata Suffix"
+    bl_description = "Rneames the object data according to the object name and adds the in the Data textfield specified suffix."
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}   
 
     def execute(self,context):
@@ -161,8 +154,10 @@ class UseObjectnameForData(bpy.types.Operator):
         return {'FINISHED'}
     
 class AddTypeSuffix(bpy.types.Operator):
+    """Add Type Suffix"""
     bl_idname="renaming.add_suffix_by_type"
     bl_label="Add Type Suffix"
+    bl_description= "Adds the above defined Suffixes to all objects in your scene"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
     
     def execute(self,context):
@@ -226,6 +221,7 @@ class AddTypeSuffix(bpy.types.Operator):
 class SearchAndReplace(bpy.types.Operator):
     bl_idname="renaming.search_replace"
     bl_label="Search and Replace"
+    bl_description = "replaces parts in the object names"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
     
     type = StringProperty()
@@ -249,7 +245,8 @@ def trimString(string, size):
     
 class TrimString(bpy.types.Operator):
     bl_idname="renaming.cut_string"
-    bl_label="Trim the end of the string"
+    bl_label="Trim End of String"
+    bl_description = "Deletes the in the trim size specified amount of characters at the end of object names"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
     
     def execute(self,context):
@@ -267,6 +264,7 @@ class TrimString(bpy.types.Operator):
 class Addsuffix(bpy.types.Operator):
     bl_idname="renaming.add_suffix"
     bl_label="Add suffix"  
+    bl_description = "Adds a suffix to object names"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}    
 
     def execute(self,context):
@@ -290,6 +288,7 @@ class Addsuffix(bpy.types.Operator):
 class AddPrefix(bpy.types.Operator):
     bl_idname="renaming.add_prefix"
     bl_label="Add Prefix"    
+    bl_description = "Adds a prefix to object names"
     bl_options = {'REGISTER', 'UNDO'}
     
 
@@ -311,6 +310,7 @@ class AddPrefix(bpy.types.Operator):
 class RenamingNumerate(bpy.types.Operator):
     bl_idname="renaming.numerate"
     bl_label="Numerate"    
+    bl_description = "adds a growing number to the object names with the amount of digits specified in Number Lenght" 
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL' }
     
     
