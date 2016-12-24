@@ -12,11 +12,14 @@ bl_info = {
     "support": "COMMUNITY",
     "category": "Scene"
     }
-
+    
+    
+import bpy
 import os
 from os.path import *
+from . import addon_updater_ops #for auto Updater
 
-import bpy
+
 from bpy.types import WindowManager
 from bpy.types import Scene
 
@@ -45,6 +48,9 @@ class RenamingPanel(bpy.types.Panel):
     bl_region_type = 'TOOLS' # Choosing tools panel in viewport
     
     def draw(self, context):
+        # auto updater: checkes for updates
+        addon_updater_ops.check_for_update_background(context)
+        
         layout = self.layout
         wm = context.window_manager
         scene = context.scene
@@ -89,6 +95,8 @@ class RenamingPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("renaming.dataname_from_obj")
         
+        # if the auto check for addon found a new version, draw a notice box
+        addon_updater_ops.update_notice_box_ui(self, context)
 
 
 
@@ -333,13 +341,66 @@ class RenamingNumerate(bpy.types.Operator):
         
         return{'FINISHED'}  
   
+
+#addon Preferences
+class DemoPreferences(bpy.types.AddonPreferences):
+	bl_idname = __package__
+
+	# addon updater preferences
+
+	auto_check_update = bpy.props.BoolProperty(
+		name = "Auto-check for Update",
+		description = "If enabled, auto-check for updates using an interval",
+		default = False,
+		)
+	
+	updater_intrval_months = bpy.props.IntProperty(
+		name='Months',
+		description = "Number of months between checking for updates",
+		default=0,
+		min=0
+		)
+	updater_intrval_days = bpy.props.IntProperty(
+		name='Days',
+		description = "Number of days between checking for updates",
+		default=7,
+		min=0,
+		)
+	updater_intrval_hours = bpy.props.IntProperty(
+		name='Hours',
+		description = "Number of hours between checking for updates",
+		default=0,
+		min=0,
+		max=23
+		)
+	updater_intrval_minutes = bpy.props.IntProperty(
+		name='Minutes',
+		description = "Number of minutes between checking for updates",
+		default=0,
+		min=0,
+		max=59
+		)
+
+	def draw(self, context):
+		
+		layout = self.layout
+
+		# updater draw function
+		addon_updater_ops.update_settings_ui(self,context)
+  
+  
+  
+  
 windowVariables = []
   
 def register():
 
-    ############################
-    ######REnaming
-    ############################
+    # addon updater code and configurations
+	# in case of broken version, try to register the updater first
+	# so that users can revert back to a working version
+	addon_updater_ops.register(bl_info)
+    
+    # addon properties and classes
     WindowManager.renaming_object_types = EnumProperty(
             name="Renaming Objects",
             options={'ENUM_FLAG'},
@@ -392,7 +453,10 @@ def register():
     
 
 def unregister():
-
+	# addon updater unregister
+	addon_updater_ops.unregister()
+    
+    #delete all the addon updaters and so one
     del WindowManager.renaming_search
     del WindowManager.renaming_object_types
     del WindowManager.renaming_replace 
