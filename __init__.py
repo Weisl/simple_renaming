@@ -8,7 +8,7 @@ bl_info = {
     "warning": "Beta", # used for warning icon and text in addons panel
     "wiki_url": "http://matthias-patscheider.eu/"
                 "Scripts/My_Script",
-    "tracker_url": "",
+    "tracker_url": "https://github.com/Weisl/simple_renaming_panel/issues",
     "support": "COMMUNITY",
     "category": "Scene"
     }
