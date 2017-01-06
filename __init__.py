@@ -1,5 +1,5 @@
 bl_info = {
-    "name": "MP Advanced Renaming",
+    "name": "Simple Renaming Panel",
     "description": "This Addon offers advanced functionalities to rename a set of objects",
     "author": "Matthias Patscheider",
     "version": (0, 1),
@@ -17,11 +17,11 @@ bl_info = {
 import bpy
 import os
 from os.path import *
-from . import addon_updater_ops #for auto Updater
-
 
 from bpy.types import WindowManager
 from bpy.types import Scene
+
+from . import addon_updater_ops
 
 from bpy.props import (
     StringProperty,
@@ -398,7 +398,7 @@ def register():
     # addon updater code and configurations
 	# in case of broken version, try to register the updater first
 	# so that users can revert back to a working version
-    addon_updater_ops.register(bl_info)
+
     # addon properties and classes
     WindowManager.renaming_object_types = EnumProperty(
             name="Renaming Objects",
@@ -436,6 +436,8 @@ def register():
 
     WindowManager.renaming_suffix_data_02 = StringProperty(name="Data", default = '')  
     
+    addon_updater_ops.register(bl_info)
+    
     bpy.utils.register_class(RenamingPanel)    
     bpy.utils.register_class(Addsuffix)
     bpy.utils.register_class(AddPrefix)
@@ -445,6 +447,7 @@ def register():
     bpy.utils.register_class(TrimString)
     bpy.utils.register_class(UseObjectnameForData)
     bpy.utils.register_class(SuffixPanel)
+    bpy.utils.register_class(DemoPreferences)
 
  
 
@@ -486,7 +489,7 @@ def unregister():
     bpy.utils.unregister_class(TrimString)
     bpy.utils.unregister_class(UseObjectnameForData)
     bpy.utils.unregister_class(SuffixPanel)
-
+    bpy.utils.unregister_class(DemoPreferences)
 
 
 if __name__ == "__main__":

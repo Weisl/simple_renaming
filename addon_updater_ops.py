@@ -563,7 +563,7 @@ def update_settings_ui(self, context):
 	subcol.prop(settings, "auto_check_update")
 	subcol = split.column()
 
-	if settings.auto_check_update==False: subcol.enabled = False
+	if settings.auto_check_update==True: subcol.enabled = False
 	subrow = subcol.row()
 	subrow.label("Interval between checks")
 	subrow = subcol.row(align=True)
@@ -729,7 +729,7 @@ def register(bl_info):
 	updater.website = "https://github.com/CGCookie/blender-addon-updater/"
 	
 	# used to check/compare versions
-	updater.current_version = bl_info["0,1"] 
+	updater.current_version = bl_info["version"] 
 
 	# to hard-set udpate frequency, use this here - however, this demo
 	# has this set via UI properties. Optional 
