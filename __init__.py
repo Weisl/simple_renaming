@@ -280,13 +280,16 @@ class Addsuffix(bpy.types.Operator):
         wm = context.window_manager
         suffix = wm.renaming_suffix
         print("suffix" + suffix)
-        if wm.rename_only_selection == True: 
-            for obj in context.selected_objects: 
+        
+		if wm.rename_only_selection == True: 
+            for obj in context.selected_objects:
+				if obj.name.endswith(suffix) is not True:
                 obj.name = obj.name + suffix
         
         else: 
             for obj in bpy.data.objects:  
-                obj.name = obj.name + suffix          
+				if obj.name.endswith(suffix) is not True:
+					obj.name = obj.name + suffix          
         
         return{'FINISHED'}  
 
@@ -306,12 +309,14 @@ class AddPrefix(bpy.types.Operator):
         
         if wm.rename_only_selection == True: 
             for obj in context.selected_objects: 
-                obj.name = pre + obj.name
+				if obj.name.startswith(pre) is not True:
+					obj.name = pre + obj.name
         else: 
         ## TODO: ERROR! 
             for obj in bpy.data.objects:  
-                filename = pre + obj.name
-                obj.name = filename
+				if obj.name.startswith(pre) is not True:
+					filename = pre + obj.name
+					obj.name = filename
                 
         return{'FINISHED'}  
  
@@ -434,7 +439,7 @@ def register():
     WindowManager.renaming_suffix_lattice = StringProperty(name="Lattice", default = '')     
     WindowManager.renaming_suffix_data = StringProperty(name="Data", default = '')     
 
-    WindowManager.renaming_suffix_data_02 = StringProperty(name="Data", default = '')  
+    WindowManager.renaming_suffix_data_02 = StringProperty(name="Data = Objectname + ", default = '')  
     
     addon_updater_ops.register(bl_info)
     
