@@ -149,16 +149,21 @@ class UseObjectnameForData(bpy.types.Operator):
     def execute(self,context):
         wm = context.window_manager   
         suffix_data = wm.renaming_suffix_data_02
+        
+        
         if wm.rename_only_selection == True:
             for obj in bpy.context.selected_objects:
+                
+                newName = obj.name + suffix_data
                 if suffix_data is not '':
-                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH') and obj.name.endswith(suffix_data) == False:
-                        obj.data.name = obj.name + suffix_data
+                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
+                        obj.data.name = newName
         else:
             for obj in bpy.data.objects:
+                newName = obj.name + suffix_data
                 if suffix_data is not '':
-                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH') and obj.name.endswith(suffix_data) == False:
-                        obj.data.name = obj.name + suffix_data
+                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
+                        obj.data.name = newName
         return {'FINISHED'}
     
 class AddTypeSuffix(bpy.types.Operator):
@@ -281,15 +286,15 @@ class Addsuffix(bpy.types.Operator):
         suffix = wm.renaming_suffix
         print("suffix" + suffix)
         
-		if wm.rename_only_selection == True: 
+        if wm.rename_only_selection == True: 
             for obj in context.selected_objects:
-				if obj.name.endswith(suffix) is not True:
-                obj.name = obj.name + suffix
+                if obj.name.endswith(suffix) is not True:
+                    obj.name = obj.name + suffix
         
         else: 
             for obj in bpy.data.objects:  
-				if obj.name.endswith(suffix) is not True:
-					obj.name = obj.name + suffix          
+                if obj.name.endswith(suffix) is not True:
+                    obj.name = obj.name + suffix          
         
         return{'FINISHED'}  
 
@@ -309,14 +314,14 @@ class AddPrefix(bpy.types.Operator):
         
         if wm.rename_only_selection == True: 
             for obj in context.selected_objects: 
-				if obj.name.startswith(pre) is not True:
-					obj.name = pre + obj.name
+                if obj.name.startswith(pre) is not True:
+                    obj.name = pre + obj.name
         else: 
         ## TODO: ERROR! 
             for obj in bpy.data.objects:  
-				if obj.name.startswith(pre) is not True:
-					filename = pre + obj.name
-					obj.name = filename
+                if obj.name.startswith(pre) is not True:
+                    filename = pre + obj.name
+                    obj.name = filename
                 
         return{'FINISHED'}  
  
@@ -349,49 +354,49 @@ class RenamingNumerate(bpy.types.Operator):
 
 #addon Preferences
 class DemoPreferences(bpy.types.AddonPreferences):
-	bl_idname = __package__
+    bl_idname = __package__
 
-	# addon updater preferences
+    # addon updater preferences
 
-	auto_check_update = bpy.props.BoolProperty(
-		name = "Auto-check for Update",
-		description = "If enabled, auto-check for updates using an interval",
-		default = False,
-		)
-	
-	updater_intrval_months = bpy.props.IntProperty(
-		name='Months',
-		description = "Number of months between checking for updates",
-		default=0,
-		min=0
-		)
-	updater_intrval_days = bpy.props.IntProperty(
-		name='Days',
-		description = "Number of days between checking for updates",
-		default=7,
-		min=0,
-		)
-	updater_intrval_hours = bpy.props.IntProperty(
-		name='Hours',
-		description = "Number of hours between checking for updates",
-		default=0,
-		min=0,
-		max=23
-		)
-	updater_intrval_minutes = bpy.props.IntProperty(
-		name='Minutes',
-		description = "Number of minutes between checking for updates",
-		default=0,
-		min=0,
-		max=59
-		)
+    auto_check_update = bpy.props.BoolProperty(
+        name = "Auto-check for Update",
+        description = "If enabled, auto-check for updates using an interval",
+        default = False,
+        )
+    
+    updater_intrval_months = bpy.props.IntProperty(
+        name='Months',
+        description = "Number of months between checking for updates",
+        default=0,
+        min=0
+        )
+    updater_intrval_days = bpy.props.IntProperty(
+        name='Days',
+        description = "Number of days between checking for updates",
+        default=7,
+        min=0,
+        )
+    updater_intrval_hours = bpy.props.IntProperty(
+        name='Hours',
+        description = "Number of hours between checking for updates",
+        default=0,
+        min=0,
+        max=23
+        )
+    updater_intrval_minutes = bpy.props.IntProperty(
+        name='Minutes',
+        description = "Number of minutes between checking for updates",
+        default=0,
+        min=0,
+        max=59
+        )
 
-	def draw(self, context):
-		
-		layout = self.layout
+    def draw(self, context):
+        
+        layout = self.layout
 
-		# updater draw function
-		addon_updater_ops.update_settings_ui(self,context)
+        # updater draw function
+        addon_updater_ops.update_settings_ui(self,context)
   
   
   
@@ -401,8 +406,8 @@ windowVariables = []
 def register():
 
     # addon updater code and configurations
-	# in case of broken version, try to register the updater first
-	# so that users can revert back to a working version
+    # in case of broken version, try to register the updater first
+    # so that users can revert back to a working version
 
     # addon properties and classes
     WindowManager.renaming_object_types = EnumProperty(
@@ -460,7 +465,7 @@ def register():
     
 
 def unregister():
-	# addon updater unregister
+    # addon updater unregister
     addon_updater_ops.unregister()
     
     #delete all the addon updaters and so one
