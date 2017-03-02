@@ -1,3 +1,23 @@
+'''
+Copyright (C) 2017 Matthias Patscheider
+patscheider.matthias@gmail.com
+
+Created by Matthias Patscheider
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
 bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers a basic functionality to rename a set of objects",
@@ -288,7 +308,7 @@ class AddTypeSuffix(bpy.types.Operator):
                 nName = grp.name + "_" + str(i) + suffixName
                 i = i + 1
             return nName       
-			
+            
     def suffixArmAdd(self, arm, suffixName):
         nName = arm.name + suffixName
         
@@ -303,7 +323,7 @@ class AddTypeSuffix(bpy.types.Operator):
                 nName = arm.name + "_" + str(i) + suffixName
                 i = i + 1
             return nName 
- 			
+            
 class SearchAndReplace(bpy.types.Operator):
     bl_idname="renaming.search_replace"
     bl_label="Search and Replace"
