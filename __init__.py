@@ -190,47 +190,120 @@ class AddTypeSuffix(bpy.types.Operator):
             for obj in bpy.data.objects:
                 if geo_suffix is not '': 
                     if obj.type == 'MESH' and obj.name.endswith(geo_suffix) == False:
-                        obj.name = obj.name + geo_suffix
+                        obj.name = self.suffixAdd(obj, geo_suffix)
                             
                 if empt_suffix is not '': 
                     if obj.type == 'EMPTY' and obj.name.endswith(empt_suffix) == False:
-                        obj.name = obj.name + empt_suffix                        
+                        obj.name = self.suffixAdd(obj, empt_suffix)                       
         
                 if lattice_suffix is not '':
                     if obj.type == 'LATTICE' and obj.name.endswith(lattice_suffix) == False:
-                        obj.name = obj.name + lattice_suffix    
+                        obj.name = self.suffixAdd(obj,  lattice_suffix)   
                 if curve_suffix is not '': 
                     if obj.type == 'CURVE' and obj.name.endswith(curve_suffix) == False:
-                        obj.name = obj.name + curve_suffix
+                        obj.name = self.suffixAdd(obj,  curve_suffix)
                 
                 if data_suffix is not '':
-                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH') and obj.name.endswith(data_suffix) == False:
-                        obj.data.name = obj.name + data_suffix
+                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE') and obj.data.name.endswith(data_suffix) == False:
+                        obj.data.name = self.suffixDataAdd(obj, data_suffix)
                         
                         
         if mat_suffix is not '': 
             for mat in bpy.data.materials:
                 if mat.name.endswith(mat_suffix) == False:
-                    mat.name = mat.name + mat_suffix
-        
-        
-
+                    mat.name = self.suffixMatAdd(mat, mat_suffix)
                     
         if group_suffix is not '':
             for group in bpy.data.groups:
                 if group.name.endswith(group_suffix) == False:
-                    group.name = group.name + group_suffix
+                    group.name =self.suffixGrpAdd(group, group_suffix)
                     
         if armature_suffix is not '':
             for armature in bpy.data.armatures:
                 if armature.name.endswith(armature_suffix) == False:
-                    armature.name = armature.name + armature_suffix
+                    armature.name = self.suffixArmAdd(armature, armature_suffix)
                     
         
 
         return {'FINISHED'}
-           
-       
+        
+
+    def suffixAdd(self, obj, suffixName):
+        nName = obj.name + suffixName
+        
+        if nName not in bpy.data.objects:
+            obj.name = nName
+            print(obj.name + " valid")
+            return nName
+        else:
+            nName = obj.name + suffixName
+            i = 1
+            print(obj.name + " already exists")
+            while( nName in bpy.data.objects):
+                nName = obj.name + "_" + str(i) + suffixName
+                i = i + 1
+            return nName
+            
+    def suffixDataAdd(self, obj, suffixName):
+        nName = obj.data.name + suffixName
+        
+        if nName not in bpy.data.meshes and nName not in bpy.data.lattices and nName not in bpy.data.curves and nName not in bpy.data.metaballs:
+            obj.data.name = nName
+            return nName
+        else:
+            nName = obj.data.name + suffixName
+            i = 1
+            print(obj.data.name + " already exists")
+            while( nName in bpy.data.meshes or nName  in bpy.data.lattices or nName  in bpy.data.curves or nName  in bpy.data.metaballs):
+                nName = obj.data.name + "_" + str(i) + suffixName
+                i = i + 1
+            return nName     
+
+    def suffixMatAdd(self, mat, suffixName):
+        nName = mat.name + suffixName
+        
+        if nName not in bpy.data.materials:
+            mat.name = nName
+            return nName
+        else:
+            nName = mat.name + suffixName
+            i = 1
+            print(mat.name + " already exists")
+            while( nName in bpy.data.materials):
+                nName = mat.name + "_" + str(i) + suffixName
+                i = i + 1
+            return nName    
+    
+    def suffixGrpAdd(self, grp, suffixName):
+        nName = grp.name + suffixName
+        
+        if nName not in bpy.data.groups:
+            grp.name = nName
+            return nName
+        else:
+            nName = grp.name + suffixName
+            i = 1
+            print(grp.name + " already exists")
+            while( nName in bpy.data.groups):
+                nName = grp.name + "_" + str(i) + suffixName
+                i = i + 1
+            return nName       
+			
+    def suffixArmAdd(self, arm, suffixName):
+        nName = arm.name + suffixName
+        
+        if nName not in bpy.data.armatures:
+            arm.name = nName
+            return nName
+        else:
+            nName = arm.name + suffixName
+            i = 1
+            print(arm.name + " already exists")
+            while( nName in bpy.data.armatures):
+                nName = arm.name + "_" + str(i) + suffixName
+                i = i + 1
+            return nName 
+ 			
 class SearchAndReplace(bpy.types.Operator):
     bl_idname="renaming.search_replace"
     bl_label="Search and Replace"
