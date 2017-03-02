@@ -505,8 +505,8 @@ def register():
             default=True,
             )          
     WindowManager.renaming_base_numerate = IntProperty(name="Step Size", default = 1)    
-    WindowManager.renaming_digits_numerate = IntProperty(name="Number Length", default = 3)     
-    WindowManager.renaming_cut_size = IntProperty(name="Trim Size", default = 3)         
+    WindowManager.renaming_digits_numerate = IntProperty(name="Numerate Digits", default = 3)     
+    WindowManager.renaming_cut_size = IntProperty(name="Trim Length", default = 3)         
     
     WindowManager.renaming_suffix_material = StringProperty(name='Material', default = '')
     WindowManager.renaming_suffix_geometry = StringProperty(name='Geometry', default = '')
