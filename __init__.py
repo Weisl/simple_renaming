@@ -1,8 +1,8 @@
 bl_info = {
     "name": "Simple Renaming Panel",
-    "description": "This Addon offers advanced functionalities to rename a set of objects",
+    "description": "This Addon offers a basic functionality to rename a set of objects",
     "author": "Matthias Patscheider",
-    "version": (0, 1),
+    "version": (0, 2),
     "blender": (2, 78, 0),
     "location": "View3D > Tools > Misc",
     "warning": "Beta", # used for warning icon and text in addons panel
@@ -37,7 +37,7 @@ from bpy.props import (
          
 class RenamingPanel(bpy.types.Panel):
     """Creates a renaming Panel"""
-    bl_label = "Advanced Renaming Panel"
+    bl_label = "Simple Renaming Panel"
     #bl_idname = "RENAMING_panel"
     #bl_space_type = 'PROPERTIES'
     #bl_region_type = 'WINDOW'
