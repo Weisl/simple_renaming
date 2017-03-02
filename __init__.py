@@ -22,12 +22,11 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers a basic functionality to rename a set of objects",
     "author": "Matthias Patscheider",
-    "version": (0, 2),
+    "version": (1, 0),
     "blender": (2, 78, 0),
     "location": "View3D > Tools > Misc",
-    "warning": "Beta", # used for warning icon and text in addons panel
-    "wiki_url": "http://matthias-patscheider.eu/"
-                "Scripts/My_Script",
+    "warning": "",
+    "wiki_url": "http://matthias-patscheider.eu/simple-renaming-panel/",
     "tracker_url": "https://github.com/Weisl/simple_renaming_panel/issues",
     "support": "COMMUNITY",
     "category": "Scene"
