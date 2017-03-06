@@ -22,7 +22,7 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers a basic functionality to rename a set of objects",
     "author": "Matthias Patscheider",
-    "version": (1, 0),
+    "version": (1, 0, 1),
     "blender": (2, 78, 0),
     "location": "View3D > Tools > Misc",
     "warning": "",
