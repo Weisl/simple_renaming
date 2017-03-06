@@ -351,7 +351,7 @@ class SearchAndReplace(bpy.types.Operator):
         
 class ReplaceName(bpy.types.Operator):
     bl_idname="renaming.name_replace"
-    bl_label="Name"
+    bl_label="Replace Names"
     bl_description = "replaces the names of the objects"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
     
@@ -595,7 +595,9 @@ def unregister():
     addon_updater_ops.unregister()
     
     #delete all the addon updaters and so one
+
     del WindowManager.renaming_search
+    del WindowManager.renaming_newName
     del WindowManager.renaming_object_types
     del WindowManager.renaming_replace 
     del WindowManager.renaming_suffix
