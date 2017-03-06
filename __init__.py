@@ -79,6 +79,11 @@ class RenamingPanel(bpy.types.Panel):
         row.separator()
         
         row = layout.row()
+        row.prop(wm,"renaming_newName")
+        row = layout.row()
+        row.operator("renaming.name_replace")
+        
+        row = layout.row()
         row.prop(wm, "renaming_search")
         row.prop(wm, "renaming_replace")
         row = layout.row()
@@ -341,7 +346,34 @@ class SearchAndReplace(bpy.types.Operator):
             for obj in bpy.data.objects:
                 obj.name= str(obj.name).replace(wm.renaming_search, wm.renaming_replace)
                 #obj.data.name = str(obj.name) + "_data"
-        return{'FINISHED'}      
+        return{'FINISHED'}   
+        
+        
+class ReplaceName(bpy.types.Operator):
+    bl_idname="renaming.name_replace"
+    bl_label="Replace Names"
+    bl_description = "replaces the names of the objects"
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+    
+    type = StringProperty()
+    
+    def execute(self,context):
+        wm = context.window_manager
+        newObjName = wm.renaming_newName
+        
+        i = 1
+        step = 1
+        digits = 3
+        
+        if wm.rename_only_selection == True: 
+            for obj in context.selected_objects: 
+                obj.name = newObjName + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
+                i = i + 1 
+        else: 
+            for obj in bpy.data.objects:  
+                obj.name = newObjName + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
+                i = i + 1     
+        return {'FINISHED'}
 
 def trimString(string, size):      
     list1 = string
@@ -514,6 +546,7 @@ def register():
             )
     windowVariables
     
+    WindowManager.renaming_newName = StringProperty(name="New Name", default = '')
     WindowManager.renaming_search = StringProperty(name='Search', default = '')
     WindowManager.renaming_replace = StringProperty(name='Replace', default = '')
     WindowManager.renaming_suffix = StringProperty(name="Suffix", default = '')
@@ -550,6 +583,7 @@ def register():
     bpy.utils.register_class(UseObjectnameForData)
     bpy.utils.register_class(SuffixPanel)
     bpy.utils.register_class(DemoPreferences)
+    bpy.utils.register_class(ReplaceName)
 
  
 
@@ -561,7 +595,9 @@ def unregister():
     addon_updater_ops.unregister()
     
     #delete all the addon updaters and so one
+
     del WindowManager.renaming_search
+    del WindowManager.renaming_newName
     del WindowManager.renaming_object_types
     del WindowManager.renaming_replace 
     del WindowManager.renaming_suffix
@@ -592,6 +628,7 @@ def unregister():
     bpy.utils.unregister_class(UseObjectnameForData)
     bpy.utils.unregister_class(SuffixPanel)
     bpy.utils.unregister_class(DemoPreferences)
+    bpy.utils.unregister_class(ReplaceName)
 
 
 if __name__ == "__main__":
