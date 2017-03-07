@@ -1,3 +1,9 @@
+<h3>Release Notes</h3>
+<h4>[1.0.1]</h4>
+<ul>
+	<li>[New] Added the posibility to give the objects a new name</li>
+</ul>
+
 <h1>Introduction</h1>
 
 <b>Simple Renaming Panel</b> is a small and handy tool to rename more objects at the same. The tool includes basic functionalities like adding suffixes, prefixes, search and replace, add suffixes depending on the object type and more.
@@ -20,6 +26,7 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 <ul>
 	<li>All / Selected: you can easily choose if the renaming operations should be applied to all objects or just to selected.</li>
 	<li>Search and Replace: A key feature for every renaming panel</li>
+	<li><b>[New] Added the posibility to give the objects a new name</b></li>
 	<li>Add prefix/suffix: very basic, yet powerful operation</li>
 	<li>Numerate Digits: Defines how many digits will be used for the numerate operation. (four digits = 0001, one digit = 1)</li>
 	<li>Numerate: Numerates the objects</li>
