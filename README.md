@@ -1,3 +1,7 @@
+<p>Blender Artist: https://blenderartists.org/forum/showthread.php?408115-Addon-Simple-Renaming-Panel&p=3106784#post3106784  <br /> 
+Website: http://matthias-patscheider.eu/simple-renaming-panel/
+<p>
+
 <h3>Release Notes</h3>
 <h4>[1.0.1]</h4>
 <ul>
