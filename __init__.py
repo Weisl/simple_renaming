@@ -440,8 +440,7 @@ class AddPrefix(bpy.types.Operator):
             for obj in context.selected_objects: 
                 if obj.name.startswith(pre) is not True:
                     obj.name = pre + obj.name
-        else: 
-        ## TODO: ERROR! 
+        else:
             for obj in bpy.data.objects:  
                 if obj.name.startswith(pre) is not True:
                     filename = pre + obj.name
