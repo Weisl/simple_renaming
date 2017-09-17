@@ -67,58 +67,73 @@ class RenamingPanel(bpy.types.Panel):
     bl_region_type = 'TOOLS' # Choosing tools panel in viewport
     
     def draw(self, context):
+
+
         # auto updater: checkes for updates
         addon_updater_ops.check_for_update_background(context)
         
         layout = self.layout
         wm = context.window_manager
         scene = context.scene
-        
+
+
         row = layout.row()
-        row.prop(wm, "rename_only_selection")
+        row.prop (wm, "renaming_object_types", expand = True)
+        row = layout.row()
+        row.label(text=str(wm.renaming_object_types))
+
+        row = layout.row()
+        if str(wm.renaming_object_types) == 'MATERIAL' or str(wm.renaming_object_types) == 'DATA':
+            row.prop(wm, "rename_only_selection", text="only of selected objects")
+        elif str(wm.renaming_object_types) == 'OBJECT':
+            row.prop(wm, "rename_only_selection", text="only selected")
+
         row.separator()
-        
+
         row = layout.row()
         row.prop(wm,"renaming_newName")
         row = layout.row()
+
         row.operator("renaming.name_replace")
-        
+
         row = layout.row()
         row.prop(wm, "renaming_search")
         row.prop(wm, "renaming_replace")
+
         row = layout.row()
         row.operator("renaming.search_replace")
+
         row = layout.row()
-        row.prop(wm, "renaming_prefix") 
+        row.prop(wm, "renaming_prefix")
+
         row = layout.row()
         row.operator("renaming.add_prefix")
-        row = layout.row()        
+
+        row = layout.row()
         row.prop(wm, "renaming_suffix")
+
         row = layout.row()
         row.operator("renaming.add_suffix")
-        
+
         row = layout.row()
         #row = box.row()
-        #row.prop(wm,"renaming_base_numerate")        
+        #row.prop(wm,"renaming_base_numerate")
         row = layout.row()
         row.prop(wm,"renaming_digits_numerate")
         row = layout.row()
         row.operator("renaming.numerate")
-        
 
-        ###### TODO: rename data ########
-        ###### TODO: rename Mat #######
-        
         row = layout.row()
         row.prop(wm, "renaming_cut_size")
         row = layout.row()
         row.operator("renaming.cut_string")
-        
-        row = layout.row()
-        row.prop(wm, "renaming_suffix_data_02")
-        row = layout.row()
-        row.operator("renaming.dataname_from_obj")
-        
+
+        if str(wm.renaming_object_types) == 'OBJECT' or str(wm.renaming_object_types) == 'DATA':
+            row = layout.row()
+            row.prop(wm, "renaming_suffix_data_02")
+            row = layout.row()
+            row.operator("renaming.dataname_from_obj")
+
         # if the auto check for addon found a new version, draw a notice box
         addon_updater_ops.update_notice_box_ui(self, context)
 
@@ -166,28 +181,24 @@ class SuffixPanel(bpy.types.Panel):
     
 class UseObjectnameForData(bpy.types.Operator):        
     bl_idname="renaming.dataname_from_obj"
-    bl_label="Objectdata Suffix"
+    bl_label="Data Name from Object"
     bl_description = "Rneames the object data according to the object name and adds the in the Data textfield specified suffix."
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}   
 
     def execute(self,context):
         wm = context.window_manager   
         suffix_data = wm.renaming_suffix_data_02
-        
-        
-        if wm.rename_only_selection == True:
-            for obj in bpy.context.selected_objects:
-                
-                newName = obj.name + suffix_data
-                if suffix_data is not '':
-                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
-                        obj.data.name = newName
-        else:
-            for obj in bpy.data.objects:
-                newName = obj.name + suffix_data
-                if suffix_data is not '':
-                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
-                        obj.data.name = newName
+        #### TODO ##############
+
+
+        # newName = obj.name + suffix_data
+        # if suffix_data is not '':
+        #    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
+        #        obj.data.name = newName
+
+
+
+
         return {'FINISHED'}
     
 class AddTypeSuffix(bpy.types.Operator):
@@ -335,17 +346,17 @@ class SearchAndReplace(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
     
     type = StringProperty()
-    
+
     def execute(self,context):
         wm = context.window_manager
-        if wm.rename_only_selection == True: 
-            for obj in context.selected_objects:
-                obj.name = str(obj.name).replace(wm.renaming_search, wm.renaming_replace)
-                #obj.data.name = str(obj.name) + "_data"
-        else: 
-            for obj in bpy.data.objects:
-                obj.name= str(obj.name).replace(wm.renaming_search, wm.renaming_replace)
-                #obj.data.name = str(obj.name) + "_data"
+
+        renamingList = []
+        renamingList = getRenamingList(self, context)
+
+        if len(renamingList) > 0:
+            for entity in renamingList:
+                if entity is not None:
+                    entity.name = str(entity.name).replace(wm.renaming_search, wm.renaming_replace)
         return{'FINISHED'}   
         
         
@@ -360,41 +371,43 @@ class ReplaceName(bpy.types.Operator):
     def execute(self,context):
         wm = context.window_manager
         newObjName = wm.renaming_newName
-        
+
+        renamingList = getRenamingList(self, context)
+
         i = 1
         step = 1
         digits = 3
-        
-        if wm.rename_only_selection == True: 
-            for obj in context.selected_objects: 
-                obj.name = newObjName + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
-                i = i + 1 
-        else: 
-            for obj in bpy.data.objects:  
-                obj.name = newObjName + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
-                i = i + 1     
+        if len(renamingList) > 0:
+            for entity in renamingList:
+                if entity is not None:
+                    entity.name = newObjName + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
+                    i = i + 1
+
         return {'FINISHED'}
+
 
 def trimString(string, size):      
     list1 = string
     list2 = list1[:-size]
     return ''.join(list2)
-    
+
+
 class TrimString(bpy.types.Operator):
     bl_idname="renaming.cut_string"
     bl_label="Trim End of String"
     bl_description = "Deletes the in the trim size specified amount of characters at the end of object names"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
-    
+
+
     def execute(self,context):
         wm = context.window_manager
-        if wm.rename_only_selection == True: 
-            for obj in context.selected_objects:
-                obj.name = trimString(obj.name, wm.renaming_cut_size)
-        else: 
-            for obj in bpy.data.objects:
-                obj.name = trimString(obj.name, wm.renaming_cut_size)
-        
+        renamingList = []
+        renamingList = getRenamingList(self, context)
+
+        if len(renamingList) > 0:
+            for entity in renamingList:
+                if entity is not None:
+                    entity.name = trimString(entity.name, wm.renaming_cut_size)
         
         return{'FINISHED'}             
 
@@ -408,18 +421,16 @@ class Addsuffix(bpy.types.Operator):
         
         wm = context.window_manager
         suffix = wm.renaming_suffix
-        print("suffix" + suffix)
-        
-        if wm.rename_only_selection == True: 
-            for obj in context.selected_objects:
-                if obj.name.endswith(suffix) is not True:
-                    obj.name = obj.name + suffix
-        
-        else: 
-            for obj in bpy.data.objects:  
-                if obj.name.endswith(suffix) is not True:
-                    obj.name = obj.name + suffix          
-        
+
+        renamingList = []
+        renamingList = getRenamingList(self, context)
+
+        if len(renamingList) > 0:
+            for entity in renamingList:
+                if entity is not None:
+                    if entity.name.endswith(suffix) is not True:
+                        entity.name = entity.name + suffix
+
         return{'FINISHED'}  
 
         
@@ -435,18 +446,17 @@ class AddPrefix(bpy.types.Operator):
     def execute(self,context):
         wm = context.window_manager
         pre = wm.renaming_prefix
-        
-        if wm.rename_only_selection == True: 
-            for obj in context.selected_objects: 
-                if obj.name.startswith(pre) is not True:
-                    obj.name = pre + obj.name
-        else:
-            for obj in bpy.data.objects:  
-                if obj.name.startswith(pre) is not True:
-                    filename = pre + obj.name
-                    obj.name = filename
-                
-        return{'FINISHED'}  
+
+        renamingList = []
+        renamingList = getRenamingList(self, context)
+
+        if len(renamingList) > 0:
+            for entity in renamingList:
+                if entity is not None:
+                    if entity.name.startswith(pre) is not True:
+                        entity.name = pre + entity.name
+
+        return{'FINISHED'}
  
 class RenamingNumerate(bpy.types.Operator):
     bl_idname="renaming.numerate"
@@ -461,16 +471,16 @@ class RenamingNumerate(bpy.types.Operator):
         i = 1
         step = wm.renaming_base_numerate
         digits = wm.renaming_digits_numerate
-        
-        
-        if wm.rename_only_selection == True: 
-            for obj in context.selected_objects: 
-                obj.name = obj.name + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
-                i = i + 1 
-        else: 
-            for obj in bpy.data.objects:  
-                obj.name = obj.name + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
-                i = i + 1         
+
+        renamingList = []
+        renamingList = getRenamingList(self, context)
+
+        if len(renamingList) > 0:
+            for entity in renamingList:
+                if entity is not None:
+                    entity.name = entity.name + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
+                    i = i + 1
+
         
         return{'FINISHED'}  
   
@@ -521,8 +531,50 @@ class DemoPreferences(bpy.types.AddonPreferences):
         # updater draw function
         addon_updater_ops.update_settings_ui(self,context)
   
-  
-  
+
+def getRenamingList(self,context):
+    wm = context.window_manager
+    renamingList = []
+
+    if wm.renaming_object_types == 'OBJECT':
+        if wm.rename_only_selection == True:
+            for obj in bpy.context.selected_objects:
+                renamingList.append(obj)
+        else:
+            renamingList = bpy.data.objects
+
+    elif wm.renaming_object_types == 'DATA':
+        if wm.rename_only_selection == True:
+            for obj in bpy.context.selected_objects:
+                if obj.data not in renamingList:
+                    renamingList.append(obj.data)
+        else:
+            for obj in bpy.data.objects:
+                if obj.data not in renamingList:
+                    renamingList.append(obj.data)
+
+    elif wm.renaming_object_types == 'MATERIAL':
+        if wm.rename_only_selection == True:
+            for obj in bpy.context.selected_objects:
+                for mat in obj.material_slots:
+                    if mat is not None and mat.name != '':
+                        renamingList.append(bpy.data.materials[mat.name])
+        else:
+            renamingList = bpy.data.materials
+
+    elif wm.renaming_object_types == 'IMAGE':
+        print ("Images")
+        renamingList = bpy.data.images
+
+    elif wm.renaming_object_types == 'GROUPS':
+        renamingList = bpy.data.groups
+
+
+    for entity in renamingList:
+        if entity is not None:
+            newName = entity.name
+    return renamingList
+
   
 windowVariables = []
   
@@ -535,14 +587,15 @@ def register():
     # addon properties and classes
     WindowManager.renaming_object_types = EnumProperty(
             name="Renaming Objects",
-            options={'ENUM_FLAG'},
-            items=(('OBJECT', "Object", ""),
-                   ('MESH', "Mesh", ""),
-                   ('MATERIAL', "Material", ""),
-                   ('DATA', "Data", "")),
+
+            items=(('OBJECT', "Object", "Scene Objects"),
+                   ('MATERIAL', "Material", "Materials"),
+                   ('IMAGE', "Image Textures", "Image Textures"), ###TODO ###
+                   ('GROUPS', "Grous", "Grous"),            #### TODO ####
+                   ('DATA', "Data", "Object Data")),
             description="Which kind of object to rename",
-            default={'OBJECT'},
             )
+            # ideas UvMaps, vertexgroups, shape keys, blender textures
     windowVariables
     
     WindowManager.renaming_newName = StringProperty(name="New Name", default = '')
