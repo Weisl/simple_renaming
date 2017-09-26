@@ -22,9 +22,9 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers a basic functionality to rename a set of objects",
     "author": "Matthias Patscheider",
-    "version": (1, 0, 1),
-    "blender": (2, 78, 0),
-    "location": "View3D > Tools > Misc",
+    "version": (1, 2, 0),
+    "blender": (2, 79, 0),
+    "location": "View3D > Tools ",
     "warning": "",
     "wiki_url": "http://matthias-patscheider.eu/simple-renaming-panel/",
     "tracker_url": "https://github.com/Weisl/simple_renaming_panel/issues",
@@ -32,8 +32,11 @@ bl_info = {
     "category": "Scene"
     }
     
-    
+ErrorList = []
+MessageList = []
+
 import bpy
+import re
 import os
 from os.path import *
 
@@ -53,19 +56,27 @@ from bpy.props import (
 #######################################
 ######### RENAMING 
 #######################################
-         
-class RenamingPanel(bpy.types.Panel):
+
+
+def update_panel_position(self, context):
+    try:
+        bpy.utils.unregister_class(VIEW3D_tools_Renaming_Panel)
+    except:
+        pass
+
+    VIEW3D_tools_Renaming_Panel.bl_category = context.user_preferences.addons[__name__].preferences.renaming_category
+    bpy.utils.register_class(VIEW3D_tools_Renaming_Panel)
+
+
+
+
+class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
     """Creates a renaming Panel"""
     bl_label = "Simple Renaming Panel"
-    #bl_idname = "RENAMING_panel"
-    #bl_space_type = 'PROPERTIES'
-    #bl_region_type = 'WINDOW'
-    #bl_context = "scene"
-    #bl_label = 'Custom Panel'
-    
     bl_space_type = 'VIEW_3D'  # Choosing Viewport
     bl_region_type = 'TOOLS' # Choosing tools panel in viewport
-    
+
+
     def draw(self, context):
 
 
@@ -99,7 +110,8 @@ class RenamingPanel(bpy.types.Panel):
         row = layout.row()
         row.prop(wm, "renaming_search")
         row.prop(wm, "renaming_replace")
-
+        row = layout.row()
+        row.prop(wm, "rename_matchcase")
         row = layout.row()
         row.operator("renaming.search_replace")
 
@@ -134,28 +146,7 @@ class RenamingPanel(bpy.types.Panel):
             row = layout.row()
             row.operator("renaming.dataname_from_obj")
 
-        # if the auto check for addon found a new version, draw a notice box
-        addon_updater_ops.update_notice_box_ui(self, context)
 
-
-
-class SuffixPanel(bpy.types.Panel):
-    """Creates a renaming Panel"""
-    bl_label = "Suffix Panel"
-    #bl_idname = "SUFFIX_panel"
-    #bl_space_type = 'PROPERTIES'
-    #bl_region_type = 'WINDOW'
-    #bl_context = "scene"        
-    #bl_label = 'Custom Panel'
-    bl_space_type = 'VIEW_3D'  # Choosing Viewport
-    bl_region_type = 'TOOLS' # Choosing tools panel in viewport
-    
-    def draw(self, context):
-        layout = self.layout
-        wm = context.window_manager
-        scene = context.scene
-        # Check for string length
-        
         box = layout.box()
         row = box.row()
         row.label("Add Type Suffix")
@@ -175,32 +166,15 @@ class SuffixPanel(bpy.types.Panel):
         row.prop(wm, "renaming_suffix_lattice")
         row = box.row()
         row.prop(wm, "renaming_suffix_data")
-        
+
         row = box.row()
         row.operator("renaming.add_suffix_by_type")
-    
-class UseObjectnameForData(bpy.types.Operator):        
-    bl_idname="renaming.dataname_from_obj"
-    bl_label="Data Name from Object"
-    bl_description = "Rneames the object data according to the object name and adds the in the Data textfield specified suffix."
-    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}   
-
-    def execute(self,context):
-        wm = context.window_manager   
-        suffix_data = wm.renaming_suffix_data_02
-        #### TODO ##############
 
 
-        # newName = obj.name + suffix_data
-        # if suffix_data is not '':
-        #    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
-        #        obj.data.name = newName
+        # if the auto check for addon found a new version, draw a notice box
+        addon_updater_ops.update_notice_box_ui(self, context)
 
 
-
-
-        return {'FINISHED'}
-    
 class AddTypeSuffix(bpy.types.Operator):
     """Add Type Suffix"""
     bl_idname="renaming.add_suffix_by_type"
@@ -344,8 +318,6 @@ class SearchAndReplace(bpy.types.Operator):
     bl_label="Search and Replace"
     bl_description = "replaces parts in the object names"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
-    
-    type = StringProperty()
 
     def execute(self,context):
         wm = context.window_manager
@@ -356,7 +328,13 @@ class SearchAndReplace(bpy.types.Operator):
         if len(renamingList) > 0:
             for entity in renamingList:
                 if entity is not None:
-                    entity.name = str(entity.name).replace(wm.renaming_search, wm.renaming_replace)
+                    if wm.rename_matchcase:
+                        entity.name = str(entity.name).replace(wm.renaming_search, wm.renaming_replace)
+                    else:
+                        replaceSearch = re.compile(re.escape(wm.renaming_search), re.IGNORECASE)
+                        entity.name = replaceSearch.sub(wm.renaming_replace, entity.name)
+
+
         return{'FINISHED'}   
         
         
@@ -366,21 +344,25 @@ class ReplaceName(bpy.types.Operator):
     bl_description = "replaces the names of the objects"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
     
-    type = StringProperty()
-    
     def execute(self,context):
         wm = context.window_manager
-        newObjName = wm.renaming_newName
-
+        newName = wm.renaming_newName
         renamingList = getRenamingList(self, context)
-
         i = 1
-        step = 1
+
+        if wm.renaming_object_types == 'GROUP' or wm.renaming_object_types == 'IMAGE':
+            i = 0
+
+        print ("Liste: " + str(list(renamingList)))
         digits = 3
+
         if len(renamingList) > 0:
             for entity in renamingList:
+                print("Entered " + str(i))
                 if entity is not None:
-                    entity.name = newObjName + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
+                    newObjName = newName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width= digits))
+
+                    entity.name = newObjName
                     i = i + 1
 
         return {'FINISHED'}
@@ -489,6 +471,13 @@ class RenamingNumerate(bpy.types.Operator):
 class DemoPreferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
+    renaming_category = bpy.props.StringProperty (
+        name = "Category",
+        description = "Defines in which category of the tools panel the simple renaimg panel is listed",
+        default = 'Misc',
+        update = update_panel_position,
+    )
+
     # addon updater preferences
 
     auto_check_update = bpy.props.BoolProperty(
@@ -527,10 +516,12 @@ class DemoPreferences(bpy.types.AddonPreferences):
     def draw(self, context):
         
         layout = self.layout
+        row = layout.row()
+        row.prop(self, "renaming_category")
 
         # updater draw function
         addon_updater_ops.update_settings_ui(self,context)
-  
+
 
 def getRenamingList(self,context):
     wm = context.window_manager
@@ -563,11 +554,10 @@ def getRenamingList(self,context):
             renamingList = bpy.data.materials
 
     elif wm.renaming_object_types == 'IMAGE':
-        print ("Images")
-        renamingList = bpy.data.images
+        renamingList = list(bpy.data.images)
 
     elif wm.renaming_object_types == 'GROUPS':
-        renamingList = bpy.data.groups
+        renamingList = list(bpy.data.groups)
 
 
     for entity in renamingList:
@@ -577,7 +567,90 @@ def getRenamingList(self,context):
 
   
 windowVariables = []
-  
+
+
+
+class PopupTest(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "renaming.popup"
+    bl_label = "Renaming Panel"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def invoke(self, context, event):
+        width = 800 * bpy.context.user_preferences.system.pixel_size
+        status = context.window_manager.invoke_props_dialog(self,width=width)
+        return status
+
+    def draw(self, context):
+        wm = bpy.context.window_manager
+        layout = self.layout
+        box = layout.box()
+
+        #wm.exportMsg.printAll()
+        for msg in ErrorList:
+            i = 0
+            row = box.row()
+            box.label(text="Error", icon = "ERROR")
+            row = box.row()
+            box.label(text="Error", icon="ERROR")
+
+
+
+        if len(wm.exportMsg.message) <= 0:
+            box.label("Nothing exported ", icon = "ERROR")
+
+        else:
+            for msg in wm.exportMsg.message:
+                msg = msg.split("\n")
+
+                i = 0
+                for m in msg:
+                    if i == 0:
+                        print (m)
+                        if m.startswith("Successfully"):
+                            box.label(m, icon = "FILE_TICK")
+                        else:
+                            box.label(m)
+                    else:
+                        box.label("    " + m)
+                    i += 1
+
+        #layout.separator()
+        #layout.label("FINISHED")
+
+    def execute(self, context):
+        ob = context.object
+        return {'FINISHED'}
+
+
+class UseObjectnameForData(bpy.types.Operator):
+    bl_idname = "renaming.dataname_from_obj"
+    bl_label = "Data Name from Object"
+    bl_description = "Rneames the object data according to the object name and adds the in the Data textfield specified suffix."
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+
+    def execute(self, context):
+        wm = context.window_manager
+        suffix_data = wm.renaming_suffix_data_02
+
+        if wm.rename_only_selection == True:
+            for obj in bpy.context.selected_objects:
+
+                newName = obj.name + suffix_data
+                if suffix_data is not '':
+                    if (
+                                        obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
+                        obj.data.name = newName
+        else:
+            for obj in bpy.data.objects:
+                newName = obj.name + suffix_data
+                if suffix_data is not '':
+                    if (
+                                        obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
+                        obj.data.name = newName
+        return {'FINISHED'}
+
+
 def register():
 
     # addon updater code and configurations
@@ -607,7 +680,12 @@ def register():
             name="Selected Objects",
             description="Rename Selected Objects",
             default=True,
-            )          
+            )
+    WindowManager.rename_matchcase = BoolProperty(
+            name="Match Case",
+            description="",
+            default=True,
+            )
     WindowManager.renaming_base_numerate = IntProperty(name="Step Size", default = 1)    
     WindowManager.renaming_digits_numerate = IntProperty(name="Number Length", default = 3)     
     WindowManager.renaming_cut_size = IntProperty(name="Trim Size", default = 3)         
@@ -619,13 +697,12 @@ def register():
     WindowManager.renaming_suffix_curve = StringProperty(name="Curve", default = '') 
     WindowManager.renaming_suffix_armature = StringProperty(name="Armature", default = '')     
     WindowManager.renaming_suffix_lattice = StringProperty(name="Lattice", default = '')     
-    WindowManager.renaming_suffix_data = StringProperty(name="Data", default = '')     
-
+    WindowManager.renaming_suffix_data = StringProperty(name="Data", default = '')
     WindowManager.renaming_suffix_data_02 = StringProperty(name="Data = Objectname + ", default = '')  
     
     addon_updater_ops.register(bl_info)
     
-    bpy.utils.register_class(RenamingPanel)    
+    bpy.utils.register_class(VIEW3D_tools_Renaming_Panel)
     bpy.utils.register_class(Addsuffix)
     bpy.utils.register_class(AddPrefix)
     bpy.utils.register_class(SearchAndReplace)    
@@ -633,14 +710,12 @@ def register():
     bpy.utils.register_class(AddTypeSuffix)
     bpy.utils.register_class(TrimString)
     bpy.utils.register_class(UseObjectnameForData)
-    bpy.utils.register_class(SuffixPanel)
+    #bpy.utils.register_class(SuffixPanel)
     bpy.utils.register_class(DemoPreferences)
     bpy.utils.register_class(ReplaceName)
 
- 
+    update_panel_position(None, bpy.context)
 
-
-    
 
 def unregister():
     # addon updater unregister
@@ -670,7 +745,7 @@ def unregister():
     
     del WindowManager.renaming_suffix_data_02  
     
-    bpy.utils.unregister_class(RenamingPanel)
+    bpy.utils.unregister_class(VIEW3D_tools_Renaming_Panel)
     bpy.utils.unregister_class(AddTypeSuffix)
     bpy.utils.unregister_class(Addsuffix)
     bpy.utils.unregister_class(AddPrefix)
