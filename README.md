@@ -21,7 +21,6 @@
 </ul>
 
 <img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_01_1.jpg" alt="Teaser Banner " />
-<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_06.jpg" alt="Teaser Banner " />
 <img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_02.jpg" alt="Teaser Banner " />
 
 <h2>Introduction</h2>
@@ -95,3 +94,4 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 </ul>
 
 <img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_07-1.jpg" alt="Installation Addon " />
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_06.jpg" alt="Teaser Banner " />
