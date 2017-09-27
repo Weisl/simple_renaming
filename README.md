@@ -3,29 +3,31 @@
 <h3>Release Notes</h3>
 <h4>[1.2.0]</h4>
 <ul>
-	<li>[NEW] Renaming works now in different modes: object, material, image texture, group, data and bone </li>
-	<li>[NEW] Change the tool shelf category of the add-on in the preferences </li>
-	<li>[NEW] Added Match case checkbox to search and replace</li>
-	<li>[NEW] A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
-	<li>[NEW] Not only suffixes, but also prefixes can be added by object type</li>
-	<li>[CHANGED] Suffix by Type has been renamed and is now part of the main panel</li>
-	<li>[NEW] Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
-	<li>[UPDATED] Auto updater </li>
-	<li>[FIX]A lot of minor bugs have been fixed</li>
+	<li><b>[NEW]</b> Renaming works now in different modes: object, material, image texture, group, data and bone </li>
+	<li><b>[NEW]</b> Change the tool shelf category of the add-on in the preferences </li>
+	<li><b>[NEW]</b> Added Match case checkbox to search and replace</li>
+	<li><b>[NEW]</b> A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
+	<li><b>[NEW]</b> Not only suffixes, but also prefixes can be added by object type</li>
+	<li><b>[CHANGED]</b> Suffix by Type has been renamed and is now part of the main panel</li>
+	<li><b>[NEW]</b> Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
+	<li><b>[UPDATED]</b> Auto updater </li>
+	<li><b>[FIX]</b> A lot of minor bugs have been fixed</li>
 
 </ul>
 <h4>[1.0.1]</h4>
+
 <ul>
-	<li>[New] Added the posibility to give the objects a new name</li>
+	<li><b>[New]</b> Added the posibility to give the objects a new name</li>
 </ul>
 
-<h1>Introduction</h1>
+<h2>Introduction</h2>
 
-<b> Simple Renaming Panel <b> is a small, but really powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. You have the choice which kind of objects will be effected by the renaming task, all or just selected objects,should it affect images, materials, objects, object data, bones or groups. This tool can be a real everyday helper as renaming more objects is needed very often and keeping the naming conventions can be tedious. The tool provides you also with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. 
+<p><b> Simple Renaming Panel </b> is a small, but really powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. You have the choice which kind of objects will be effected by the renaming task, all or just selected objects,should it affect images, materials, objects, object data, bones or groups. This tool can be a real everyday helper as renaming more objects is needed very often and keeping the naming conventions can be tedious. The tool provides you also with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. </p>
 
 <h4>Key Feature:</h4>
+
 <ul>
-	<li> Works for objects, materials, groups, image textures, object data, bones</li>
+	<li>Works for objects, materials, groups, image textures, object data, bones</li>
 	<li>Choose if all or just selected objects should be effected </li>
 	<li>Search and replace </li>
 	<li>Match Case option for search and replace</li>
@@ -59,11 +61,11 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 <h4>Simple Renaming Panel</h4>
 
 <ul>
-	<li> [NEW]: Choose which kind of objects you want to rename:</li>
+	<li><b>[NEW]</b> Choose which kind of objects you want to rename:</li>
 	<li> Changes effect selected or all</li>
 	<li> Replace names with a new name</li>
 	<li> Search and replace </li>
-	<li>[NEW]: Match case for the search and replace</li>
+	<li><b>[NEW]</b> Match case for the search and replace</li>
 	<li>Add prefixes </li>
 	<li>Add suffixes </li>
 	<li>Numerate bjects</li>
@@ -74,7 +76,7 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 <h4>Suffix Panel</h4>
 
 <ul>
-	<li>[NEW]: Choose betweeen Suffix and Prefix</li>
+	<li><b>[NEW]</b> Choose betweeen Suffix and Prefix</li>
 	<li>Geometry: all meshes</li>
 	<li>Material: all materials</li>
 	<li>Empty:  all empty objects </li>
@@ -83,8 +85,8 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 	<li>Group: all groups</li>
 	<li>Lattice: all lattices</li>
 	<li>Data: all object data</li>
-	<li>[NEW]: Surfaces: all surface objects</li> 
-	<li>[NEW]: Cameras : all cameras </li>
-	<li>[NEW]: Lights: all lights </li>
-	<li>[NEW]: Bones: all bones </li>
+	<li><b>[NEW]</b> Surfaces: all surface objects</li> 
+	<li><b>[NEW]</b> Cameras : all cameras </li>
+	<li><b>[NEW]</b> Lights: all lights </li>
+	<li><b>[NEW]</b> Bones: all bones </li>
 </ul>
