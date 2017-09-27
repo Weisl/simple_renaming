@@ -70,8 +70,8 @@ class RenamingMessages():
     message = []
 
     @classmethod
-    def addMessage(cls, oldName, newName, warning = False):
-        dict = {'oldName' : oldName, 'newName' : newName , 'warning' : warning}
+    def addMessage(cls, oldName, newName,obType = False, obIcon = False, warning = False):
+        dict = {'oldName' : oldName, 'newName' : newName , 'obType': obType, 'obIcon' : obIcon, 'warning' : warning}
         cls.message.append(dict)
         return
 
@@ -97,7 +97,6 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
 
 
     def draw(self, context):
-
 
         # auto updater: checkes for updates
         addon_updater_ops.check_for_update_background(context)
@@ -269,7 +268,7 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name)
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'LAMP', 'LAMP')
 
                 if surfaces_sufpre is not '':
                     if obj.type == 'SURFACE':
@@ -287,7 +286,8 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name)
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'SURFACE', 'OUTLINER_OB_SURFACE')
+
 
                 if camera_sufpre is not '':
                     if obj.type == 'CAMERA':
@@ -305,7 +305,7 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name)
+                            wm.renaming_messages.addMessage(oldName, obj.name,'CAMERA' ,'OUTLINER_OB_CAMERA')
 
 
                 if geo_sufpre is not '':
@@ -324,7 +324,7 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name)
+                            wm.renaming_messages.addMessage(oldName, obj.name,'MESH' ,'OUTLINER_OB_MESH')
 
                 if empt_sufpre is not '':
                     if obj.type == 'EMPTY':
@@ -342,7 +342,7 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName , obj.name)
+                            wm.renaming_messages.addMessage(oldName , obj.name, 'EMPTY', 'EMPTY')
 
                 if lattice_suffix is not '':
                     if obj.type == 'LATTICE' and obj.name.endswith(lattice_suffix) == False:
@@ -361,7 +361,7 @@ class AddTypeSufPre(bpy.types.Operator):
 
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name)
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'LATTICE' ,'OUTLINER_OB_LATTICE' )
 
                 if curve_suffix is not '':
                     if obj.type == 'CURVE' and obj.name.endswith(curve_suffix) == False:
@@ -379,7 +379,7 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name)
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'CURVE', 'OUTLINER_OB_CURVE')
 
                 if data_suffix is not '':
                     if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE') and obj.data.name.endswith(data_suffix) == False:
@@ -398,7 +398,7 @@ class AddTypeSufPre(bpy.types.Operator):
 
                         if nameIsNew == True:
                             obj.data.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.data.name)
+                            wm.renaming_messages.addMessage(oldName, obj.data.name,'DATA' ,'BLANK1')
 
 
 
@@ -419,7 +419,7 @@ class AddTypeSufPre(bpy.types.Operator):
 
                 if nameIsNew == True:
                     mat.name = newName
-                    wm.renaming_messages.addMessage(oldName, mat.name)
+                    wm.renaming_messages.addMessage(oldName, mat.name, 'MATERIAL', 'MATERIAL')
 
         if group_suffix != '':
             for group in bpy.data.groups:
@@ -437,7 +437,7 @@ class AddTypeSufPre(bpy.types.Operator):
                         nameIsNew = False
                 if nameIsNew == True:
                     group.name = newName
-                    wm.renaming_messages.addMessage(oldName, group.name)
+                    wm.renaming_messages.addMessage(oldName, group.name, 'GROUP', 'OUTLINER_OB_GROUP_INSTANCE')
 
         if armature_suffix is not '' or bone_sufpre is not '':
             for armature in bpy.data.armatures:
@@ -456,7 +456,7 @@ class AddTypeSufPre(bpy.types.Operator):
                             nameIsNew = False
                     if nameIsNew == True:
                         armature.name = newName
-                        wm.renaming_messages.addMessage(oldName, armature.name)
+                        wm.renaming_messages.addMessage(oldName, armature.name, 'ARMATURE', 'OUTLINER_OB_ARMATURE')
                 if bone_sufpre is not '':
                     for bone in armature.bones:
                         nameIsNew = True
@@ -473,7 +473,7 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             bone.name = newName
-                            wm.renaming_messages.addMessage(oldName, bone.name)
+                            wm.renaming_messages.addMessage(oldName, bone.name, 'BONE', 'BONE_DATA')
 
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
 
@@ -902,13 +902,16 @@ class RENAMING_POPUP(bpy.types.Operator):
                         if i == 0:
                             row = box.row(align=True)
                             row.alignment = 'EXPAND'
-                            row.label("old name")
-                            row.label("new name")
+                            row.label("OBJECT TYPE")
+                            row.label("NEW NAME")
+                            row.label("OLD NAME")
                             row.separator()
 
                         row = box.row(align=True)
                         row.alignment = 'EXPAND'
-                        row.label(str(msg['newName']))
+                        if msg['obType'] is not False and msg['obIcon'] is not False:
+                            row.label(str(msg['obType']), icon = msg['obIcon'])
+                        row.label(str(msg['newName']), icon = 'FILE_TICK')
                         row.label(str(msg['oldName']))
                         #box.label("Successfully changed to " + str(msg['newName'])+ " (" + str(msg['oldName']) + ")", icon = "FILE_TICK")
                         i += 1
@@ -921,13 +924,12 @@ class RENAMING_POPUP(bpy.types.Operator):
                         else:
                             box.label("Warning", icon = "ERROR")
                             box.label("       " + msg['warning'])
-                            
-        #layout.separator()
-        #layout.label("FINISHED")
+        wm.renaming_messages.clear()
+
 
     def execute(self, context):
         wm = context.window_manager
-        wm.renaming_messages.clear()
+
         return {'FINISHED'}
 
 
