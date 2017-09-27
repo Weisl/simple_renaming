@@ -20,6 +20,9 @@
 	<li><b>[New]</b> Added the posibility to give the objects a new name</li>
 </ul>
 
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_01_1.jpg" alt="Teaser Banner " />
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_06.jpg" alt="Teaser Banner " />
+
 <h2>Introduction</h2>
 
 <p><b> Simple Renaming Panel </b> is a small, but really powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. You have the choice which kind of objects will be effected by the renaming task, all or just selected objects,should it affect images, materials, objects, object data, bones or groups. This tool can be a real everyday helper as renaming more objects is needed very often and keeping the naming conventions can be tedious. The tool provides you also with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. </p>
@@ -60,6 +63,8 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 
 <h4>Simple Renaming Panel</h4>
 
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_05.jpg" alt="Installation Addon " />
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_04.jpg" alt="Installation Addon " />
 <ul>
 	<li><b>[NEW]</b> Choose which kind of objects you want to rename:</li>
 	<li> Changes effect selected or all</li>
