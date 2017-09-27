@@ -3,37 +3,45 @@
 <h3>Release Notes</h3>
 <h4>[1.2.0]</h4>
 <ul>
-	<li>[NEW] Added the posibility to give the objects a new name</li>
-	<li>[NEW] Added the posibility to give the objects a new name</li>
-	<li>[NEW] Added the posibility to give the objects a new name</li>
-	<li>[UPDATED] Auto updater 
-	<li>[FIX]A lot of minor bugs have been fixed
+	<li><b>[NEW]</b> Renaming works now in different modes: object, material, image texture, group, data and bone </li>
+	<li><b>[NEW]</b> Change the tool shelf category of the add-on in the preferences </li>
+	<li><b>[NEW]</b> Added Match case checkbox to search and replace</li>
+	<li><b>[NEW]</b> A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
+	<li><b>[NEW]</b> Not only suffixes, but also prefixes can be added by object type</li>
+	<li><b>[CHANGED]</b> Suffix by Type has been renamed and is now part of the main panel</li>
+	<li><b>[NEW]</b> Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
+	<li><b>[UPDATED]</b> Auto updater </li>
+	<li><b>[FIX]</b> A lot of minor bugs have been fixed</li>
 
-	
 </ul>
 <h4>[1.0.1]</h4>
+
 <ul>
-	<li>[New] Added the posibility to give the objects a new name</li>
+	<li><b>[New]</b> Added the posibility to give the objects a new name</li>
 </ul>
 
-<h1>Introduction</h1>
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_01_1.jpg" alt="Teaser Banner " />
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_02.jpg" alt="Teaser Banner " />
 
-<b> Simple Renaming Panel <b> is a small, but really powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. You have the choice which kind of objects will be effected by the renaming task, all or just selected objects,should it affect images, materials, objects, object data, bones or groups. This tool can be a real everyday helper as renaming more objects is needed very often and keeping the naming conventions can be tedious. The tool provides you also with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. 
+<h2>Introduction</h2>
 
-Key Feature:
+<p><b> Simple Renaming Panel </b> is a small, but really powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. You have the choice which kind of objects will be effected by the renaming task, all or just selected objects,should it affect images, materials, objects, object data, bones or groups. This tool can be a real everyday helper as renaming more objects is needed very often and keeping the naming conventions can be tedious. The tool provides you also with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. </p>
+
+<h4>Key Feature:</h4>
+
 <ul>
-	<li> Works for objects, materials, groups, image textures, object data, bones
-	<li>Choose if all or just selected objects should be effected 
-	<li>Search and replace 
-	<li>Match Case option for search and replace
-	<li>Add suffixes and prefixes
-	<li>Numerate 
-	<li>Trim Names
-	<li>Rename object data after object name
-	<li>Add suffixes  or prefixes by specific object types 
-	<li>Simple and clean UI
-	<li>Customizable UI Position
-	<li>Auto Updater
+	<li>Works for objects, materials, groups, image textures, object data, bones</li>
+	<li>Choose if all or just selected objects should be effected </li>
+	<li>Search and replace </li>
+	<li>Match Case option for search and replace</li>
+	<li>Add suffixes and prefixes</li>
+	<li>Numerate </li>
+	<li>Trim Names</li>
+	<li>Rename object data after object name</li>
+	<li>Add suffixes  or prefixes by specific object types </li>
+	<li>Simple and clean UI</li>
+	<li>Customizable UI Position</li>
+	<li>Auto Updater</li>
 </ul>
 
 
@@ -50,38 +58,40 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 
 <img src="http://matthias-patscheider.eu/wp-content/uploads/2017/03/simplePanel_v02.png" alt="Installation Addon " />
 
-<h3>Key Features</h3>
-<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/03/simplePanel_v03.png" alt="Installation Addon " />
-
 <h4>Simple Renaming Panel</h4>
 
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_04.jpg" alt="Installation Addon " />
 <ul>
-	<li> [NEW]: Choose which kind of objects you want to rename:
-	<li> Changes effect selected or all
-	<li> Replace names with a new name
-	<li> Search and replace 
-	<li>[NEW]: Match case for the search and replace
-	<li>Add prefixes 
-	<li>Add suffixes 
-	<li>Numerate bjects
-	<li>Shorten string 
+	<li><b>[NEW]</b> Choose which kind of objects you want to rename:</li>
+	<li> Changes effect selected or all</li>
+	<li> Replace names with a new name</li>
+	<li> Search and replace </li>
+	<li><b>[NEW]</b> Match case for the search and replace</li>
+	<li>Add prefixes </li>
+	<li>Add suffixes </li>
+	<li>Numerate bjects</li>
+	<li>Shorten string </li>
 	<li>Data: Keeping the object data names clear and organized can be really painful in blender, this button simply renames the data according to the objects and adds a specified suffix.</li>
 </ul>
 
-<h4>Suffix Panel</h4>
+<h4>Type Suffix Prefix</h4>
 
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_05.jpg" alt="Installation Addon " />
 <ul>
-	<li>[NEW]: Choose betweeen Suffix and Prefix
-	<li>Geometry: all meshes
-	<li>Material: all materials
-	<li>Empty:  all empty objects 
-	<li>Curve: all curves
-	<li>Armature: all armatures objects (not bones)
-	<li>Group: all groups
-	<li>Lattice: all lattices
-	<li>Data: all object data
-	<li>[NEW]: Surfaces: all surface objects 
-	<li>[NEW]: Cameras : all cameras 
-	<li>[NEW]: Lights: all lights 
-	<li>[NEW]: Bones: all bones 
+	<li><b>[NEW]</b> Choose betweeen Suffix and Prefix</li>
+	<li>Geometry: all meshes</li>
+	<li>Material: all materials</li>
+	<li>Empty:  all empty objects </li>
+	<li>Curve: all curves</li>
+	<li>Armature: all armatures objects (not bones)</li>
+	<li>Group: all groups</li>
+	<li>Lattice: all lattices</li>
+	<li>Data: all object data</li>
+	<li><b>[NEW]</b> Surfaces: all surface objects</li> 
+	<li><b>[NEW]</b> Cameras : all cameras </li>
+	<li><b>[NEW]</b> Lights: all lights </li>
+	<li><b>[NEW]</b> Bones: all bones </li>
 </ul>
+
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_07-1.jpg" alt="Installation Addon " />
+<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/09/simplePanel_title_06.jpg" alt="Teaser Banner " />
