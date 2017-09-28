@@ -12,7 +12,7 @@
 	<li><b>[NEW]</b> Not only suffixes, but also prefixes can be added by object type</li>
 	<li><b>[CHANGED]</b> Suffix by type has been renamed to type suffix and prefix panel and is now part of the main panel</li>
 	<li><b>[NEW]</b> Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
-	<li><b>[UPDATED]</b> Auto updater </li>
+	<li><b>[UPDATED]</b> Auto updater 1.0.3</li>
 	<li><b>[FIX]</b> A lot of minor bugs have been fixed</li>
 
 </ul>

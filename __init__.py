@@ -211,11 +211,11 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
         row = box.row()
         row.prop(wm, "renaming_sufpre_surfaces")
         row = box.row()
-        row.prop(wm, "renaming_sufpre_cameras")    ### TODO:
+        row.prop(wm, "renaming_sufpre_cameras")
         row = box.row()
-        row.prop(wm, "renaming_sufpre_lights")  ### TODO:
+        row.prop(wm, "renaming_sufpre_lights")
         row = box.row()
-        row.prop(wm, "renaming_sufpre_bones")  ### TODO:
+        row.prop(wm, "renaming_sufpre_bones")
 
 
         row = box.row()
@@ -624,27 +624,79 @@ class ReplaceName(bpy.types.Operator):
         wm = context.window_manager
         replaceName = wm.renaming_newName
         renamingList = getRenamingList(self, context)
-        i = 1
+
 
         if len(str(replaceName)) > 0:
-            if wm.renaming_object_types == 'GROUP' or wm.renaming_object_types == 'IMAGE':
-                i = 0
-
             digits = 3
 
             if len(renamingList) > 0:
                 for entity in renamingList:
                     if entity is not None:
+                        i = 1
+                        if wm.renaming_object_types == 'GROUP' or wm.renaming_object_types == 'IMAGE':
+                            i = 0
+
                         oldName = entity.name
+                        newName = ""
+
+                        dataList = []
+                        armatureList = []
+
+                        if wm.renaming_object_types == 'DATA':
+                            for obj in list(bpy.data.objects):
+                                dataList.append(obj.data.name)
+
+                        if wm.renaming_object_types == 'BONE':
+                            for arm in list(bpy.data.armatures):
+                                for bone in arm.bones:
+                                    renamingList.append(bone)
+
+                        while True:
+                            print ("Entered While " + str(i) )
+                            newName = replaceName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
+
+                            if wm.renaming_object_types == 'OBJECT':
+                                if newName in bpy.data.objects and newName != entity.name:
+                                    i = i + 1
+                                else:
+                                    break
+                            elif wm.renaming_object_types == 'MATERIAL':
+                                if newName in list(bpy.data.materials) and newName != entity.name:
+                                    i = i + 1
+                                else:
+                                    break
+                            elif wm.renaming_object_types == 'GROUP':
+                                if newName in list(bpy.data.groups) and newName != entity.name:
+                                    i = i + 1
+                                else:
+                                    break
+                            elif wm.renaming_object_types == 'IMAGE':
+                                if newName in list(bpy.data.images) and newName != entity.name:
+                                    i = i + 1
+                                else:
+                                    break
+                            elif wm.renaming_object_types == 'DATA':
+                                if newName in list(dataList) and newName != entity.name:
+                                    i = i + 1
+                                else:
+                                    break
+                            elif wm.renaming_object_types == 'BONE':
+                                if newName in list(armatureList) and newName != entity.name:
+                                    i = i + 1
+                                else:
+                                    break
+
+
                         newName = replaceName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width= digits))
                         entity.name = newName
                         wm.renaming_messages.addMessage(oldName, entity.name)
                         i = i + 1
+
         else: #len(str(replaceName)) <= 0
             wm.renaming_messages.addMessage(None, None, "Insert a valid string to replace names")
 
 
-
+        i = 0
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return {'FINISHED'}
 
@@ -776,40 +828,39 @@ class DemoPreferences(bpy.types.AddonPreferences):
         update = update_panel_position,
     )
 
-    # addon updater preferences
-
+    # addon updater preferences from `__init__`, be sure to copy all of them
     auto_check_update = bpy.props.BoolProperty(
-        name = "Auto-check for Update",
-        description = "If enabled, auto-check for updates using an interval",
-        default = False,
-        )
-
+        name="Auto-check for Update",
+        description="If enabled, auto-check for updates using an interval",
+        default=False,
+    )
     updater_intrval_months = bpy.props.IntProperty(
         name='Months',
-        description = "Number of months between checking for updates",
+        description="Number of months between checking for updates",
         default=0,
         min=0
-        )
+    )
     updater_intrval_days = bpy.props.IntProperty(
         name='Days',
-        description = "Number of days between checking for updates",
+        description="Number of days between checking for updates",
         default=7,
         min=0,
-        )
+    )
     updater_intrval_hours = bpy.props.IntProperty(
         name='Hours',
-        description = "Number of hours between checking for updates",
+        description="Number of hours between checking for updates",
         default=0,
         min=0,
         max=23
-        )
+    )
     updater_intrval_minutes = bpy.props.IntProperty(
         name='Minutes',
-        description = "Number of minutes between checking for updates",
+        description="Number of minutes between checking for updates",
         default=0,
         min=0,
         max=59
-        )
+    )
+
 
     def draw(self, context):
 
@@ -890,8 +941,7 @@ class RENAMING_POPUP(bpy.types.Operator):
         box = layout.box()
 
         if len(wm.renaming_messages.message) <= 0:
-            box.label("No Objects Renamed", icon = "ERROR")
-
+            box.label("No Objects Renamed", icon = "INFO")
         else:
 
 
@@ -899,22 +949,30 @@ class RENAMING_POPUP(bpy.types.Operator):
             for msg in wm.renaming_messages.message:
                 if msg is not None:
                     if msg['warning'] == False:
-                        if i == 0:
+                        if (msg['newName'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg['newName']:
+
+                            if i == 0:
+                                row = box.row(align=True)
+                                row.alignment = 'EXPAND'
+                                row.label("OBJECT TYPE")
+                                row.label("NEW NAME")
+                                row.label("OLD NAME")
+                                row.separator()
+
                             row = box.row(align=True)
                             row.alignment = 'EXPAND'
-                            row.label("OBJECT TYPE")
-                            row.label("NEW NAME")
-                            row.label("OLD NAME")
-                            row.separator()
 
-                        row = box.row(align=True)
-                        row.alignment = 'EXPAND'
-                        if msg['obType'] is not False and msg['obIcon'] is not False:
-                            row.label(str(msg['obType']), icon = msg['obIcon'])
-                        row.label(str(msg['newName']), icon = 'FILE_TICK')
-                        row.label(str(msg['oldName']))
-                        #box.label("Successfully changed to " + str(msg['newName'])+ " (" + str(msg['oldName']) + ")", icon = "FILE_TICK")
-                        i += 1
+                            if msg['obType'] is not False and msg['obIcon'] is not False:
+                                row.label(str(msg['obType']), icon = msg['obIcon'])
+                            else:
+                                row.label(str(wm.renaming_object_types))
+
+                            row.label(str(msg['newName']), icon = 'FILE_TICK')
+                            row.label(str(msg['oldName']))
+                            #box.label("Successfully changed to " + str(msg['newName'])+ " (" + str(msg['oldName']) + ")", icon = "FILE_TICK")
+
+                            i += 1
+                            print ("i = " + str(i))
 
                     else:
                         if msg['newName'] is not None and msg['oldName'] is not None:
@@ -924,6 +982,9 @@ class RENAMING_POPUP(bpy.types.Operator):
                         else:
                             box.label("Warning", icon = "ERROR")
                             box.label("       " + msg['warning'])
+            if i == 0:
+                print("Entered")
+                box.label("No Objects Renamed", icon="INFO")
         wm.renaming_messages.clear()
 
 
