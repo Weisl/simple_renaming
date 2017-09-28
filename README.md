@@ -96,5 +96,5 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 	<li><b>[NEW]</b> Bones: all bones </li>
 </ul>
 
-<img src="img/simplePanel_title_07-1.jpg" alt="Installation Addon " />
+<img src="img/simplePanel_title_07.jpg" alt="Installation Addon " />
 <img src="img/simplePanel_title_06.jpg" alt="Teaser Banner " />
