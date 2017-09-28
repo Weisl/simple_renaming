@@ -14,8 +14,8 @@
       <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2152">
-              <caret line="630" column="0" lean-forward="true" selection-start-line="630" selection-start-column="0" selection-end-line="630" selection-end-column="0" />
+            <state relative-caret-position="389">
+              <caret line="651" column="0" lean-forward="true" selection-start-line="651" selection-start-column="0" selection-end-line="651" selection-end-column="0" />
               <folding>
                 <element signature="e#1258#1268#0" expanded="true" />
               </folding>
@@ -37,9 +37,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>sufpreMatAdd</find>
-      <find>renaming.popup</find>
-      <find>sufpre</find>
       <find>empt_sufpre</find>
       <find>printAll</find>
       <find>TODO</find>
@@ -58,7 +55,6 @@
       <find>renaming.popu</find>
       <find>warning</find>
       <find>warning =</find>
-      <find>addMessage</find>
       <find>renaming.pop</find>
       <find>Image Te</find>
       <find>Image T</find>
@@ -67,6 +63,10 @@
       <find>data</find>
       <find>getRenamingList</find>
       <find>'ARMATURE'</find>
+      <find>type</find>
+      <find>replace Na</find>
+      <find>bone</find>
+      <find>addMessage</find>
     </findStrings>
     <replaceStrings>
       <replace>_sufpre_</replace>
@@ -158,7 +158,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1060" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16770834" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -428,8 +427,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2152">
-          <caret line="630" column="0" lean-forward="true" selection-start-line="630" selection-start-column="0" selection-end-line="630" selection-end-column="0" />
+        <state relative-caret-position="389">
+          <caret line="651" column="0" lean-forward="true" selection-start-line="651" selection-start-column="0" selection-end-line="651" selection-end-column="0" />
           <folding>
             <element signature="e#1258#1268#0" expanded="true" />
           </folding>

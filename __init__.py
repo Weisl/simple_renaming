@@ -342,7 +342,7 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName , obj.name, 'EMPTY', 'EMPTY')
+                            wm.renaming_messages.addMessage(oldName , obj.name, 'EMPTY', 'OUTLINER_OB_EMPTY')
 
                 if lattice_suffix is not '':
                     if obj.type == 'LATTICE' and obj.name.endswith(lattice_suffix) == False:
@@ -431,7 +431,7 @@ class AddTypeSufPre(bpy.types.Operator):
                     else:
                         nameIsNew = False
                 else:
-                    if group.name.startswith(goup_suffix) == False:
+                    if group.name.startswith(group_suffix) == False:
                         newName = self.suffixGrpAdd(context, group, group_suffix)
                     else:
                         nameIsNew = False
@@ -630,6 +630,9 @@ class ReplaceName(bpy.types.Operator):
             digits = 3
 
             if len(renamingList) > 0:
+
+
+
                 for entity in renamingList:
                     if entity is not None:
                         i = 1
@@ -640,16 +643,17 @@ class ReplaceName(bpy.types.Operator):
                         newName = ""
 
                         dataList = []
-                        armatureList = []
-
-                        if wm.renaming_object_types == 'DATA':
-                            for obj in list(bpy.data.objects):
-                                dataList.append(obj.data.name)
+                        boneList = []
 
                         if wm.renaming_object_types == 'BONE':
-                            for arm in list(bpy.data.armatures):
+                            for arm in bpy.data.armatures:
                                 for bone in arm.bones:
-                                    renamingList.append(bone)
+                                    boneList.append(bone.name)
+
+                        if wm.renaming_object_types == 'DATA':
+                            for obj in bpy.data.objects:
+                                if obj.data is not None:
+                                    dataList.append(obj.data.name)
 
                         while True:
                             print ("Entered While " + str(i) )
@@ -661,27 +665,27 @@ class ReplaceName(bpy.types.Operator):
                                 else:
                                     break
                             elif wm.renaming_object_types == 'MATERIAL':
-                                if newName in list(bpy.data.materials) and newName != entity.name:
+                                if newName in bpy.data.materials and newName != entity.name:
                                     i = i + 1
                                 else:
                                     break
                             elif wm.renaming_object_types == 'GROUP':
-                                if newName in list(bpy.data.groups) and newName != entity.name:
+                                if newName in bpy.data.groups and newName != entity.name:
                                     i = i + 1
                                 else:
                                     break
                             elif wm.renaming_object_types == 'IMAGE':
-                                if newName in list(bpy.data.images) and newName != entity.name:
+                                if newName in bpy.data.images and newName != entity.name:
                                     i = i + 1
                                 else:
                                     break
                             elif wm.renaming_object_types == 'DATA':
-                                if newName in list(dataList) and newName != entity.name:
+                                if newName in dataList and newName != entity.name:
                                     i = i + 1
                                 else:
                                     break
                             elif wm.renaming_object_types == 'BONE':
-                                if newName in list(armatureList) and newName != entity.name:
+                                if newName in boneList and newName != entity.name:
                                     i = i + 1
                                 else:
                                     break
