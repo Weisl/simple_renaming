@@ -7,7 +7,7 @@
 <ul>
 	<li><b>[NEW]</b> Renaming works now in different modes: object, material, image texture, group, data and bone </li>
 	<li><b>[NEW]</b> Change the tool shelf category of the add-on in the preferences </li>
-	<li><b>[NEW]</b> A added match case checkbox has been added to search and replace</li>
+	<li><b>[NEW]</b> Added a match case checkbox has been added to search and replace</li>
 	<li><b>[NEW]</b> A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
 	<li><b>[NEW]</b> Not only suffixes, but also prefixes can be added by object type</li>
 	<li><b>[CHANGED]</b> Suffix by type has been renamed to type suffix and prefix panel and is now part of the main panel</li>
