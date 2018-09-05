@@ -1011,7 +1011,7 @@ class UseObjectnameForData(bpy.types.Operator):
             for obj in bpy.context.selected_objects:
 
                 objName = obj.name + suffix_data
-                if suffix_data is not '':
+                if suffix_data is not None:
                     if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
                         oldName = obj.data.name
                         newName = objName
@@ -1020,7 +1020,7 @@ class UseObjectnameForData(bpy.types.Operator):
         else:
             for obj in bpy.data.objects:
                 objName = obj.name + suffix_data
-                if suffix_data is not '':
+                if suffix_data is not None:
                     if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
                         oldName = obj.data.name
                         newName = objName
