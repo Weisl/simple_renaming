@@ -65,6 +65,10 @@ def update_panel_position(self, context):
     VIEW3D_tools_Renaming_Panel.bl_category = context.user_preferences.addons[__name__].preferences.renaming_category
     bpy.utils.register_class(VIEW3D_tools_Renaming_Panel)
 
+def trimString(string, size):
+    list1 = string
+    list2 = list1[:-size]
+    return ''.join(list2)
 
 class RenamingMessages():
     message = []
@@ -87,7 +91,6 @@ class RenamingMessages():
     @classmethod
     def clear(cls):
         cls.message = []
-
 
 class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
     """Creates a renaming Panel"""
@@ -130,7 +133,7 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
         row = layout.row()
         if str(wm.renaming_object_types) == 'MATERIAL' or str(wm.renaming_object_types) == 'DATA':
             row.prop(wm, "rename_only_selection", text="Only Of Selected Objects")
-        elif str(wm.renaming_object_types) == 'OBJECT':
+        elif str(wm.renaming_object_types) == 'OBJECT' or str(wm.renaming_object_types) == 'BONE':
             row.prop(wm, "rename_only_selection", text="Only Selected")
 
         row.separator()
@@ -225,7 +228,7 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
         # if the auto check for addon found a new version, draw a notice box
         addon_updater_ops.update_notice_box_ui(self, context)
 
-
+#addon Operators
 class AddTypeSufPre(bpy.types.Operator):
     """Add Type Suffix"""
     bl_idname="renaming.add_sufpre_by_type"
@@ -613,7 +616,6 @@ class SearchAndReplace(bpy.types.Operator):
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
-
 class ReplaceName(bpy.types.Operator):
     bl_idname="renaming.name_replace"
     bl_label="Replace Names"
@@ -630,8 +632,6 @@ class ReplaceName(bpy.types.Operator):
             digits = 3
 
             if len(renamingList) > 0:
-
-
 
                 for entity in renamingList:
                     if entity is not None:
@@ -704,13 +704,6 @@ class ReplaceName(bpy.types.Operator):
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return {'FINISHED'}
 
-
-def trimString(string, size):      
-    list1 = string
-    list2 = list1[:-size]
-    return ''.join(list2)
-
-
 class TrimString(bpy.types.Operator):
     bl_idname="renaming.cut_string"
     bl_label="Trim End of String"
@@ -762,9 +755,6 @@ class Addsuffix(bpy.types.Operator):
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
-
-
-
 class AddPrefix(bpy.types.Operator):
     bl_idname="renaming.add_prefix"
     bl_label="Add Prefix"
@@ -797,8 +787,6 @@ class RenamingNumerate(bpy.types.Operator):
     bl_description = "adds a growing number to the object names with the amount of digits specified in Number Lenght"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL' }
 
-
-
     def execute(self,context):
         wm = context.window_manager
         i = 1
@@ -819,7 +807,6 @@ class RenamingNumerate(bpy.types.Operator):
 
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
-  
 
 #addon Preferences
 class DemoPreferences(bpy.types.AddonPreferences):
@@ -913,16 +900,29 @@ def getRenamingList(self, context):
         renamingList = list(bpy.data.groups)
 
     elif wm.renaming_object_types == 'BONE':
-        for arm in bpy.data.armatures:
-            for bone in arm.bones:
-                renamingList.append(bone)
+        if wm.rename_only_selection == True:
 
+            if bpy.context.mode == 'POSE':
+                renamingList = list(bpy.context.selected_pose_bones)
+
+            if bpy.context.mode == 'OBJECT':
+                for obj in bpy.data.objects:
+                    if obj.type == 'ARMATURE' and obj.select == True:
+                        for bone in obj.data.bones:
+                            renamingList.append(bone)
+
+            if bpy.context.mode == 'EDIT_ARMATURE':
+                renamingList = list(bpy.context.selected_bones)
+
+        else:
+            bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+            for arm in bpy.data.armatures:
+                for bone in arm.bones:
+                    renamingList.append(bone)
+    print (renamingList)
     return renamingList
-
   
 windowVariables = []
-
-
 
 class RENAMING_POPUP(bpy.types.Operator):
     """Tooltip"""
@@ -997,7 +997,6 @@ class RENAMING_POPUP(bpy.types.Operator):
 
         return {'FINISHED'}
 
-
 class UseObjectnameForData(bpy.types.Operator):
     bl_idname = "renaming.dataname_from_obj"
     bl_label = "Data Name from Object"
@@ -1030,7 +1029,6 @@ class UseObjectnameForData(bpy.types.Operator):
 
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return {'FINISHED'}
-
 
 def register():
 
@@ -1109,7 +1107,6 @@ def register():
 
     update_panel_position(None, bpy.context)
 
-
 def unregister():
     # addon updater unregister
     addon_updater_ops.unregister()
@@ -1154,7 +1151,6 @@ def unregister():
     bpy.utils.unregister_class(DemoPreferences)
     bpy.utils.unregister_class(ReplaceName)
     bpy.utils.unregister_class(RENAMING_POPUP)
-
 
 if __name__ == "__main__":
     register()
