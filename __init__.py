@@ -979,6 +979,7 @@ def getRenamingList(self, context):
             for bone in arm.bones:
                 renamingList.append(bone)
 
+    renamingList.sort(key=lambda x: x.name, reverse=False)
     return renamingList
 
 
