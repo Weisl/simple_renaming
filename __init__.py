@@ -30,8 +30,7 @@ bl_info = {
     "tracker_url": "https://github.com/Weisl/simple_renaming_panel/issues",
     "support": "COMMUNITY",
     "category": "Scene"
-    }
-
+}
 
 import bpy
 import re
@@ -43,16 +42,11 @@ from bpy.types import Scene
 
 from . import addon_updater_ops
 
-from bpy.props import (
-    StringProperty,
-    EnumProperty,
-    BoolProperty,
-    FloatProperty,
-    IntProperty
-    )
+from bpy.props import (StringProperty, EnumProperty, BoolProperty, FloatProperty,
+                       IntProperty)
 
 #######################################
-######### RENAMING 
+######### RENAMING
 #######################################
 
 
@@ -62,7 +56,8 @@ def update_panel_position(self, context):
     except:
         pass
 
-    VIEW3D_tools_Renaming_Panel.bl_category = context.user_preferences.addons[__name__].preferences.renaming_category
+    VIEW3D_tools_Renaming_Panel.bl_category = context.user_preferences.addons[
+        __name__].preferences.renaming_category
     bpy.utils.register_class(VIEW3D_tools_Renaming_Panel)
 
 
@@ -70,8 +65,15 @@ class RenamingMessages():
     message = []
 
     @classmethod
-    def addMessage(cls, oldName, newName,obType = False, obIcon = False, warning = False):
-        dict = {'oldName' : oldName, 'newName' : newName , 'obType': obType, 'obIcon' : obIcon, 'warning' : warning}
+    def addMessage(cls, oldName, newName, obType = False, obIcon = False,
+                   warning = False):
+        dict = {
+            'oldName': oldName,
+            'newName': newName,
+            'obType': obType,
+            'obIcon': obIcon,
+            'warning': warning
+        }
         cls.message.append(dict)
         return
 
@@ -93,8 +95,7 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
     """Creates a renaming Panel"""
     bl_label = "Simple Renaming Panel"
     bl_space_type = 'VIEW_3D'  # Choosing Viewport
-    bl_region_type = 'TOOLS' # Choosing tools panel in viewport
-
+    bl_region_type = 'TOOLS'  # Choosing tools panel in viewport
 
     def draw(self, context):
 
@@ -105,41 +106,43 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
         wm = context.window_manager
         scene = context.scene
 
-
         row = layout.row()
-        row.prop (wm, "renaming_object_types", expand = True)
-
+        row.prop(wm, "renaming_object_types", expand = True)
 
         labelStr = "Renaming Mode: "
         row = layout.row()
         if wm.renaming_object_types == 'OBJECT':
             row.label(labelStr + "Object")
         elif wm.renaming_object_types == 'MATERIAL':
-            row.label(text= labelStr + "Material")
+            row.label(text = labelStr + "Material")
         elif wm.renaming_object_types == 'GROUP':
-            row.label(text= labelStr + "Group")
+            row.label(text = labelStr + "Group")
         elif wm.renaming_object_types == 'IMAGE':
-            row.label(text= labelStr + "Image Texture")
+            row.label(text = labelStr + "Image Texture")
         elif wm.renaming_object_types == 'DATA':
-            row.label(text= labelStr + "Object Data")
+            row.label(text = labelStr + "Object Data")
         elif wm.renaming_object_types == 'BONE':
-            row.label(text=labelStr + "Bones")
-
-
+            row.label(text = labelStr + "Bones")
 
         row = layout.row()
-        if str(wm.renaming_object_types) == 'MATERIAL' or str(wm.renaming_object_types) == 'DATA':
-            row.prop(wm, "rename_only_selection", text="Only Of Selected Objects")
+        if str(wm.renaming_object_types) == 'MATERIAL' or str(
+                wm.renaming_object_types) == 'DATA':
+            row.prop(wm, "rename_only_selection", text = "Only Of Selected Objects")
         elif str(wm.renaming_object_types) == 'OBJECT':
-            row.prop(wm, "rename_only_selection", text="Only Selected")
+            row.prop(wm, "rename_only_selection", text = "Only Selected")
 
         row.separator()
 
         row = layout.row()
-        row.prop(wm,"renaming_newName")
+        row.prop(wm, "renaming_newName")
         row = layout.row()
 
         row.operator("renaming.name_replace")
+
+        row = layout.row()
+        row.operator("renaming.data_name_standardize")
+        row = layout.row()
+        row.operator("renaming.materials_name_standardize")
 
         row = layout.row()
         row.prop(wm, "renaming_search")
@@ -165,7 +168,7 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
         #row = box.row()
         #row.prop(wm,"renaming_base_numerate")
         row = layout.row()
-        row.prop(wm,"renaming_digits_numerate")
+        row.prop(wm, "renaming_digits_numerate")
         row = layout.row()
         row.operator("renaming.numerate")
 
@@ -180,16 +183,14 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
             row = layout.row()
             row.operator("renaming.dataname_from_obj")
 
-
         box = layout.box()
         row = box.row()
-        row.prop(wm, "renaming_sufpre_type", expand=True)
+        row.prop(wm, "renaming_sufpre_type", expand = True)
         row = box.row()
         if wm.renaming_sufpre_type == "PRE":
             row.label("Add Type Prefix")
         else:
             row.label("Add Type Suffix")
-            
 
         row = box.row()
         row.prop(wm, "renaming_sufpre_geometry")
@@ -217,10 +218,8 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
         row = box.row()
         row.prop(wm, "renaming_sufpre_bones")
 
-
         row = box.row()
         row.operator("renaming.add_sufpre_by_type")
-
 
         # if the auto check for addon found a new version, draw a notice box
         addon_updater_ops.update_notice_box_ui(self, context)
@@ -228,12 +227,12 @@ class VIEW3D_tools_Renaming_Panel(bpy.types.Panel):
 
 class AddTypeSufPre(bpy.types.Operator):
     """Add Type Suffix"""
-    bl_idname="renaming.add_sufpre_by_type"
-    bl_label="Add Type Suffix or Prefix"
-    bl_description= "Adds the above defined Suffixes or Prefixes to all objects in your scene"
+    bl_idname = "renaming.add_sufpre_by_type"
+    bl_label = "Add Type Suffix or Prefix"
+    bl_description = "Adds the above defined Suffixes or Prefixes to all objects in your scene"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-    def execute(self,context):
+    def execute(self, context):
         wm = context.window_manager
 
         geo_sufpre = wm.renaming_sufpre_geometry
@@ -248,7 +247,6 @@ class AddTypeSufPre(bpy.types.Operator):
         light_sufpre = wm.renaming_sufpre_lights
         bone_sufpre = wm.renaming_sufpre_bones
         camera_sufpre = wm.renaming_sufpre_cameras
-
 
         if camera_sufpre is not '' or light_sufpre is not '' or surfaces_sufpre is not '' or geo_sufpre is not '' or empt_sufpre is not '' or lattice_suffix is not '' or data_suffix is not '':
             for obj in bpy.data.objects:
@@ -268,7 +266,8 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name, 'LAMP', 'LAMP')
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'LAMP',
+                                                            'LAMP')
 
                 if surfaces_sufpre is not '':
                     if obj.type == 'SURFACE':
@@ -286,8 +285,8 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name, 'SURFACE', 'OUTLINER_OB_SURFACE')
-
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'SURFACE',
+                                                            'OUTLINER_OB_SURFACE')
 
                 if camera_sufpre is not '':
                     if obj.type == 'CAMERA':
@@ -295,18 +294,18 @@ class AddTypeSufPre(bpy.types.Operator):
                         nameIsNew = True
                         if wm.renaming_sufpre_type == 'SUF':
                             if obj.name.endswith(camera_sufpre) == False:
-                                newName = self.sufpreAdd(context,obj, camera_sufpre)
+                                newName = self.sufpreAdd(context, obj, camera_sufpre)
                             else:
                                 nameIsNew = False
                         else:
                             if obj.name.startswith(camera_sufpre) == False:
-                                newName = self.sufpreAdd(context,obj, camera_sufpre)
+                                newName = self.sufpreAdd(context, obj, camera_sufpre)
                             else:
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name,'CAMERA' ,'OUTLINER_OB_CAMERA')
-
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'CAMERA',
+                                                            'OUTLINER_OB_CAMERA')
 
                 if geo_sufpre is not '':
                     if obj.type == 'MESH':
@@ -314,17 +313,18 @@ class AddTypeSufPre(bpy.types.Operator):
                         nameIsNew = True
                         if wm.renaming_sufpre_type == 'SUF':
                             if obj.name.endswith(geo_sufpre) == False:
-                                newName = self.sufpreAdd(context,obj, geo_sufpre)
+                                newName = self.sufpreAdd(context, obj, geo_sufpre)
                             else:
                                 nameIsNew = False
                         else:
                             if obj.name.startswith(geo_sufpre) == False:
-                                newName = self.sufpreAdd(context,obj, geo_sufpre)
+                                newName = self.sufpreAdd(context, obj, geo_sufpre)
                             else:
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name,'MESH' ,'OUTLINER_OB_MESH')
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'MESH',
+                                                            'OUTLINER_OB_MESH')
 
                 if empt_sufpre is not '':
                     if obj.type == 'EMPTY':
@@ -332,7 +332,7 @@ class AddTypeSufPre(bpy.types.Operator):
                         nameIsNew = True
                         if wm.renaming_sufpre_type == 'SUF':
                             if obj.name.endswith(empt_sufpre) == False:
-                                newName = self.sufpreAdd(context,obj, empt_sufpre)
+                                newName = self.sufpreAdd(context, obj, empt_sufpre)
                             else:
                                 nameIsNew = False
                         else:
@@ -342,15 +342,17 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName , obj.name, 'EMPTY', 'OUTLINER_OB_EMPTY')
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'EMPTY',
+                                                            'OUTLINER_OB_EMPTY')
 
                 if lattice_suffix is not '':
-                    if obj.type == 'LATTICE' and obj.name.endswith(lattice_suffix) == False:
+                    if obj.type == 'LATTICE' and obj.name.endswith(
+                            lattice_suffix) == False:
                         oldName = obj.name
                         nameIsNew = True
                         if wm.renaming_sufpre_type == 'SUF':
                             if obj.name.endswith(lattice_suffix) == False:
-                                newName = self.sufpreAdd(context,obj,  lattice_suffix)
+                                newName = self.sufpreAdd(context, obj, lattice_suffix)
                             else:
                                 nameIsNew = False
                         else:
@@ -361,7 +363,8 @@ class AddTypeSufPre(bpy.types.Operator):
 
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name, 'LATTICE' ,'OUTLINER_OB_LATTICE' )
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'LATTICE',
+                                                            'OUTLINER_OB_LATTICE')
 
                 if curve_suffix is not '':
                     if obj.type == 'CURVE' and obj.name.endswith(curve_suffix) == False:
@@ -369,7 +372,7 @@ class AddTypeSufPre(bpy.types.Operator):
                         nameIsNew = True
                         if wm.renaming_sufpre_type == 'SUF':
                             if obj.name.endswith(curve_suffix) == False:
-                                newName = self.sufpreAdd(context,obj,  curve_suffix)
+                                newName = self.sufpreAdd(context, obj, curve_suffix)
                             else:
                                 nameIsNew = False
                         else:
@@ -379,10 +382,13 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name, 'CURVE', 'OUTLINER_OB_CURVE')
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'CURVE',
+                                                            'OUTLINER_OB_CURVE')
 
                 if data_suffix is not '':
-                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE') and obj.data.name.endswith(data_suffix) == False:
+                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH'
+                            or obj.type == 'META' or obj.type == 'SURFACE'
+                       ) and obj.data.name.endswith(data_suffix) == False:
                         oldName = obj.name
                         nameIsNew = True
                         if wm.renaming_sufpre_type == 'SUF':
@@ -392,15 +398,14 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         else:
                             if obj.data.name.startswith(data_suffix) == False:
-                                newName = self.suffixDataAdd(context,obj, data_suffix)
+                                newName = self.suffixDataAdd(context, obj, data_suffix)
                             else:
                                 nameIsNew = False
 
                         if nameIsNew == True:
                             obj.data.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.data.name,'DATA' ,'BLANK1')
-
-
+                            wm.renaming_messages.addMessage(oldName, obj.data.name,
+                                                            'DATA', 'BLANK1')
 
         if mat_suffix is not '':
             for mat in bpy.data.materials:
@@ -419,7 +424,8 @@ class AddTypeSufPre(bpy.types.Operator):
 
                 if nameIsNew == True:
                     mat.name = newName
-                    wm.renaming_messages.addMessage(oldName, mat.name, 'MATERIAL', 'MATERIAL')
+                    wm.renaming_messages.addMessage(oldName, mat.name, 'MATERIAL',
+                                                    'MATERIAL')
 
         if group_suffix != '':
             for group in bpy.data.groups:
@@ -427,7 +433,7 @@ class AddTypeSufPre(bpy.types.Operator):
                 oldName = group.name
                 if wm.renaming_sufpre_type == 'SUF':
                     if group.name.endswith(group_suffix) == False:
-                        newName =self.suffixGrpAdd(context,group, group_suffix)
+                        newName = self.suffixGrpAdd(context, group, group_suffix)
                     else:
                         nameIsNew = False
                 else:
@@ -437,7 +443,8 @@ class AddTypeSufPre(bpy.types.Operator):
                         nameIsNew = False
                 if nameIsNew == True:
                     group.name = newName
-                    wm.renaming_messages.addMessage(oldName, group.name, 'GROUP', 'OUTLINER_OB_GROUP_INSTANCE')
+                    wm.renaming_messages.addMessage(oldName, group.name, 'GROUP',
+                                                    'OUTLINER_OB_GROUP_INSTANCE')
 
         if armature_suffix is not '' or bone_sufpre is not '':
             for armature in bpy.data.armatures:
@@ -446,17 +453,20 @@ class AddTypeSufPre(bpy.types.Operator):
                     oldName = armature.name
                     if wm.renaming_sufpre_type == 'SUF':
                         if armature.name.endswith(armature_suffix) == False:
-                            newName = self.suffixArmAdd(context,armature, armature_suffix)
+                            newName = self.suffixArmAdd(context, armature,
+                                                        armature_suffix)
                         else:
                             nameIsNew = False
                     else:
                         if armature.name.startswith(armature_suffix) == False:
-                            newName = self.suffixArmAdd(context, armature, armature_suffix)
+                            newName = self.suffixArmAdd(context, armature,
+                                                        armature_suffix)
                         else:
                             nameIsNew = False
                     if nameIsNew == True:
                         armature.name = newName
-                        wm.renaming_messages.addMessage(oldName, armature.name, 'ARMATURE', 'OUTLINER_OB_ARMATURE')
+                        wm.renaming_messages.addMessage(
+                            oldName, armature.name, 'ARMATURE', 'OUTLINER_OB_ARMATURE')
                 if bone_sufpre is not '':
                     for bone in armature.bones:
                         nameIsNew = True
@@ -473,14 +483,12 @@ class AddTypeSufPre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             bone.name = newName
-                            wm.renaming_messages.addMessage(oldName, bone.name, 'BONE', 'BONE_DATA')
+                            wm.renaming_messages.addMessage(oldName, bone.name, 'BONE',
+                                                            'BONE_DATA')
 
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
 
-
-
         return {'FINISHED'}
-
 
     def sufpreAdd(self, context, obj, sufpreName):
         wm = context.window_manager
@@ -491,13 +499,12 @@ class AddTypeSufPre(bpy.types.Operator):
         else:
             nName = sufpreName + nName
 
-
         if nName not in bpy.data.objects:
             obj.name = nName
             return nName
         else:
             i = 1
-            while(nName in bpy.data.objects):
+            while (nName in bpy.data.objects):
                 if wm.renaming_sufpre_type == 'SUF':
                     nName = obj.name + "_" + str(i) + sufpreName
                 else:
@@ -521,12 +528,13 @@ class AddTypeSufPre(bpy.types.Operator):
             return nName
         else:
             i = 1
-            while( nName in bpy.data.meshes or nName  in bpy.data.lattices or nName  in bpy.data.curves or nName  in bpy.data.metaballs):
+            while (nName in bpy.data.meshes or nName in bpy.data.lattices
+                   or nName in bpy.data.curves or nName in bpy.data.metaballs):
                 nName = obj.data.name + "_" + str(i)
                 i = i + 1
             return nName
 
-    def sufpreMatAdd(self,context, mat, sufpreName):
+    def sufpreMatAdd(self, context, mat, sufpreName):
         wm = context.window_manager
         nName = mat.name
         if wm.renaming_sufpre_type == 'SUF':
@@ -539,7 +547,7 @@ class AddTypeSufPre(bpy.types.Operator):
             return nName
         else:
             i = 1
-            while( nName in bpy.data.materials):
+            while (nName in bpy.data.materials):
                 nName = mat.name + "_" + str(i)
                 i = i + 1
             return nName
@@ -558,7 +566,7 @@ class AddTypeSufPre(bpy.types.Operator):
             return nName
         else:
             i = 1
-            while( nName in bpy.data.groups):
+            while (nName in bpy.data.groups):
                 nName = grp.name + "_" + str(i)
                 i = i + 1
             return nName
@@ -577,18 +585,19 @@ class AddTypeSufPre(bpy.types.Operator):
             return nName
         else:
             i = 1
-            while( nName in bpy.data.armatures):
+            while (nName in bpy.data.armatures):
                 nName = arm.name + "_" + str(i)
                 i = i + 1
             return nName
 
+
 class SearchAndReplace(bpy.types.Operator):
-    bl_idname="renaming.search_replace"
-    bl_label="Search and Replace"
+    bl_idname = "renaming.search_replace"
+    bl_label = "Search and Replace"
     bl_description = "replaces parts in the object names"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-    def execute(self,context):
+    def execute(self, context):
         wm = context.window_manager
 
         renamingList = []
@@ -600,38 +609,104 @@ class SearchAndReplace(bpy.types.Operator):
                     if wm.renaming_search is not '':
                         if wm.rename_matchcase:
                             oldName = entity.name
-                            newName = str(entity.name).replace(wm.renaming_search, wm.renaming_replace)
+                            newName = str(entity.name).replace(wm.renaming_search,
+                                                               wm.renaming_replace)
                             entity.name = newName
                             wm.renaming_messages.addMessage(oldName, entity.name)
                         else:
                             oldName = entity.name
-                            replaceSearch = re.compile(re.escape(wm.renaming_search), re.IGNORECASE)
+                            replaceSearch = re.compile(
+                                re.escape(wm.renaming_search), re.IGNORECASE)
                             newName = replaceSearch.sub(wm.renaming_replace, entity.name)
                             entity.name = newName
                             wm.renaming_messages.addMessage(oldName, entity.name)
 
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
-        return{'FINISHED'}
+        return {'FINISHED'}
 
 
 class ReplaceName(bpy.types.Operator):
-    bl_idname="renaming.name_replace"
-    bl_label="Replace Names"
+    bl_idname = "renaming.name_replace"
+    bl_label = "Replace Names"
     bl_description = "replaces the names of the objects"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-    def execute(self,context):
+    def execute(self, context):
+        objects = bpy.data.objects
+        for obj in objects:
+            if obj.data != None:
+                obj.data.name = obj.name
+
+# If single user data ==> "Object Name"
+# If multi user data ==> "{MU}-Data Name (#Users)"
+class StandardizeData(bpy.types.Operator):
+    bl_idname = "renaming.data_name_standardize"
+    bl_label = "Standardize Scene Data"
+    bl_description = "Replaces the names of the data"
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+
+    def execute(self, context):
+        objects = bpy.data.objects
+        for obj in context.scene.objects:
+            if obj.data != None:
+                obj.data.name = obj.name
+
+                data = obj.data
+                data_name = data.name
+                pattern = re.compile('((?:\[|\{).*(?:\]|\}))(\-)(.*)(\s\(\d\))')
+                if pattern.match(data_name):
+                    results = re.search('((?:\[|\{).*(?:\]|\}))(\-)(.*)(\s\(\d\))',
+                                                data_name).groups()
+                    data_name = results[2]
+                if data.users == 1:
+                    data.name = obj.name
+                else:
+                    data.name = '{MU}-' + data_name + ' (' + str(data.users) + ')'
+        return {'FINISHED'}
+
+# If single user materials ==> "[Object Name]-Material Name (1)"
+# If multi user materials ==> "{MU}-Material Name (#Users)"
+class StandardizeMaterials(bpy.types.Operator):
+    bl_idname = "renaming.materials_name_standardize"
+    bl_label = "Standardize Scene Materials"
+    bl_description = "Replaces the names of the materials"
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+
+    def execute(self, context):
+        objects = bpy.data.objects
+        for obj in context.scene.objects:
+            for slot in obj.material_slots:
+                mat = slot.material
+                if mat != None:
+                    material_name = mat.name
+                    pattern = re.compile('((?:\[|\{).*(?:\]|\}))(\-)(.*)(\s\(\d\))')
+                    if pattern.match(material_name):
+                        results = re.search('((?:\[|\{).*(?:\]|\}))(\-)(.*)(\s\(\d\))',
+                                                material_name).groups()
+                        material_name = results[2]
+                    if mat.users == 1:
+                        mat.name = '[' + obj.name + ']-' + material_name + ' (1)'
+                    else:
+                        mat.name = '{MU}-' + material_name + ' (' + str(mat.users) + ')'
+
+        return {'FINISHED'}
+
+
+class ReplaceName(bpy.types.Operator):
+    bl_idname = "renaming.name_replace"
+    bl_label = "Replace Names"
+    bl_description = "replaces the names of the objects"
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+
+    def execute(self, context):
         wm = context.window_manager
         replaceName = wm.renaming_newName
         renamingList = getRenamingList(self, context)
-
 
         if len(str(replaceName)) > 0:
             digits = 3
 
             if len(renamingList) > 0:
-
-
 
                 for entity in renamingList:
                     if entity is not None:
@@ -656,8 +731,9 @@ class ReplaceName(bpy.types.Operator):
                                     dataList.append(obj.data.name)
 
                         while True:
-                            print ("Entered While " + str(i) )
-                            newName = replaceName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
+                            print("Entered While " + str(i))
+                            newName = replaceName + '_' + ('{num:{fill}{width}}'.format(
+                                num = i, fill = '0', width = digits))
 
                             if wm.renaming_object_types == 'OBJECT':
                                 if newName in bpy.data.objects and newName != entity.name:
@@ -690,35 +766,34 @@ class ReplaceName(bpy.types.Operator):
                                 else:
                                     break
 
-
-                        newName = replaceName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width= digits))
+                        newName = replaceName + '_' + ('{num:{fill}{width}}'.format(
+                            num = i, fill = '0', width = digits))
                         entity.name = newName
                         wm.renaming_messages.addMessage(oldName, entity.name)
                         i = i + 1
 
-        else: #len(str(replaceName)) <= 0
-            wm.renaming_messages.addMessage(None, None, "Insert a valid string to replace names")
-
+        else:  #len(str(replaceName)) <= 0
+            wm.renaming_messages.addMessage(None, None,
+                                            "Insert a valid string to replace names")
 
         i = 0
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return {'FINISHED'}
 
 
-def trimString(string, size):      
+def trimString(string, size):
     list1 = string
     list2 = list1[:-size]
     return ''.join(list2)
 
 
 class TrimString(bpy.types.Operator):
-    bl_idname="renaming.cut_string"
-    bl_label="Trim End of String"
+    bl_idname = "renaming.cut_string"
+    bl_label = "Trim End of String"
     bl_description = "Deletes the in the trim size specified amount of characters at the end of object names"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-
-    def execute(self,context):
+    def execute(self, context):
         wm = context.window_manager
         renamingList = []
         renamingList = getRenamingList(self, context)
@@ -732,15 +807,16 @@ class TrimString(bpy.types.Operator):
                     wm.renaming_messages.addMessage(oldName, entity.name)
 
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
-        return{'FINISHED'}
+        return {'FINISHED'}
+
 
 class Addsuffix(bpy.types.Operator):
-    bl_idname="renaming.add_suffix"
-    bl_label="Add suffix"
+    bl_idname = "renaming.add_suffix"
+    bl_label = "Add suffix"
     bl_description = "Adds a suffix to object names"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-    def execute(self,context):
+    def execute(self, context):
 
         wm = context.window_manager
         suffix = wm.renaming_suffix
@@ -760,19 +836,16 @@ class Addsuffix(bpy.types.Operator):
             wm.renaming_messages.addMessage(None, None, "Insert Valide String")
 
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
-        return{'FINISHED'}
-
-
+        return {'FINISHED'}
 
 
 class AddPrefix(bpy.types.Operator):
-    bl_idname="renaming.add_prefix"
-    bl_label="Add Prefix"
+    bl_idname = "renaming.add_prefix"
+    bl_label = "Add Prefix"
     bl_description = "Adds a prefix to object names"
     bl_options = {'REGISTER', 'UNDO'}
 
-
-    def execute(self,context):
+    def execute(self, context):
         wm = context.window_manager
         pre = wm.renaming_prefix
 
@@ -789,17 +862,16 @@ class AddPrefix(bpy.types.Operator):
                         wm.renaming_messages.addMessage(oldName, entity.name)
 
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
-        return{'FINISHED'}
- 
+        return {'FINISHED'}
+
+
 class RenamingNumerate(bpy.types.Operator):
-    bl_idname="renaming.numerate"
-    bl_label="Numerate"
+    bl_idname = "renaming.numerate"
+    bl_label = "Numerate"
     bl_description = "adds a growing number to the object names with the amount of digits specified in Number Lenght"
-    bl_options = {'REGISTER', 'UNDO', 'INTERNAL' }
+    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-
-
-    def execute(self,context):
+    def execute(self, context):
         wm = context.window_manager
         i = 1
         step = wm.renaming_base_numerate
@@ -812,59 +884,49 @@ class RenamingNumerate(bpy.types.Operator):
             for entity in renamingList:
                 if entity is not None:
                     oldName = entity.name
-                    newName = entity.name + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width= digits))
+                    newName = entity.name + '_' + ('{num:{fill}{width}}'.format(
+                        num = i * step, fill = '0', width = digits))
                     entity.name = newName
                     wm.renaming_messages.addMessage(oldName, entity.name)
                     i = i + 1
 
         bpy.ops.renaming.popup('INVOKE_DEFAULT')
-        return{'FINISHED'}
-  
+        return {'FINISHED'}
+
 
 #addon Preferences
 class DemoPreferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
-    renaming_category = bpy.props.StringProperty (
+    renaming_category = bpy.props.StringProperty(
         name = "Category",
-        description = "Defines in which category of the tools panel the simple renaimg panel is listed",
+        description =
+        "Defines in which category of the tools panel the simple renaimg panel is listed",
         default = 'Misc',
         update = update_panel_position,
     )
 
     # addon updater preferences from `__init__`, be sure to copy all of them
     auto_check_update = bpy.props.BoolProperty(
-        name="Auto-check for Update",
-        description="If enabled, auto-check for updates using an interval",
-        default=False,
+        name = "Auto-check for Update",
+        description = "If enabled, auto-check for updates using an interval",
+        default = False,
     )
     updater_intrval_months = bpy.props.IntProperty(
-        name='Months',
-        description="Number of months between checking for updates",
-        default=0,
-        min=0
-    )
+        name = 'Months', description = "Number of months between checking for updates",
+        default = 0, min = 0)
     updater_intrval_days = bpy.props.IntProperty(
-        name='Days',
-        description="Number of days between checking for updates",
-        default=7,
-        min=0,
+        name = 'Days',
+        description = "Number of days between checking for updates",
+        default = 7,
+        min = 0,
     )
     updater_intrval_hours = bpy.props.IntProperty(
-        name='Hours',
-        description="Number of hours between checking for updates",
-        default=0,
-        min=0,
-        max=23
-    )
+        name = 'Hours', description = "Number of hours between checking for updates",
+        default = 0, min = 0, max = 23)
     updater_intrval_minutes = bpy.props.IntProperty(
-        name='Minutes',
-        description="Number of minutes between checking for updates",
-        default=0,
-        min=0,
-        max=59
-    )
-
+        name = 'Minutes', description = "Number of minutes between checking for updates",
+        default = 0, min = 0, max = 59)
 
     def draw(self, context):
 
@@ -873,7 +935,7 @@ class DemoPreferences(bpy.types.AddonPreferences):
         row.prop(self, "renaming_category")
 
         # updater draw function
-        addon_updater_ops.update_settings_ui(self,context)
+        addon_updater_ops.update_settings_ui(self, context)
 
 
 def getRenamingList(self, context):
@@ -919,9 +981,8 @@ def getRenamingList(self, context):
 
     return renamingList
 
-  
-windowVariables = []
 
+windowVariables = []
 
 
 class RENAMING_POPUP(bpy.types.Operator):
@@ -931,11 +992,9 @@ class RENAMING_POPUP(bpy.types.Operator):
     #bl_options = {'REGISTER', 'UNDO'}
     context = None
 
-
-
     def invoke(self, context, event):
         width = 800 * bpy.context.user_preferences.system.pixel_size
-        status = context.window_manager.invoke_props_dialog(self,width=width)
+        status = context.window_manager.invoke_props_dialog(self, width = width)
         self.context = context
         return status
 
@@ -948,22 +1007,22 @@ class RENAMING_POPUP(bpy.types.Operator):
             box.label("No Objects Renamed", icon = "INFO")
         else:
 
-
             i = 0
             for msg in wm.renaming_messages.message:
                 if msg is not None:
                     if msg['warning'] == False:
-                        if (msg['newName'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg['newName']:
+                        if (msg['newName'] is not None and msg['oldName'] is not None
+                           ) and msg['oldName'] != msg['newName']:
 
                             if i == 0:
-                                row = box.row(align=True)
+                                row = box.row(align = True)
                                 row.alignment = 'EXPAND'
                                 row.label("OBJECT TYPE")
                                 row.label("NEW NAME")
                                 row.label("OLD NAME")
                                 row.separator()
 
-                            row = box.row(align=True)
+                            row = box.row(align = True)
                             row.alignment = 'EXPAND'
 
                             if msg['obType'] is not False and msg['obIcon'] is not False:
@@ -976,7 +1035,7 @@ class RENAMING_POPUP(bpy.types.Operator):
                             #box.label("Successfully changed to " + str(msg['newName'])+ " (" + str(msg['oldName']) + ")", icon = "FILE_TICK")
 
                             i += 1
-                            print ("i = " + str(i))
+                            print("i = " + str(i))
 
                     else:
                         if msg['newName'] is not None and msg['oldName'] is not None:
@@ -988,9 +1047,8 @@ class RENAMING_POPUP(bpy.types.Operator):
                             box.label("       " + msg['warning'])
             if i == 0:
                 print("Entered")
-                box.label("No Objects Renamed", icon="INFO")
+                box.label("No Objects Renamed", icon = "INFO")
         wm.renaming_messages.clear()
-
 
     def execute(self, context):
         wm = context.window_manager
@@ -1013,7 +1071,8 @@ class UseObjectnameForData(bpy.types.Operator):
 
                 objName = obj.name + suffix_data
                 if suffix_data is not '':
-                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
+                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH'
+                            or obj.type == 'META' or obj.type == 'SURFACE'):
                         oldName = obj.data.name
                         newName = objName
                         obj.data.name = newName
@@ -1022,7 +1081,8 @@ class UseObjectnameForData(bpy.types.Operator):
             for obj in bpy.data.objects:
                 objName = obj.name + suffix_data
                 if suffix_data is not '':
-                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
+                    if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH'
+                            or obj.type == 'META' or obj.type == 'SURFACE'):
                         oldName = obj.data.name
                         newName = objName
                         obj.data.name = newName
@@ -1040,62 +1100,69 @@ def register():
 
     # addon properties and classes
     WindowManager.renaming_sufpre_type = EnumProperty(
-            name="Suffix or Prefix by Type",
-            items=(('SUF', "Suffix", "suffix"),
-                   ('PRE', "Prefix", "prefix"),),
-            description="Add Prefix or Suffix to type",
-            )
+        name = "Suffix or Prefix by Type",
+        items = (
+            ('SUF', "Suffix", "suffix"),
+            ('PRE', "Prefix", "prefix"), ),
+        description = "Add Prefix or Suffix to type",
+    )
     WindowManager.renaming_object_types = EnumProperty(
-            name="Renaming Objects",
-            items=(('OBJECT', "Object", "Scene Objects"),
-                   ('MATERIAL', "Material", "Materials"),
-                   ('IMAGE', "Image Textures", "Image Textures"),
-                   ('GROUP', "Group", "Group"),
-                   ('DATA', "Data", "Object Data"),
-                   ('BONE', "Bone", "Bones")),
-            description="Which kind of object to rename",
-            )
-            # ideas UvMaps, vertexgroups, shape keys, blender textures
+        name = "Renaming Objects",
+        items = (('OBJECT', "Object", "Scene Objects"),
+                 ('MATERIAL', "Material", "Materials"), ('IMAGE', "Image Textures",
+                                                         "Image Textures"),
+                 ('GROUP', "Group", "Group"), ('DATA', "Data",
+                                               "Object Data"), ('BONE', "Bone", "Bones")),
+        description = "Which kind of object to rename",
+    )
+    # ideas UvMaps, vertexgroups, shape keys, blender textures
     windowVariables
 
-    WindowManager.renaming_newName = StringProperty(name="New Name", default = '')
-    WindowManager.renaming_search = StringProperty(name='Search', default = '')
-    WindowManager.renaming_replace = StringProperty(name='Replace', default = '')
-    WindowManager.renaming_suffix = StringProperty(name="Suffix", default = '')
-    WindowManager.renaming_prefix = StringProperty(name="Prefix", default = '')
+    WindowManager.renaming_newName = StringProperty(name = "New Name", default = '')
+    WindowManager.renaming_search = StringProperty(name = 'Search', default = '')
+    WindowManager.renaming_replace = StringProperty(name = 'Replace', default = '')
+    WindowManager.renaming_suffix = StringProperty(name = "Suffix", default = '')
+    WindowManager.renaming_prefix = StringProperty(name = "Prefix", default = '')
     WindowManager.rename_only_selection = BoolProperty(
-            name="Selected Objects",
-            description="Rename Selected Objects",
-            default=True,
-            )
+        name = "Selected Objects",
+        description = "Rename Selected Objects",
+        default = True,
+    )
     WindowManager.rename_matchcase = BoolProperty(
-            name="Match Case",
-            description="",
-            default=True,
-            )
-    WindowManager.renaming_base_numerate = IntProperty(name="Step Size", default = 1)
-    WindowManager.renaming_digits_numerate = IntProperty(name="Number Length", default = 3)
-    WindowManager.renaming_cut_size = IntProperty(name="Trim Size", default = 3)
+        name = "Match Case",
+        description = "",
+        default = True,
+    )
+    WindowManager.renaming_base_numerate = IntProperty(name = "Step Size", default = 1)
+    WindowManager.renaming_digits_numerate = IntProperty(name = "Number Length",
+                                                         default = 3)
+    WindowManager.renaming_cut_size = IntProperty(name = "Trim Size", default = 3)
     WindowManager.renaming_messages = RenamingMessages()
-    WindowManager.renaming_sufpre_material = StringProperty(name='Material', default = '')
-    WindowManager.renaming_sufpre_geometry = StringProperty(name='Geometry', default = '')
-    WindowManager.renaming_sufpre_empty = StringProperty(name="Empty", default = '')
-    WindowManager.renaming_sufpre_group = StringProperty(name="Group", default = '')
-    WindowManager.renaming_sufpre_curve = StringProperty(name="Curve", default = '')
-    WindowManager.renaming_sufpre_armature = StringProperty(name="Armature", default = '')
-    WindowManager.renaming_sufpre_lattice = StringProperty(name="Lattice", default = '')
-    WindowManager.renaming_sufpre_data = StringProperty(name="Data", default = '')
-    WindowManager.renaming_sufpre_data_02 = StringProperty(name="Data = Objectname + ", default = '')
+    WindowManager.renaming_sufpre_material = StringProperty(name = 'Material',
+                                                            default = '')
+    WindowManager.renaming_sufpre_geometry = StringProperty(name = 'Geometry',
+                                                            default = '')
+    WindowManager.renaming_sufpre_empty = StringProperty(name = "Empty", default = '')
+    WindowManager.renaming_sufpre_group = StringProperty(name = "Group", default = '')
+    WindowManager.renaming_sufpre_curve = StringProperty(name = "Curve", default = '')
+    WindowManager.renaming_sufpre_armature = StringProperty(name = "Armature",
+                                                            default = '')
+    WindowManager.renaming_sufpre_lattice = StringProperty(name = "Lattice", default = '')
+    WindowManager.renaming_sufpre_data = StringProperty(name = "Data", default = '')
+    WindowManager.renaming_sufpre_data_02 = StringProperty(name = "Data = Objectname + ",
+                                                           default = '')
 
-
-    WindowManager.renaming_sufpre_surfaces = StringProperty(name="Surfaces", default = '')
-    WindowManager.renaming_sufpre_cameras = StringProperty(name="Cameras", default = '')
-    WindowManager.renaming_sufpre_lights = StringProperty(name="Lights", default = '')
-    WindowManager.renaming_sufpre_bones = StringProperty(name="Bones", default = '')
+    WindowManager.renaming_sufpre_surfaces = StringProperty(name = "Surfaces",
+                                                            default = '')
+    WindowManager.renaming_sufpre_cameras = StringProperty(name = "Cameras", default = '')
+    WindowManager.renaming_sufpre_lights = StringProperty(name = "Lights", default = '')
+    WindowManager.renaming_sufpre_bones = StringProperty(name = "Bones", default = '')
 
     addon_updater_ops.register(bl_info)
 
     bpy.utils.register_class(VIEW3D_tools_Renaming_Panel)
+    bpy.utils.register_class(StandardizeData)
+    bpy.utils.register_class(StandardizeMaterials)
     bpy.utils.register_class(Addsuffix)
     bpy.utils.register_class(AddPrefix)
     bpy.utils.register_class(SearchAndReplace)
