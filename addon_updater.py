@@ -22,6 +22,8 @@ See documentation for usage
 https://github.com/CGCookie/blender-addon-updater
 
 """
+'''
+##### Deactivated for blender 2.8
 
 import urllib.request
 import urllib
@@ -1131,3 +1133,4 @@ class Singleton_updater(object):
 
 Updater = Singleton_updater()
 
+'''

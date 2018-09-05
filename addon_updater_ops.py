@@ -16,6 +16,11 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+
+'''
+#### DEACTIVATED FOR BLENDER 2.8 #################
+
+
 import bpy
 from bpy.app.handlers import persistent
 import os
@@ -996,3 +1001,5 @@ def unregister():
 
 	global ran_background_check
 	ran_background_check = False
+
+'''
