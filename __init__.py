@@ -901,10 +901,24 @@ def getRenamingList(self, context):
 
     elif wm.renaming_object_types == 'BONE':
         if wm.rename_only_selection == True:
-        if wm.rename_only_selection == True:
-        for arm in bpy.data.armatures:
-            for bone in arm.bones:
-                renamingList.append(bone)
+
+            if bpy.context.mode == 'POSE':
+                renamingList = list(bpy.context.selected_pose_bones)
+
+            if bpy.context.mode == 'OBJECT':
+                for obj in bpy.data.objects:
+                    if obj.type == 'ARMATURE' and obj.select == True:
+                        for bone in obj.data.bones:
+                            renamingList.append(bone)
+
+            if bpy.context.mode == 'EDIT_ARMATURE':
+                renamingList = list(bpy.context.selected_bones)
+
+        else:
+            bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+            for arm in bpy.data.armatures:
+                for bone in arm.bones:
+                    renamingList.append(bone)
     print (renamingList)
     return renamingList
   
