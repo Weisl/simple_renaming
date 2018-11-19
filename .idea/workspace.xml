@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="85c96c2a-82d7-4aed-93fb-1636fbfc8c3a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addon_updater.py" beforeDir="false" afterPath="$PROJECT_DIR$/addon_updater.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addon_updater_ops.py" beforeDir="false" afterPath="$PROJECT_DIR$/addon_updater_ops.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,32 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../blender2.8/2.80/scripts/addons/rigify/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="137">
-              <caret line="257" column="15" selection-start-line="257" selection-start-column="4" selection-end-line="257" selection-end-column="15" />
-              <folding>
-                <element signature="e#1601#1611#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ui.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../blender2.8/2.80/scripts/addons/rigify/ui.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="44" column="32" selection-start-line="44" selection-start-column="32" selection-end-line="44" selection-end-column="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="addon_updater.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addon_updater.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="25" column="33" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
+            <state relative-caret-position="17">
+              <caret line="27" column="21" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -49,8 +25,8 @@
       <file leaf-file-name="addon_updater_ops.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/addon_updater_ops.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="20" column="50" selection-start-line="20" selection-start-column="50" selection-end-line="20" selection-end-column="50" />
+            <state relative-caret-position="425">
+              <caret line="25" column="9" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -58,10 +34,19 @@
       <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="128">
-              <caret line="1059" column="4" lean-forward="true" selection-start-line="1059" selection-start-column="4" selection-end-line="1059" selection-end-column="4" />
+            <state relative-caret-position="11509">
+              <caret line="1043" lean-forward="true" selection-start-line="1043" selection-end-line="1043" />
               <folding>
                 <element signature="e#1252#1262#0" expanded="true" />
+                <element signature="e#8555#11324#0" />
+                <element signature="e#22782#24109#0" />
+                <element signature="e#24165#27975#0" />
+                <element signature="e#28139#28938#0" />
+                <element signature="e#28991#29915#0" />
+                <element signature="e#34373#35181#0" />
+                <element signature="e#30840#31815#0" />
+                <element signature="e#36294#37809#0" />
+                <element signature="e#31904#33467#0" />
               </folding>
             </state>
           </provider>
@@ -71,9 +56,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>mode</find>
-      <find>renaming.popu</find>
-      <find>warning</find>
       <find>warning =</find>
       <find>renaming.pop</find>
       <find>Image Te</find>
@@ -101,6 +83,9 @@
       <find>ui.regi</find>
       <find>register</find>
       <find>ui.register</find>
+      <find>update_panel_position</find>
+      <find>ui</find>
+      <find>collect</find>
     </findStrings>
     <replaceStrings>
       <replace>_sufpre_</replace>
@@ -137,7 +122,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -154,6 +138,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -187,11 +172,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1673177" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1671875" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50065106" side_tool="true" visible="true" weight="0.32965517" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50065106" side_tool="true" visible="true" weight="0.08076514" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -212,13 +197,60 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="4" />
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/addon_updater.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="21" lean-forward="true" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/addon_updater_ops.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="9" lean-forward="true" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18003">
+          <caret line="1059" column="4" lean-forward="true" selection-start-line="1059" selection-start-column="4" selection-end-line="1059" selection-end-column="4" />
+          <folding>
+            <element signature="e#1252#1262#0" expanded="true" />
+            <element signature="e#8555#11324#0" />
+            <element signature="e#22782#24109#0" />
+            <element signature="e#24165#27975#0" />
+            <element signature="e#28139#28938#0" />
+            <element signature="e#28991#29915#0" />
+            <element signature="e#34373#35181#0" />
+            <element signature="e#30840#31815#0" />
+            <element signature="e#36294#37809#0" />
+            <element signature="e#31904#33467#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="782">
           <caret line="46" column="23" lean-forward="true" selection-start-line="46" selection-start-column="23" selection-end-line="46" selection-end-column="23" />
           <folding>
             <element signature="e#1252#1262#0" expanded="true" />
+            <element signature="e#8555#11324#0" />
+            <element signature="e#22782#24109#0" />
+            <element signature="e#24165#27975#0" />
+            <element signature="e#28139#28938#0" />
+            <element signature="e#28991#29915#0" />
+            <element signature="e#34373#35181#0" />
+            <element signature="e#30840#31815#0" />
+            <element signature="e#36294#37809#0" />
+            <element signature="e#31904#33467#0" />
           </folding>
         </state>
       </provider>
@@ -381,41 +413,35 @@
     <entry file="file://$PROJECT_DIR$/__init__OLD.py" />
     <entry file="file://$PROJECT_DIR$/addon_updater_ops.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="50" selection-start-line="20" selection-start-column="50" selection-end-line="20" selection-end-column="50" />
+        <state relative-caret-position="425">
+          <caret line="25" column="9" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../../blender2.8/2.80/scripts/addons/rigify/ui.py" />
+    <entry file="file://$PROJECT_DIR$/../../blender2.8/2.80/scripts/addons/rigify/__init__.py" />
     <entry file="file://$PROJECT_DIR$/addon_updater.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="33" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../blender2.8/2.80/scripts/addons/rigify/ui.py">
-      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
-          <caret line="44" column="32" selection-start-line="44" selection-start-column="32" selection-end-line="44" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../blender2.8/2.80/scripts/addons/rigify/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="257" column="15" selection-start-line="257" selection-start-column="4" selection-end-line="257" selection-end-column="15" />
-          <folding>
-            <element signature="e#1601#1611#0" expanded="true" />
-          </folding>
+          <caret line="27" column="21" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="1059" column="4" lean-forward="true" selection-start-line="1059" selection-start-column="4" selection-end-line="1059" selection-end-column="4" />
+        <state relative-caret-position="11509">
+          <caret line="1043" lean-forward="true" selection-start-line="1043" selection-end-line="1043" />
           <folding>
             <element signature="e#1252#1262#0" expanded="true" />
+            <element signature="e#8555#11324#0" />
+            <element signature="e#22782#24109#0" />
+            <element signature="e#24165#27975#0" />
+            <element signature="e#28139#28938#0" />
+            <element signature="e#28991#29915#0" />
+            <element signature="e#34373#35181#0" />
+            <element signature="e#30840#31815#0" />
+            <element signature="e#36294#37809#0" />
+            <element signature="e#31904#33467#0" />
           </folding>
         </state>
       </provider>
