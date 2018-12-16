@@ -154,65 +154,61 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
     def draw(self, context):
 
-        # auto updater: checkes for updates
-        #addon_updater_ops.check_for_update_background(context)
 
         layout = self.layout
         layout.use_property_split = True  # Activate single-column layout
         scene = context.scene
         view = context.scene.view_settings
 
-        view.prop (scene, "renaming_object_types", expand = True)
+        layout.prop (scene, "renaming_object_types", expand = True)
 
 
-        if scene.renaming_object_types == 'OBJECT':
-            view.label(labelStr + "Object")
-        elif scene.renaming_object_types == 'MATERIAL':
-            view.label(text= labelStr + "Material")
-        elif scene.renaming_object_types == 'GROUP':
-            view.label(text= labelStr + "Group")
-        elif scene.renaming_object_types == 'IMAGE':
-            view.label(text= labelStr + "Image Texture")
-        elif scene.renaming_object_types == 'DATA':
-            view.label(text= labelStr + "Object Data")
-        elif scene.renaming_object_types == 'BONE':
-            view.label(text=labelStr + "Bones")
+        # if scene.renaming_object_types == 'OBJECT':
+            # layout.label(labelStr + "Object")
+        # elif scene.renaming_object_types == 'MATERIAL':
+            # layout.label(text= labelStr + "Material")
+        # elif scene.renaming_object_types == 'IMAGE':
+            # layout.label(text= labelStr + "Image Texture")
+        # elif scene.renaming_object_types == 'DATA':
+            # layout.label(text= labelStr + "Object Data")
+        # elif scene.renaming_object_types == 'BONE':
+            # layout.label(text=labelStr + "Bones")
 
 
         if str(scene.renaming_object_types) == 'MATERIAL' or str(scene.renaming_object_types) == 'DATA':
-            view.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
+            layout.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
         elif str(scene.renaming_object_types) == 'OBJECT':
-            view.prop(scene, "renaming_only_selection", text="Only Selected")
+            layout.prop(scene, "renaming_only_selection", text="Only Selected")
 
-        view.separator()
+        layout.separator()
 
-        view.prop(scene,"renaming_newName")
-        view.operator("renaming.name_replace")
-        view.prop(scene, "renaming_search")
-        view.prop(scene, "renaming_replace")
-        view.prop(scene, "renaming_matchcase")
-        view.operator("renaming.search_replace")
+        layout.prop(scene,"renaming_newName")
+        layout.operator("renaming.name_replace")
+        layout.prop(scene, "renaming_search")
+        layout.prop(scene, "renaming_replace")
+        layout.prop(scene, "renaming_matchcase")
+        layout.operator("renaming.search_replace")
 
-        view.prop(scene, "renaming_prefix")
-        view.operator("renaming.add_prefix")
+        layout.prop(scene, "renaming_prefix")
+        layout.operator("renaming.add_prefix")
 
-        view.prop(scene, "renaming_suffix")
-        view.operator("renaming.add_suffix")
+        layout.prop(scene, "renaming_suffix")
+        layout.operator("renaming.add_suffix")
 
-        view.prop(scene,"renaming_digits_numerate")
-        view.operator("renaming.numerate")
-        view.prop(scene, "renaming_cut_size")
-        view.operator("renaming.cut_string")
+        layout.prop(scene,"renaming_digits_numerate")
+        layout.operator("renaming.numerate")
+        layout.prop(scene, "renaming_cut_size")
+        layout.operator("renaming.cut_string")
 
         if str(scene.renaming_object_types) == 'DATA':
-            view.prop(scene, "renaming_sufpre_data_02")
-            view.operator("renaming.dataname_from_obj")
+            layout.prop(scene, "renaming_sufpre_data_02")
+            layout.operator("renaming.dataname_from_obj")
 
-        view.prop(scene, "renaming_sufpre_type", expand=True)
-        if scene.renaming_sufpre_type == "PRE":
-            view.label("Add Type Prefix")
-        else:
-            view.label("Add Type Suffix")
+        # layout.prop(scene, "renaming_sufpre_type", expand=True)
+        # if scene.renaming_sufpre_type == "PRE":
+            # layout.label("Add Type Prefix")
+        # else:
+            # layout.label("Add Type Suffix")
             
 
         # row = box.row()
@@ -225,13 +221,11 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         # row.prop(scene, "renaming_sufpre_curve")
         # row = box.row()
         # row.prop(scene, "renaming_sufpre_armature")
-        # #row = box.row()
-        # #row.prop(scene, "renaming_sufpre_group")
         # row = box.row()
         # row.prop(scene, "renaming_sufpre_lattice")
         # row = box.row()
         # row.prop(scene, "renaming_sufpre_data")
-        #
+        
         # row = box.row()
         # row.prop(scene, "renaming_sufpre_surfaces")
         # row = box.row()
@@ -240,14 +234,11 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         # row.prop(scene, "renaming_sufpre_lights")
         # row = box.row()
         # row.prop(scene, "renaming_sufpre_bones")
-        #
-        #
-        # row = box.row()
+        
+        
         # row.operator("renaming.add_sufpre_by_type")
+        # row = box.row()
 
-
-        # if the auto check for addon found a new version, draw a notice box
-        #addon_updater_ops.update_notice_box_ui(self, context)
 
 class VIEW3D_PT_renaming_popup(bpy.types.Operator):
     """Tooltip"""
@@ -260,7 +251,7 @@ class VIEW3D_PT_renaming_popup(bpy.types.Operator):
 
     def invoke(self, context, event):
         width = 800 * bpy.context.user_preferences.system.pixel_size
-        status = context.scene.invoke_props_dialog(self,width=width)
+        # status = context.scene.invoke_props_dialog(self,width=width)
         self.context = context
         return status
 
@@ -338,7 +329,6 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         empt_sufpre = wm.renaming_sufpre_empty
         lattice_suffix = wm.renaming_sufpre_lattice
         curve_suffix = wm.renaming_sufpre_curve
-        #group_suffix = wm.renaming_sufpre_group
         armature_suffix = wm.renaming_sufpre_armature
         data_suffix = wm.renaming_sufpre_data
         surfaces_sufpre = wm.renaming_sufpre_surfaces
@@ -572,7 +562,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
                             bone.name = newName
                             wm.addMessage(oldName, bone.name, 'BONE', 'BONE_DATA')
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
 
         return {'FINISHED'}
 
@@ -705,7 +695,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
                             entity.name = newName
                             wm.renaming_messages.addMessage(oldName, entity.name)
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class VIEW3D_OT_replace_name(bpy.types.Operator):
@@ -789,7 +779,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
 
         i = 0
-        bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return {'FINISHED'}
 
 class VIEW3D_OT_trim_string(bpy.types.Operator):
@@ -812,7 +802,7 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
                     entity.name = newName
                     wm.renaming_messages.addMessage(oldName, entity.name)
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class VIEW3D_OT_add_suffix(bpy.types.Operator):
@@ -840,7 +830,7 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         else:
             wm.renaming_messages.addMessage(None, None, "Insert Valide String")
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class VIEW3D_OT_add_prefix(bpy.types.Operator):
@@ -866,7 +856,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
                         entity.name = newName
                         wm.renaming_messages.addMessage(oldName, entity.name)
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
  
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
@@ -893,7 +883,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
                     wm.renaming_messages.addMessage(oldName, entity.name)
                     i = i + 1
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
@@ -926,7 +916,7 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
                         obj.data.name = newName
                         wm.renaming_messages.addMessage(oldName, obj.data.name)
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return {'FINISHED'}
 
 #addon Preferences
@@ -983,7 +973,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
 classes = (
     VIEW3D_PT_tools_renaming_panel,
-    #VIEW3D_PT_renaming_popup,
+    # VIEW3D_PT_renaming_popup,
     VIEW3D_OT_add_suffix,
     VIEW3D_OT_add_prefix,
     VIEW3D_OT_search_and_replace,
@@ -1016,7 +1006,6 @@ def register():
              items=(('OBJECT', "Object", "Scene Objects"),
                     ('MATERIAL', "Material", "Materials"),
                     ('IMAGE', "Image Textures", "Image Textures"),
-                    ('GROUP', "Group", "Group"),
                     ('DATA', "Data", "Object Data"),
                     ('BONE', "Bone", "Bones")),
              description="Which kind of object to rename",
@@ -1039,7 +1028,7 @@ def register():
     IDStore.renaming_base_numerate = IntProperty(name="Step Size", default = 1)
     IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default = 3)
     IDStore.renaming_cut_size = IntProperty(name="Trim Size", default = 3)
-    #IDStore.renaming_messages = RenamingMessages()
+    IDStore.renaming_messages = RENAMING_MESSAGES()
     IDStore.renaming_sufpre_material = StringProperty(name='Material', default = '')
     IDStore.renaming_sufpre_geometry = StringProperty(name='Geometry', default = '')
     IDStore.renaming_sufpre_empty = StringProperty(name="Empty", default = '')
