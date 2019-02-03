@@ -33,10 +33,8 @@ bl_info = {
     }
 
 
+
 import bpy
-import bpy
-import sys
-import os
 import re
 
 from bpy.types import AddonPreferences
@@ -56,14 +54,6 @@ from bpy.props import (
 #######################################
 
 
-def update_panel_position(self, context):
-    try:
-        bpy.utils.unregister_class(VIEW3D_PT_tools_Renaming_Panel)
-    except:
-        pass
-
-    VIEW3D_PT_tools_Renaming_Panel.bl_category = context.user_preferences.addons[__name__].preferences.renaming_category
-    bpy.utils.register_class(VIEW3D_PT_tools_Renaming_Panel)
 
 def trimString(string, size):
     list1 = string
@@ -102,9 +92,6 @@ def getRenamingList(self, context):
 
     elif wm.renaming_object_types == 'IMAGE':
         renamingList = list(bpy.data.images)
-
-#    elif scene.renaming_object_types == 'GROUP':
-#        renamingList = list(bpy.data.groups)
 
     elif wm.renaming_object_types == 'BONE':
         for arm in bpy.data.armatures:
@@ -147,10 +134,6 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     bl_label = "Simple Renaming Panel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    #bl_space_type = "PROPERTIES"
-    #bl_region_type = "WINDOW"
-    #bl_context = "object"
-
 
     def draw(self, context):
 
@@ -204,6 +187,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
             layout.prop(scene, "renaming_sufpre_data_02")
             layout.operator("renaming.dataname_from_obj")
 
+
         # layout.prop(scene, "renaming_sufpre_type", expand=True)
         # if scene.renaming_sufpre_type == "PRE":
             # layout.label("Add Type Prefix")
@@ -232,28 +216,28 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         # row.prop(scene, "renaming_sufpre_cameras")
         # row = box.row()
         # row.prop(scene, "renaming_sufpre_lights")
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_bones")
-        
-        
         # row.operator("renaming.add_sufpre_by_type")
         # row = box.row()
 
 
-class VIEW3D_PT_renaming_popup(bpy.types.Operator):
+class VIEW3D_OT_renaming_popup(bpy.types.Operator):
     """Tooltip"""
     bl_idname = "renaming.popup"
     bl_label = "Renaming Panel"
-    #bl_options = {'REGISTER', 'UNDO'}
-    context = None
 
+    message: bpy.props.StringProperty(
+        name = "message",
+        description = "message",
+        default = ''
+    )
 
+    def execute(self, context):
+        #self.report({'INFO'}, self.message)
+        print(self.message)
+        return {'FINISHED'}
 
     def invoke(self, context, event):
-        width = 800 * bpy.context.user_preferences.system.pixel_size
-        # status = context.scene.invoke_props_dialog(self,width=width)
-        self.context = context
-        return status
+        return context.window_manager.invoke_props_dialog(self, width = 800)
 
     def draw(self, context):
         wm = bpy.context.scene
@@ -261,10 +245,8 @@ class VIEW3D_PT_renaming_popup(bpy.types.Operator):
         box = layout.box()
 
         if len(wm.renaming_messages.message) <= 0:
-            box.label("No Objects Renamed", icon = "INFO")
+            box.label(text = "No Objects Renamed", icon = "INFO")
         else:
-
-
             i = 0
             for msg in wm.renaming_messages.message:
                 if msg is not None:
@@ -274,9 +256,9 @@ class VIEW3D_PT_renaming_popup(bpy.types.Operator):
                             if i == 0:
                                 row = box.row(align=True)
                                 row.alignment = 'EXPAND'
-                                row.label("OBJECT TYPE")
-                                row.label("NEW NAME")
-                                row.label("OLD NAME")
+                                row.label(text = "OBJECT TYPE")
+                                row.label(text = "NEW NAME")
+                                row.label(text = "OLD NAME")
                                 row.separator()
 
                             row = box.row(align=True)
@@ -284,33 +266,37 @@ class VIEW3D_PT_renaming_popup(bpy.types.Operator):
 
                             if msg['obType'] is not False and msg['obIcon'] is not False:
                                 row.label(str(msg['obType']), icon = msg['obIcon'])
+                                #row.label(text = str(msg['obType']), icon = 'INFO')
                             else:
-                                row.label(str(wm.renaming_object_types))
+                                row.label(text = str(wm.renaming_object_types))
 
-                            row.label(str(msg['newName']), icon = 'FILE_TICK')
-                            row.label(str(msg['oldName']))
-                            #box.label("Successfully changed to " + str(msg['newName'])+ " (" + str(msg['oldName']) + ")", icon = "FILE_TICK")
+                            row.label(text = str(msg['newName']), icon = 'FILE_TICK')
+                            row.label(text = str(msg['oldName']))
 
                             i += 1
                             print ("i = " + str(i))
 
                     else:
                         if msg['newName'] is not None and msg['oldName'] is not None:
-                            box.label("Warning", icon = "ERROR")
-                            box.label("       " + "Name: " + str(msg['oldName']))
-                            box.label("       " + msg['warning'])
+                            box.label(text = "Warning", icon = "ERROR")
+                            box.label(text = "       " + "Name: " + str(msg['oldName']))
+                            box.label(text = "       " + msg['warning'])
                         else:
-                            box.label("Warning", icon = "ERROR")
-                            box.label("       " + msg['warning'])
+                            box.label(text = "Warning", icon = "ERROR")
+                            box.label(text = "       " + msg['warning'])
             if i == 0:
                 print("Entered")
-                box.label("No Objects Renamed", icon="INFO")
+                box.label(text = "No Objects Renamed", icon="INFO")
         wm.renaming_messages.clear()
 
 
-    def execute(self, context):
-        scene = context.scene
-        return {'FINISHED'}
+    # def execute(self, context):
+    #     self.report({'INFO'}, self.message)
+    #     print(self.message)
+    #     return {'FINISHED'}
+
+        #scene = context.scene
+        #return {'FINISHED'}
 
 # Operators
 
@@ -355,7 +341,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name, 'LAMP', 'LAMP')
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'LAMP', 'LIGHT')
 
                 if surfaces_sufpre is not '':
                     if obj.type == 'SURFACE':
@@ -485,7 +471,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
                         if nameIsNew == True:
                             obj.data.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.data.name,'DATA' ,'BLANK1')
+                            wm.renaming_messages.addMessage(oldName, obj.data.name,'DATA' ,'FILE_BLANK')
 
 
 
@@ -562,7 +548,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
                             bone.name = newName
                             wm.addMessage(oldName, bone.name, 'BONE', 'BONE_DATA')
 
-        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
 
         return {'FINISHED'}
 
@@ -695,7 +681,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
                             entity.name = newName
                             wm.renaming_messages.addMessage(oldName, entity.name)
 
-        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
         return{'FINISHED'}
 
 class VIEW3D_OT_replace_name(bpy.types.Operator):
@@ -779,7 +765,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
 
         i = 0
-        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
         return {'FINISHED'}
 
 class VIEW3D_OT_trim_string(bpy.types.Operator):
@@ -802,7 +788,7 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
                     entity.name = newName
                     wm.renaming_messages.addMessage(oldName, entity.name)
 
-        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
         return{'FINISHED'}
 
 class VIEW3D_OT_add_suffix(bpy.types.Operator):
@@ -830,7 +816,7 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         else:
             wm.renaming_messages.addMessage(None, None, "Insert Valide String")
 
-        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
         return{'FINISHED'}
 
 class VIEW3D_OT_add_prefix(bpy.types.Operator):
@@ -856,9 +842,9 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
                         entity.name = newName
                         wm.renaming_messages.addMessage(oldName, entity.name)
 
-        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
         return{'FINISHED'}
- 
+
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
     bl_idname="renaming.numerate"
     bl_label="Numerate"
@@ -883,7 +869,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
                     wm.renaming_messages.addMessage(oldName, entity.name)
                     i = i + 1
 
-        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
         return{'FINISHED'}
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
@@ -916,7 +902,7 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
                         obj.data.name = newName
                         wm.renaming_messages.addMessage(oldName, obj.data.name)
 
-        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
+        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
         return {'FINISHED'}
 
 #addon Preferences
@@ -973,7 +959,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
 classes = (
     VIEW3D_PT_tools_renaming_panel,
-    # VIEW3D_PT_renaming_popup,
+    VIEW3D_OT_renaming_popup,
     VIEW3D_OT_add_suffix,
     VIEW3D_OT_add_prefix,
     VIEW3D_OT_search_and_replace,
@@ -1042,6 +1028,7 @@ def register():
     IDStore.renaming_sufpre_cameras = StringProperty(name="Cameras", default = '')
     IDStore.renaming_sufpre_lights = StringProperty(name="Lights", default = '')
     IDStore.renaming_sufpre_bones = StringProperty(name="Bones", default = '')
+
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
