@@ -139,23 +139,10 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
 
         layout = self.layout
-        layout.use_property_split = True  # Activate single-column layout
         scene = context.scene
-        view = context.scene.view_settings
 
-        layout.prop (scene, "renaming_object_types", expand = True)
-
-
-        # if scene.renaming_object_types == 'OBJECT':
-            # layout.label(labelStr + "Object")
-        # elif scene.renaming_object_types == 'MATERIAL':
-            # layout.label(text= labelStr + "Material")
-        # elif scene.renaming_object_types == 'IMAGE':
-            # layout.label(text= labelStr + "Image Texture")
-        # elif scene.renaming_object_types == 'DATA':
-            # layout.label(text= labelStr + "Object Data")
-        # elif scene.renaming_object_types == 'BONE':
-            # layout.label(text=labelStr + "Bones")
+        layout.prop(scene, "renaming_object_types", expand = True)
+        layout.use_property_split = True  # Activate single-column layout
 
 
         if str(scene.renaming_object_types) == 'MATERIAL' or str(scene.renaming_object_types) == 'DATA':
@@ -188,36 +175,48 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
             layout.operator("renaming.dataname_from_obj")
 
 
-        # layout.prop(scene, "renaming_sufpre_type", expand=True)
-        # if scene.renaming_sufpre_type == "PRE":
-            # layout.label("Add Type Prefix")
-        # else:
-            # layout.label("Add Type Suffix")
-            
+# addon Panel
+class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
+    """Creates a renaming Panel"""
+    bl_label = "Type Suffix Panel"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_parent_id = "VIEW3D_PT_tools_renaming_panel"
 
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_geometry")
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_material")
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_empty")
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_curve")
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_armature")
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_lattice")
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_data")
+    def draw(self, context):
+        scene = context.scene
+        layout = self.layout
+        layout.prop(scene, "renaming_sufpre_type", expand=True)
+        if scene.renaming_sufpre_type == "PRE":
+            layout.label(text = "Add Type Prefix")
+        else:
+            layout.label(text = "Add Type Suffix")
+
+
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_geometry")
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_material")
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_empty")
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_curve")
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_armature")
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_lattice")
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_data")
         
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_surfaces")
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_cameras")
-        # row = box.row()
-        # row.prop(scene, "renaming_sufpre_lights")
-        # row.operator("renaming.add_sufpre_by_type")
-        # row = box.row()
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_surfaces")
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_cameras")
+        row = layout.row()
+        row.prop(scene, "renaming_sufpre_lights")
+        row = layout.row()
+        row.operator("renaming.add_sufpre_by_type")
+
 
 
 class VIEW3D_OT_renaming_popup(bpy.types.Operator):
@@ -968,6 +967,7 @@ classes = (
     VIEW3D_OT_trim_string,
     VIEW3D_OT_use_objectname_for_data,
     VIEW3D_OT_replace_name,
+    VIEW3D_PT_tools_type_suffix,
     #VIEW3D_OT_renaming_preferences,
     )
 
