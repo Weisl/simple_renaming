@@ -32,6 +32,15 @@ bl_info = {
     "category": "Scene"
     }
 
+### Simple renaming panel
+#TODO: Only affect certain mesh type Lights/Empties ....
+#TODO: Implement Text Type
+#TODO: Implement Greace pencilA
+
+#### type suffix/prefix
+#DONE: Popup on Type suffix/prefix
+#DONE: influence selection only
+
 
 
 import bpy
@@ -142,6 +151,9 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         scene = context.scene
 
         layout.prop(scene, "renaming_object_types", expand = True)
+        if str(scene.renaming_object_types) == 'OBJECT':
+            layout.prop(scene, "renaming_object_types_specified", expand=True)
+
         layout.use_property_split = True  # Activate single-column layout
 
 
@@ -187,10 +199,17 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
         scene = context.scene
         layout = self.layout
         layout.prop(scene, "renaming_sufpre_type", expand=True)
+
+        layout.use_property_split = True  # Activate single-column layout
+
         if scene.renaming_sufpre_type == "PRE":
             layout.label(text = "Add Type Prefix")
         else:
             layout.label(text = "Add Type Suffix")
+
+        layout.prop(scene, "type_pre_sub_only_selection", text="Only Selected")
+
+
 
 
         row = layout.row()
@@ -215,7 +234,10 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
         row = layout.row()
         row.prop(scene, "renaming_sufpre_lights")
         row = layout.row()
+        row.prop(scene, "renaming_sufpre_collection")
+        row = layout.row()
         row.operator("renaming.add_sufpre_by_type")
+
 
 
 
@@ -264,7 +286,7 @@ class VIEW3D_OT_renaming_popup(bpy.types.Operator):
                             row.alignment = 'EXPAND'
 
                             if msg['obType'] is not False and msg['obIcon'] is not False:
-                                row.label(str(msg['obType']), icon = msg['obIcon'])
+                                row.label(text = str(msg['obType']), icon = msg['obIcon'])
                                 #row.label(text = str(msg['obType']), icon = 'INFO')
                             else:
                                 row.label(text = str(wm.renaming_object_types))
@@ -320,12 +342,37 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         light_sufpre = wm.renaming_sufpre_lights
         bone_sufpre = wm.renaming_sufpre_bones
         camera_sufpre = wm.renaming_sufpre_cameras
+        collection_sufpre = wm.renaming_sufpre_collection
 
+        typePreSufList = []
+
+        if wm.type_pre_sub_only_selection == True:
+            typePreSufList = bpy.context.selected_objects.copy()
+        else:
+            typePreSufList = bpy.data.objects
+
+        if collection_sufpre is not '':
+            for col in bpy.data.collections:
+                oldName = col.name
+                nameIsNew = True
+                if wm.renaming_sufpre_type == 'SUF':
+                    if col.name.endswith(collection_sufpre) == False:
+                        newName = self.sufpreAdd(context, col, collection_sufpre)
+                    else:
+                        nameIsNew = False
+                else:
+                    if col.name.startswith(collection_sufpre) == False:
+                        newName = self.sufpreAdd(context, col, collection_sufpre)
+                    else:
+                        nameIsNew = False
+                if nameIsNew == True:
+                    col.name = newName
+                    wm.renaming_messages.addMessage(oldName, col.name, 'COLLECTION', 'GROUP')
 
         if camera_sufpre is not '' or light_sufpre is not '' or surfaces_sufpre is not '' or geo_sufpre is not '' or empt_sufpre is not '' or lattice_suffix is not '' or data_suffix is not '':
-            for obj in bpy.data.objects:
+            for obj in typePreSufList:
                 if light_sufpre is not '':
-                    if obj.type == 'LAMP':
+                    if obj.type == 'LIGHT':
                         oldName = obj.name
                         nameIsNew = True
                         if wm.renaming_sufpre_type == 'SUF':
@@ -340,7 +387,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
                                 nameIsNew = False
                         if nameIsNew == True:
                             obj.name = newName
-                            wm.renaming_messages.addMessage(oldName, obj.name, 'LAMP', 'LIGHT')
+                            wm.renaming_messages.addMessage(oldName, obj.name, 'LIGHT', 'LIGHT')
 
                 if surfaces_sufpre is not '':
                     if obj.type == 'SURFACE':
@@ -471,8 +518,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
                         if nameIsNew == True:
                             obj.data.name = newName
                             wm.renaming_messages.addMessage(oldName, obj.data.name,'DATA' ,'FILE_BLANK')
-
-
+        bpy.ops.renaming.popup('INVOKE_DEFAULT')
 
         if mat_suffix is not '':
             for mat in bpy.data.materials:
@@ -547,7 +593,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
                             bone.name = newName
                             wm.addMessage(oldName, bone.name, 'BONE', 'BONE_DATA')
 
-        # bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
+        # bpy.ops.renaming.popup('INVOKE_DEFAULT')
 
         return {'FINISHED'}
 
@@ -680,7 +726,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
                             entity.name = newName
                             wm.renaming_messages.addMessage(oldName, entity.name)
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
+        bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class VIEW3D_OT_replace_name(bpy.types.Operator):
@@ -764,7 +810,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
 
         i = 0
-        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
+        bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return {'FINISHED'}
 
 class VIEW3D_OT_trim_string(bpy.types.Operator):
@@ -787,7 +833,7 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
                     entity.name = newName
                     wm.renaming_messages.addMessage(oldName, entity.name)
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
+        bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class VIEW3D_OT_add_suffix(bpy.types.Operator):
@@ -815,7 +861,7 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         else:
             wm.renaming_messages.addMessage(None, None, "Insert Valide String")
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
+        bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class VIEW3D_OT_add_prefix(bpy.types.Operator):
@@ -841,7 +887,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
                         entity.name = newName
                         wm.renaming_messages.addMessage(oldName, entity.name)
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
+        bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
@@ -868,7 +914,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
                     wm.renaming_messages.addMessage(oldName, entity.name)
                     i = i + 1
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
+        bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return{'FINISHED'}
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
@@ -901,7 +947,7 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
                         obj.data.name = newName
                         wm.renaming_messages.addMessage(oldName, obj.data.name)
 
-        bpy.ops.renaming.popup('INVOKE_DEFAULT', message = "Test")
+        bpy.ops.renaming.popup('INVOKE_DEFAULT')
         return {'FINISHED'}
 
 #addon Preferences
@@ -975,6 +1021,16 @@ classes = (
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)                # or YourClass.bl_idname
 
+enumObjectTypes = [('EMPTY', "", "Empty",'OUTLINER_OB_EMPTY',  1),      # id have to be power of 2!!!!! don't know why
+               ('CAMERA', "", "Camera",'OUTLINER_OB_CAMERA', 2),
+               ('LIGHT', "", "Light",'LIGHT', 4),
+               ('ARMATURE', "", "WARNING: not supported in dupli/group instances",'OUTLINER_OB_ARMATURE', 8),
+               ('MESH', "", "Exports object type mesh",'OUTLINER_OB_MESH', 16 ),
+               ('METABALLS', "", "Exports object type mesh",'OUTLINER_OB_META', 32),
+               ('SURFACE', "", "Exports object type mesh",'OUTLINER_OB_SURFACE', 64),
+               ('LATTICE', "", "Exports object type mesh",'OUTLINER_OB_LATTICE', 128),
+               ('CURVE', "", "Exports object type mesh",'OUTLINER_OB_CURVE', 256)]
+
 
 def register():
     #bpy.types.INFO_MT_mesh_add.append(menu_add_suffix)
@@ -987,6 +1043,8 @@ def register():
                    ('PRE', "Prefix", "prefix"),),
             description="Add Prefix or Suffix to type",
             )
+
+
     IDStore.renaming_object_types = EnumProperty(
              name="Renaming Objects",
              items=(('OBJECT', "Object", "Scene Objects"),
@@ -996,6 +1054,10 @@ def register():
                     ('BONE', "Bone", "Bones")),
              description="Which kind of object to rename",
              )
+
+    #IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",items=enumObjectTypes,description="Which kind of object to export",options={'ENUM_FLAG'}, default= {'CURVE','LATTICE','SURFACE','METABALLS','MESH','ARMATURE','LIGHT','CAMERA','EMPTY'})
+    IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",items=enumObjectTypes,description="Which kind of object to export",options={'ENUM_FLAG'}, default= {'CURVE','LATTICE','SURFACE','METABALLS','MESH','ARMATURE','LIGHT','CAMERA','EMPTY'})
+
     IDStore.renaming_newName = StringProperty(name="New Name", default = '')
     IDStore.renaming_search = StringProperty(name='Search', default = '')
     IDStore.renaming_replace = StringProperty(name='Replace', default = '')
@@ -1006,6 +1068,7 @@ def register():
              description="Rename Selected Objects",
              default=True,
              )
+
     IDStore.renaming_matchcase = BoolProperty(
              name="Match Case",
              description="",
@@ -1015,6 +1078,13 @@ def register():
     IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default = 3)
     IDStore.renaming_cut_size = IntProperty(name="Trim Size", default = 3)
     IDStore.renaming_messages = RENAMING_MESSAGES()
+
+    ############## Type Suffix Prefix ########################################
+    IDStore.type_pre_sub_only_selection = BoolProperty(
+             name="Selected Objects",
+             description="Rename Selected Objects",
+             default=True,
+             )
     IDStore.renaming_sufpre_material = StringProperty(name='Material', default = '')
     IDStore.renaming_sufpre_geometry = StringProperty(name='Geometry', default = '')
     IDStore.renaming_sufpre_empty = StringProperty(name="Empty", default = '')
@@ -1028,6 +1098,7 @@ def register():
     IDStore.renaming_sufpre_cameras = StringProperty(name="Cameras", default = '')
     IDStore.renaming_sufpre_lights = StringProperty(name="Lights", default = '')
     IDStore.renaming_sufpre_bones = StringProperty(name="Bones", default = '')
+    IDStore.renaming_sufpre_collection = StringProperty(name="Collections", default = '')
 
     from bpy.utils import register_class
     for cls in classes:
@@ -1062,6 +1133,8 @@ def unregister():
     del IDStore.renaming_sufpre_cameras
     del IDStore.renaming_sufpre_surfaces
     del IDStore.renaming_sufpre_bones
+    del IDStore.renaming_sufpre_collection
+    del IDStore.renaming_object_types_specified
 
     from bpy.utils import unregister_class
     for cls in reversed(classes):
@@ -1071,3 +1144,7 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+
+#import bpy
+#filename = "G:\GitHub\mp_simple_renaming_panel\simple_renaming_panel.py"
+#exec(compile(open(filename).read(), filename, 'exec'))
