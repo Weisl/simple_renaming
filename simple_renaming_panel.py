@@ -33,14 +33,15 @@ bl_info = {
     }
 
 ### Simple renaming panel
-#TODO: Only affect certain mesh type Lights/Empties ....
-#TODO: Implement Text Type
-#TODO: Implement Greace pencilA
+#DONE: Only affect certain mesh type Lights/Empties ....
+#DONE: Implement Text Type
+#DONE: Implement Greace pencilA
 
 #### type suffix/prefix
 #DONE: Popup on Type suffix/prefix
 #DONE: influence selection only
-
+#DONE: Only affect certain mesh type Lights/Empties ....
+#TODO: Replace enum with buttons
 
 
 import bpy
@@ -76,9 +77,12 @@ def getRenamingList(self, context):
     if wm.renaming_object_types == 'OBJECT':
         if wm.renaming_only_selection == True:
             for obj in bpy.context.selected_objects:
-                renamingList.append(obj)
+                if obj.type in wm.renaming_object_types_specified:
+                    renamingList.append(obj)
         else:
-            renamingList = list(bpy.data.objects)
+            for obj in bpy.data.objects:
+                if obj.type in wm.renaming_object_types_specified:
+                    renamingList.append(obj)
 
     elif wm.renaming_object_types == 'DATA':
         if wm.renaming_only_selection == True:
@@ -109,7 +113,6 @@ def getRenamingList(self, context):
 
     elif wm.renaming_object_types == 'COLLECTION':
         renamingList = list(bpy.data.collections)
-
     return renamingList
 
 windowVariables = []
@@ -190,7 +193,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 # addon Panel
 class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
     """Creates a renaming Panel"""
-    bl_label = "Type Suffix Panel"
+    bl_label = "Prefix/Suffix by Type"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_parent_id = "VIEW3D_PT_tools_renaming_panel"
@@ -198,16 +201,18 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
     def draw(self, context):
         scene = context.scene
         layout = self.layout
+        layout.prop(scene, "type_pre_sub_only_selection", text="Only Selected")
         layout.prop(scene, "renaming_sufpre_type", expand=True)
-
+        layout.prop(scene, "renaming_sufpre_types_specified")
         layout.use_property_split = True  # Activate single-column layout
+
 
         if scene.renaming_sufpre_type == "PRE":
             layout.label(text = "Add Type Prefix")
         else:
             layout.label(text = "Add Type Suffix")
 
-        layout.prop(scene, "type_pre_sub_only_selection", text="Only Selected")
+
 
 
 
@@ -632,12 +637,12 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         else:
             nName = sufpreName + nName
 
-        if nName not in bpy.data.meshes and nName not in bpy.data.lattices and nName not in bpy.data.curves and nName not in bpy.data.metaballs:
+        if nName not in bpy.data.meshes and nName not in bpy.data.lattices and nName not in bpy.data.curves and nName not in bpy.data.METABALL:
             obj.data.name = nName
             return nName
         else:
             i = 1
-            while( nName in bpy.data.meshes or nName  in bpy.data.lattices or nName  in bpy.data.curves or nName  in bpy.data.metaballs):
+            while( nName in bpy.data.meshes or nName  in bpy.data.lattices or nName  in bpy.data.curves or nName  in bpy.data.METABALL):
                 nName = obj.data.name + "_" + str(i)
                 i = i + 1
             return nName
@@ -1021,26 +1026,40 @@ classes = (
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)                # or YourClass.bl_idname
 
-enumObjectTypes = [('EMPTY', "", "Empty",'OUTLINER_OB_EMPTY',  1),      # id have to be power of 2!!!!! don't know why
-               ('CAMERA', "", "Camera",'OUTLINER_OB_CAMERA', 2),
-               ('LIGHT', "", "Light",'LIGHT', 4),
-               ('ARMATURE', "", "WARNING: not supported in dupli/group instances",'OUTLINER_OB_ARMATURE', 8),
-               ('MESH', "", "Exports object type mesh",'OUTLINER_OB_MESH', 16 ),
-               ('METABALLS', "", "Exports object type mesh",'OUTLINER_OB_META', 32),
-               ('SURFACE', "", "Exports object type mesh",'OUTLINER_OB_SURFACE', 64),
-               ('LATTICE', "", "Exports object type mesh",'OUTLINER_OB_LATTICE', 128),
-               ('CURVE', "", "Exports object type mesh",'OUTLINER_OB_CURVE', 256)]
+enumObjectTypes = [('EMPTY', "", "Rename empty objects",'OUTLINER_OB_EMPTY',  1),
+                   ('MESH', "", "Rename mesh objects",'OUTLINER_OB_MESH', 2 ),
+                   ('CAMERA', "", "Rename Camera objects",'OUTLINER_OB_CAMERA', 4),
+                   ('LIGHT', "", "Rename light objects",'OUTLINER_OB_LIGHT', 8),
+                   ('ARMATURE', "", "Rename armature objects",'OUTLINER_OB_ARMATURE', 16),
+                   ('LATTICE', "", "Rename lattice objects",'OUTLINER_OB_LATTICE', 32),
+                   ('CURVE', "", "Rename curve objects",'OUTLINER_OB_CURVE', 64),
+                   ('SURFACE', "", "Rename surface objects",'OUTLINER_OB_SURFACE', 128),
+                   ('TEXT', "", "Rename text objects", 'OUTLINER_OB_FONT', 256),
+                   ('GPENCIL', "", "Rename greace pencil objects", 'OUTLINER_OB_GREASEPENCIL', 512),
+                   ('METABALL', "", "Rename metaball objects",'OUTLINER_OB_META', 1024)]
 
+enumObjectTypesExt = [('EMPTY', "", "Rename empty objects",'OUTLINER_OB_EMPTY',  1),
+                   ('MESH', "", "Rename mesh objects",'OUTLINER_OB_MESH', 2 ),
+                   ('CAMERA', "", "Rename Camera objects",'OUTLINER_OB_CAMERA', 4),
+                   ('LIGHT', "", "Rename light objects",'OUTLINER_OB_LIGHT', 8),
+                   ('ARMATURE', "", "Rename armature objects",'OUTLINER_OB_ARMATURE', 16),
+                   ('LATTICE', "", "Rename lattice objects",'OUTLINER_OB_LATTICE', 32),
+                   ('CURVE', "", "Rename curve objects",'OUTLINER_OB_CURVE', 64),
+                   ('SURFACE', "", "Rename surface objects",'OUTLINER_OB_SURFACE', 128),
+                   ('TEXT', "", "Rename text objects", 'OUTLINER_OB_FONT', 256),
+                   ('GPENCIL', "", "Rename greace pencil objects", 'OUTLINER_OB_GREASEPENCIL', 512),
+                   ('METABALL', "", "Rename metaball objects",'OUTLINER_OB_META', 2048),
+                   ('COLLECTION', "", "Rename collections",'GROUP', 4096),
+                   ('BONE',"", "", 'BONE_DATA', 8192),]
 
 def register():
     #bpy.types.INFO_MT_mesh_add.append(menu_add_suffix)
-
     # IDStore = bpy.types.
     IDStore = bpy.types.Scene
     IDStore.renaming_sufpre_type = EnumProperty(
             name="Suffix or Prefix by Type",
-            items=(('SUF', "Suffix", "suffix"),
-                   ('PRE', "Prefix", "prefix"),),
+            items=(('PRE', "Prefix", "prefix"),
+                   ('SUF', "Suffix", "suffix"),),
             description="Add Prefix or Suffix to type",
             )
 
@@ -1055,8 +1074,13 @@ def register():
              description="Which kind of object to rename",
              )
 
-    #IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",items=enumObjectTypes,description="Which kind of object to export",options={'ENUM_FLAG'}, default= {'CURVE','LATTICE','SURFACE','METABALLS','MESH','ARMATURE','LIGHT','CAMERA','EMPTY'})
-    IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",items=enumObjectTypes,description="Which kind of object to export",options={'ENUM_FLAG'}, default= {'CURVE','LATTICE','SURFACE','METABALLS','MESH','ARMATURE','LIGHT','CAMERA','EMPTY'})
+    #IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",items=enumObjectTypes,description="Which kind of object to export",options={'ENUM_FLAG'}, default= {'CURVE','LATTICE','SURFACE','METABALL','MESH','ARMATURE','LIGHT','CAMERA','EMPTY'})
+    IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",
+                                                           items=enumObjectTypes,
+                                                           description="Which kind of object to rename",
+                                                           options={'ENUM_FLAG'},
+                                                           default= {'CURVE','LATTICE','SURFACE','METABALL','MESH','ARMATURE','LIGHT','CAMERA','EMPTY', 'GPENCIL', 'TEXT'}
+                                                           )
 
     IDStore.renaming_newName = StringProperty(name="New Name", default = '')
     IDStore.renaming_search = StringProperty(name='Search', default = '')
@@ -1085,6 +1109,14 @@ def register():
              description="Rename Selected Objects",
              default=True,
              )
+
+    IDStore.renaming_sufpre_types_specified = EnumProperty(name="Object Types",
+                                                           items=enumObjectTypesExt,
+                                                           description="Which kind of object to rename",
+                                                           options={'ENUM_FLAG'},
+                                                           default = {'CURVE', 'LATTICE', 'SURFACE', 'METABALL', 'MESH', 'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY', 'GPENCIL','TEXT', 'BONE','COLLECTION'}
+                                                           )
+
     IDStore.renaming_sufpre_material = StringProperty(name='Material', default = '')
     IDStore.renaming_sufpre_geometry = StringProperty(name='Geometry', default = '')
     IDStore.renaming_sufpre_empty = StringProperty(name="Empty", default = '')
