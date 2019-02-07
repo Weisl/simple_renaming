@@ -31,10 +31,12 @@ bl_info = {
     "support": "COMMUNITY",
     "category": "Scene"
 }
-# TODO: Actions
-# TODO: Preferences
+
+# TODO: add List Of Textures
+# TODO: add Actions
+# TODO: add Preferences
 # TODO: Split to multifile
-# TODO: Wair for asset manager and otherwise import Auto updater again
+# TODO: Wait for asset manager and otherwise import Auto updater again
 
 import bpy
 import re
