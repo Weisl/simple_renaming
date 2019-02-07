@@ -37,6 +37,7 @@ bl_info = {
 # TODO: add Preferences
 # TODO: Split to multifile
 # TODO: Wait for asset manager and otherwise import Auto updater again
+# TODO: Regex
 
 import bpy
 import re
@@ -98,13 +99,29 @@ def getRenamingList(self, context):
     elif wm.renaming_object_types == 'IMAGE':
         renamingList = list(bpy.data.images)
 
+    # elif wm.renaming_object_types == 'BONE':
+    #     for arm in bpy.data.armatures:
+    #         for bone in arm.bones:
+    #             renamingList.append(bone)
+
     elif wm.renaming_object_types == 'BONE':
-        for arm in bpy.data.armatures:
-            for bone in arm.bones:
-                renamingList.append(bone)
+        if wm.renaming_only_selection == True:
+            mode = bpy.context.mode
+            bpy.ops.object.mode_set(mode='POSE')
+            for pose_bone in bpy.context.selected_pose_bones:
+                print(pose_bone)
+                renamingList.append(pose_bone)
+            bpy.ops.object.mode_set(mode='OBJECT')
+        else:
+            for arm in bpy.data.armatures:
+                for bone in arm.bones:
+                    print(bone)
+                    renamingList.append(bone)
 
     elif wm.renaming_object_types == 'COLLECTION':
         renamingList = list(bpy.data.collections)
+
+    renamingList.sort(key=lambda x: x.name, reverse=False)
     return renamingList
 
 windowVariables = []
@@ -158,7 +175,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
         if str(scene.renaming_object_types) in ('MATERIAL', 'DATA'):
             layout.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
-        elif str(scene.renaming_object_types) in ('OBJECT', 'ADDOBJECTS'):
+        elif str(scene.renaming_object_types) in ('OBJECT', 'ADDOBJECTS', 'BONE'):
             layout.prop(scene, "renaming_only_selection", text="Only Selected")
 
         layout.separator()
@@ -798,11 +815,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                     i = i + 1
                                 else:
                                     break
-                            # elif scene.renaming_object_types == 'GROUP':
-                            #     if newName in bpy.data.groups and newName != entity.name:
-                            #         i = i + 1
-                            #     else:
-                            #         break
+
                             elif wm.renaming_object_types == 'IMAGE':
                                 if newName in bpy.data.images and newName != entity.name:
                                     i = i + 1
@@ -818,6 +831,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                     i = i + 1
                                 else:
                                     break
+                            else:
+                                break
 
                         newName = replaceName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
                         entity.name = newName
