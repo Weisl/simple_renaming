@@ -419,18 +419,18 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         self.renameSufPre(objList, preSuf = wm.renaming_sufpre_geometry, objectType = 'MESH', icon = 'OUTLINER_OB_MESH')
         return
 
-    def material(self): # TODO: selected all
-        context = bpy.context
-        wm = bpy.context.scene
-
-        preSuf = bpy.context.scene.renaming_sufpre_material
-
+    def material(self):
         wm = bpy.context.scene
         objList = []
 
-        for mat in bpy.data.materials:
-                if mat.type == 'MESH':
-                    objList.append(mat)
+        if wm.type_pre_sub_only_selection:
+            for obj in bpy.context.selected_objects:
+                for mat in obj.material_slots:
+                    if mat is not None and mat.name != '':
+                        objList.append(bpy.data.materials[mat.name])
+        else:
+            objList = list(bpy.data.materials)
+
         self.renameSufPre(objList, preSuf = wm.renaming_sufpre_material, objectType = 'MATERIAL', icon = 'MATERIAL')
         return
 
@@ -459,8 +459,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         objList = []
 
         for obj in self.getSelectionAll():
-            for bone in obj.bones:
-                objList.append(obj)
+            objList.append(obj.data)
         self.renameSufPre(objList, preSuf=wm.renaming_sufpre_data, objectType='DATA', icon='FILE_BLANK')
         return
 
@@ -570,9 +569,9 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
         for obj in self.getSelectionAll():
             if obj.type == 'ARMATURE':
-                for bone in obj.bones:
+                for bone in obj.data.bones:
                     objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_bones, objectType='BONE', icon='BONE_DATA')
+        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_bone, objectType='BONE', icon='BONE_DATA')
         return
 
     def errorMsg(self):
@@ -1080,6 +1079,7 @@ def register():
         items=(('PRE', "Prefix", "prefix"),
                ('SUF', "Suffix", "suffix"),),
         description="Add Prefix or Suffix to type",
+        default = 'SUF'
     )
 
     IDStore.renaming_object_types = EnumProperty(
@@ -1100,7 +1100,7 @@ def register():
                                                            options={'ENUM_FLAG'},
                                                            default={'CURVE', 'LATTICE', 'SURFACE', 'METABALL', 'MESH',
                                                                     'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY', 'GPENCIL',
-                                                                    'TEXT'}
+                                                                    'TEXT', 'SPEAKER', 'LIGHT_PROBE'}
                                                            )
 
     # IDStore.renaming_object_addtypes_specified = EnumProperty(name="Additional Object Types",
@@ -1160,7 +1160,6 @@ def register():
     IDStore.renaming_sufpre_surfaces = StringProperty(name="Surfaces", default='')
     IDStore.renaming_sufpre_cameras = StringProperty(name="Cameras", default='')
     IDStore.renaming_sufpre_lights = StringProperty(name="Lights", default='')
-    IDStore.renaming_sufpre_bones = StringProperty(name="Bones", default='')
     IDStore.renaming_sufpre_collection = StringProperty(name="Collections", default='')
     IDStore.renaming_sufpre_text = StringProperty(name="Text", default='')
     IDStore.renaming_sufpre_gpencil = StringProperty(name="Grease Pencil", default='')
@@ -1201,9 +1200,11 @@ def unregister():
     del IDStore.renaming_sufpre_lights
     del IDStore.renaming_sufpre_cameras
     del IDStore.renaming_sufpre_surfaces
-    del IDStore.renaming_sufpre_bones
+    del IDStore.renaming_sufpre_bone
     del IDStore.renaming_sufpre_collection
     del IDStore.renaming_object_types_specified
+    del IDStore.renaming_sufpre_speakers
+    del IDStore.renaming_sufpre_lightprops
 
     from bpy.utils import unregister_class
     for cls in reversed(classes):
@@ -1215,5 +1216,5 @@ if __name__ == "__main__":
     register()
 
 # import bpy
-# filename = "G:\GitHub\mp_simple_renaming_panel\simple_renaming_panel.py"
+# filename = "G:/GitHub/mp_simple_renaming_panel/simple_renaming_panel.py"
 # exec(compile(open(filename).read(), filename, 'exec'))
