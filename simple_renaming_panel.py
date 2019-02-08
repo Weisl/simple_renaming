@@ -121,7 +121,7 @@ def getRenamingList(self, context):
     elif wm.renaming_object_types == 'COLLECTION':
         renamingList = list(bpy.data.collections)
 
-    renamingList.sort(key=lambda x: x.name, reverse=False)
+    #renamingList.sort(key=lambda x: x.name, reverse=False)
     return renamingList
 
 windowVariables = []
@@ -294,7 +294,7 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
 
         row = col.row()
         row.prop(scene, "renaming_sufpre_lightprops", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Light Props").option = 'lightprops'
+        row.operator('renaming.add_sufpre_by_type', text = "Light Probes").option = 'lightprops'
 
 
 #############################################
@@ -783,8 +783,9 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                 for entity in renamingList:
                     if entity is not None:
                         i = 1
-                        if wm.renaming_object_types == 'GROUP' or wm.renaming_object_types == 'IMAGE':
+                        if wm.renaming_object_types == 'COLLECTION' or wm.renaming_object_types == 'IMAGE':
                             i = 0
+
                         oldName = entity.name
                         newName = ""
 
@@ -828,6 +829,11 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                     break
                             elif wm.renaming_object_types == 'BONE':
                                 if newName in boneList and newName != entity.name:
+                                    i = i + 1
+                                else:
+                                    break
+                            elif wm.renaming_object_types == 'COLLECTION':
+                                if newName in bpy.data.collections and newName != entity.name:
                                     i = i + 1
                                 else:
                                     break
@@ -1106,7 +1112,8 @@ def register():
                ('MATERIAL', "Material", "Materials"),
                ('IMAGE', "Image Textures", "Image Textures"),
                ('DATA', "Data", "Object Data"),
-               ('BONE', "Bone", "Bones")),
+               ('BONE', "Bone", "Bones"),
+               ('COLLECTION', "Collection", "Rename collections")),
         description="Which kind of object to rename",
     )
 
