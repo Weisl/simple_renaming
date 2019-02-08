@@ -38,6 +38,7 @@ bl_info = {
 # TODO: Split to multifile
 # TODO: Wait for asset manager and otherwise import Auto updater again
 # TODO: Regex
+# TODO: Alt+N for quick rename
 
 import bpy
 import re
