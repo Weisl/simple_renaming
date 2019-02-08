@@ -313,7 +313,7 @@ class VIEW3D_OT_renaming_popup(bpy.types.Operator):
         return {'FINISHED'}
 
     def invoke(self, context, event):
-        return context.window_manager.invoke_props_dialog(self, width=800)
+        return context.window_manager.invoke_props_dialog(self, width=600)
 
     def draw(self, context):
         wm = bpy.context.scene
