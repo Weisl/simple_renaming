@@ -1,26 +1,49 @@
-<p>Blender Artist: https://blenderartists.org/forum/showthread.php?408115-Addon-Simple-Renaming-Panel&p=3106784#post3106784 <p>
+Master is now on Blender 2.80!!!!!
+<p>Blender Artists: https://blenderartists.org/forum/showthread.php?408115-Addon-Simple-Renaming-Panel&p=3106784#post3106784 <p>
 
 <h3>Release Notes</h3>
+
+<h4>[1.3.0b] blender 2.80 beta</h4>
+
+<ul>
+<li><b>[NEW]</b> UI: The simple renaming panel is now part of the properties panel </li>
+<li><b>[NEW]</b> UI: The panel uses for big parts the single column layout </li>
+<li><b>[NEW]</b>The codebase was updated to fit the new requironments of blender 2.80 </li>
+<li><b>[NEW]</b>The new blender 2.80 specific object types are supported (e.g., grease pencil, lightprops). Groups and Layers have been removed from the addon. </li>
+<li><b>[NEW]</b> An option to provide more control over which object type is effected by the renaming action was added. </li>
+</ul>
+
+
+
+<h4>[1.3.0a] blender 2.80 alpha</h4>
+
+<ul>
+<li>[DELETED] Renaming of Collections </li>
+<li>[DELETED] Renaming of Render Layers </li>
+<li>[DELETED] UI Popup </li>
+<li>[CHANGED] Tool panel to Properties panel </li>
+<li> [FIXED] This addon can't be installed from the zip file. </li>
+</ul>
 
 <h4>[1.2.0]</h4>
 
 <ul>
-	<li><b>[NEW]</b> Renaming works now in different modes: object, material, image texture, group, data and bone </li>
-	<li><b>[NEW]</b> Change the tool shelf category of the add-on in the preferences </li>
-	<li><b>[NEW]</b> Added a match case checkbox has been added to search and replace</li>
-	<li><b>[NEW]</b> A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
-	<li><b>[NEW]</b> Not only suffixes, but also prefixes can be added by object type</li>
-	<li><b>[CHANGED]</b> Suffix by type has been renamed to type suffix and prefix panel and is now part of the main panel</li>
-	<li><b>[NEW]</b> Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
-	<li><b>[UPDATED]</b> Auto updater 1.0.3</li>
-	<li><b>[FIX]</b> A lot of minor bugs have been fixed</li>
+	<li>[NEW] Renaming works now in different modes: object, material, image texture, group, data and bone </li>
+	<li>[NEW] Change the tool shelf category of the add-on in the preferences </li>
+	<li>[NEW] Added a match case checkbox has been added to search and replace</li>
+	<li>[NEW] A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
+	<li>[NEW] Not only suffixes, but also prefixes can be added by object type</li>
+	<li>[CHANGED] Suffix by type has been renamed to type suffix and prefix panel and is now part of the main panel</li>
+	<li>[NEW]Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
+	<li>[UPDATED]Auto updater 1.0.3</li>
+	<li>[FIX] A lot of minor bugs have been fixed</li>
 
 </ul>
 
 <h4>[1.0.1]</h4>
 
 <ul>
-	<li><b>[New]</b> The posibility to give the objects a new name has been added</li>
+	<li>[New] The posibility to give the objects a new name has been added</li>
 </ul>
 
 <img src="img/simplePanel_title_01.jpg" alt="Teaser Banner " />
@@ -33,7 +56,10 @@
 <h4>Key Feature:</h4>
 
 <ul>
-	<li>Works for objects, materials, groups, image textures, object data, bones</li>
+	<li>[NEW] Support for light probes and speaker objects </li>
+	<li>[NEW] Option to specify object type when renaming objects </li>
+	<li>[NEW] Support for blender 2.80 specifc object types (e.g., lightprops, greace pencil)  </li>
+	<li>Works for objects, materials, collections, image textures, object data and bones</li>
 	<li>Choose if all or just selected objects should be effected </li>
 	<li>Search and replace </li>
 	<li>Match case option for search and replace</li>
@@ -47,23 +73,28 @@
 	<li>Auto updater</li>
 </ul>
 
+<h4>Missing in 2.80:</h4>
+
+<ul>
+	<li>Customizable UI position<\li>
+	<li>Auto updater<\li>
+</ul>
+		
+<h4>Known issues in 2.80:</h4> 
+When moving the mouse over the infromation popup a display error occurs sometimes. The popup switches from showing the renamed objects to no object has been renamed.
 
 <h3>Download and Installation</h3>
 
-You can download the Simple Renaming Panel <a href="https://github.com/Weisl/simple_renaming_panel" target="_blank">here</a>.
+You can download the Simple Renaming Panel for blender 2.79 and blender 2.80 from the releases section <a href="https://github.com/Weisl/simple_renaming_panel/releases" target="_blank">here</a>.
 Like any other Add-on, you can simply install it by going to <b> File &gt; User Preferences &gt; Add-ons </b> and click at the button <b>Install from File </b>. In the new opened window choose the .zip file of the addon and press <b>Install from file </b>.
 <b>The Simple Renaming Panel</b> should now appear in your add-ons window and can be activated.
 
-<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/03/simplePanel_v01.png" alt="Installation Addon " />
+<img src="img/install_addon.jpg.png" alt="Installation Addon " />
 
-<h3>Update</h3>
-The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” and the add-on will search for new updates. You won’t need to install newer versions of it manually.
-
-<img src="http://matthias-patscheider.eu/wp-content/uploads/2017/03/simplePanel_v02.png" alt="Installation Addon " />
 
 <h4>Simple Renaming Panel</h4>
 
-<img src="img/simplePanel_title_04.jpg" alt="Installation Addon " />
+<img src="img/mainPanel.jpg" alt="Installation Addon " />
 <ul>
 	<li><b>[NEW]</b> Choose which kind of objects you want to rename:</li>
 	<li> Changes effect selected or all</li>
@@ -79,7 +110,7 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 
 <h4>Type Suffix Prefix</h4>
 
-<img src="img/simplePanel_title_05.jpg" alt="Installation Addon " />
+<img src="img/sufPrebyTypePanel.jpg" alt="Installation Addon " />
 <ul>
 	<li><b>[NEW]</b> Choose betweeen Suffix and Prefix</li>
 	<li>Geometry: all meshes</li>
@@ -98,3 +129,4 @@ The Addon uses the Blender Addon Updater. Activate “Autocheck for Updates” a
 
 <img src="img/simplePanel_title_07.jpg" alt="Installation Addon " />
 <img src="img/simplePanel_title_06.jpg" alt="Teaser Banner " />
+
