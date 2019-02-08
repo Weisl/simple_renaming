@@ -22,7 +22,7 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers the basic functionality of renaming a set of objects",
     "author": "Matthias Patscheider",
-    "version": (1, 2, 0),
+    "version": (1, 3, 0),
     "blender": (2, 80, 0),
     "location": "View3D > Tools ",
     "warning": "",
@@ -98,11 +98,6 @@ def getRenamingList(self, context):
 
     elif wm.renaming_object_types == 'IMAGE':
         renamingList = list(bpy.data.images)
-
-    # elif wm.renaming_object_types == 'BONE':
-    #     for arm in bpy.data.armatures:
-    #         for bone in arm.bones:
-    #             renamingList.append(bone)
 
     elif wm.renaming_object_types == 'BONE':
         if wm.renaming_only_selection == True:
