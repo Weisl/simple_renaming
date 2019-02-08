@@ -11,6 +11,7 @@ Master is now on Blender 2.80!!!!!
 <li><b>[NEW]</b>The codebase was updated to fit the new requironments of blender 2.80 </li>
 <li><b>[NEW]</b>The new blender 2.80 specific object types are supported (e.g., grease pencil, lightprops). Groups and Layers have been removed from the addon. </li>
 <li><b>[NEW]</b> An option to provide more control over which object type is effected by the renaming action was added. </li>
+<li><b>[NEW]</b> It is possible to rename selected bones (Thanks to Cube Creative) </li>	
 </ul>
 
 
