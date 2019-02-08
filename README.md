@@ -89,7 +89,7 @@ You can download the Simple Renaming Panel for blender 2.79 and blender 2.80 fro
 Like any other Add-on, you can simply install it by going to <b> File &gt; User Preferences &gt; Add-ons </b> and click at the button <b>Install from File </b>. In the new opened window choose the .zip file of the addon and press <b>Install from file </b>.
 <b>The Simple Renaming Panel</b> should now appear in your add-ons window and can be activated.
 
-<img src="img/install_addon.jpg.png" alt="Installation Addon " />
+<img src="img/install_addon.jpg" alt="Installation Addon " />
 
 
 <h4>Simple Renaming Panel</h4>
@@ -127,6 +127,6 @@ Like any other Add-on, you can simply install it by going to <b> File &gt; User 
 	<li><b>[NEW]</b> Bones: all bones </li>
 </ul>
 
-<img src="img/simplePanel_title_07.jpg" alt="Installation Addon " />
-<img src="img/simplePanel_title_06.jpg" alt="Teaser Banner " />
+<img src="img/popup.jpg" alt="Installation Addon " />
+
 
