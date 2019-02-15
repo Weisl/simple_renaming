@@ -83,7 +83,10 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                         if wm.renaming_object_types == 'SHAPEKEYS':
                             for key_grp in bpy.data.shape_keys:
                                 for key in key_grp.key_blocks:
-                                    shapeKeyNamesList.append(key)
+                                    shapeKeyNamesList.append(key.name)
+
+                        print ("shape key list " + str(shapeKeyNamesList))
+
                         while True:
                             newName = replaceName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
 
@@ -126,6 +129,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                     break
 
                             elif wm.renaming_object_types == 'SHAPEKEYS':
+
                                 if newName in shapeKeyNamesList and newName != entity.name:
                                     print("SHAPEKEYS"   + newName)
                                     shapeKeyNamesList.append(newName)
