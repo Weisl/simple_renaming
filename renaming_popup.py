@@ -13,7 +13,7 @@ class VIEW3D_OT_renaming_popup(bpy.types.Operator):
     )
     @classmethod
     def poll(cls, context):
-        user_preferences = context.user_preferences
+        user_preferences = context.preferences
         addon_prefs = user_preferences.addons[__name__].preferences
         return addon_prefs.renamingPanel_showPopup
 
