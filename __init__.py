@@ -151,7 +151,7 @@ def register():
                ('BONE', "Bone", "Bones"),
                ('COLLECTION', "Collection", "Rename collections"),
                ('ACTIONS', "Actions", "Rename Actions"),
-               #('SHAPEKEYS',"Shape Keys", "Rename shape keys")
+               ('SHAPEKEYS',"Shape Keys", "Rename shape keys")
                #('VERTEXGROUPS',"Vertex Groups", "Rename vertex groups")
                # ('UVMaps')
                # ('FACEMAPS')

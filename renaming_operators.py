@@ -54,10 +54,24 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         replaceName = wm.renaming_newName
         renamingList = getRenamingList(self, context)
 
+        shapeKeyNamesList = []
+        if wm.renaming_object_types == 'SHAPEKEYS':
+            for key_grp in bpy.data.shape_keys:
+                for key in key_grp.key_blocks:
+                    shapeKeyNamesList.append(key.name)
+            # for key in bpy.data.shape_keys[0].key_blocks:
+            #     shapeKeyNamesList.append(key.name)
+
+        print ("shape key list " + str(shapeKeyNamesList))
+
         if len(str(replaceName)) > 0:
             digits = 3
             if len(renamingList) > 0:
+
+
                 for entity in renamingList:
+
+
                     if entity is not None:
                         i = 1
                         if wm.renaming_object_types == 'COLLECTION' or wm.renaming_object_types == 'IMAGE':
@@ -79,11 +93,6 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 if obj.data is not None:
                                     dataList.append(obj.data.name)
 
-                        shapeKeyNamesList = []
-                        if wm.renaming_object_types == 'SHAPEKEYS':
-                            for key_grp in bpy.data.shape_keys:
-                                for key in key_grp.key_blocks:
-                                    shapeKeyNamesList.append(key)
                         while True:
                             newName = replaceName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
 
@@ -126,11 +135,13 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                     break
 
                             elif wm.renaming_object_types == 'SHAPEKEYS':
-                                if newName in shapeKeyNamesList and newName != entity.name:
-                                    print("SHAPEKEYS"   + newName)
+                                print (str(i) + "  " + str(shapeKeyNamesList))
+                                if newName in shapeKeyNamesList:
+                                    print('1')
                                     shapeKeyNamesList.append(newName)
                                     i = i + 1
                                 else:
+                                    shapeKeyNamesList.append(newName)
                                     break
                             else:
                                 break
