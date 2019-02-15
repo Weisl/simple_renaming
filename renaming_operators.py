@@ -23,15 +23,20 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
             for entity in renamingList:
                 if entity is not None:
                     if wm.renaming_search is not '':
-                        if wm.renaming_matchcase:
-                            oldName = entity.name
-                            newName = str(entity.name).replace(wm.renaming_search, wm.renaming_replace)
-                            entity.name = newName
-                            wm.renaming_messages.addMessage(oldName, entity.name)
-                        else:
-                            oldName = entity.name
-                            replaceSearch = re.compile(re.escape(wm.renaming_search), re.IGNORECASE)
-                            newName = replaceSearch.sub(wm.renaming_replace, entity.name)
+                        oldName = entity.name
+                        if wm.renaming_useRegex == False:
+                            if wm.renaming_matchcase:
+                                newName = str(entity.name).replace(wm.renaming_search, wm.renaming_replace)
+                                entity.name = newName
+                                wm.renaming_messages.addMessage(oldName, entity.name)
+                            else:
+                                replaceSearch = re.compile(re.escape(wm.renaming_search), re.IGNORECASE)
+                                newName = replaceSearch.sub(wm.renaming_replace, entity.name)
+                                entity.name = newName
+                                wm.renaming_messages.addMessage(oldName, entity.name)
+                        else: # Use regex
+                            #pattern = re.compile(re.escape(wm.renaming_search))
+                            newName = re.sub(wm.renaming_search, wm.renaming_replace, str(entity.name))
                             entity.name = newName
                             wm.renaming_messages.addMessage(oldName, entity.name)
 

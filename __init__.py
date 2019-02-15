@@ -32,16 +32,18 @@ bl_info = {
     "category": "Scene"
 }
 
-# TODO: And the second one is have the posibiliti to turn off the popup message after renaming, they are a bit annoying when you have to renamin diferent selections.
 # TODO: The first one is to keep the mode (edit, pose, etc) after renaming, because if you are switching in objet mode an pose mode all the time, the workflow become a bit slow, especialy in rigging process. I think if yo make a variable before with the process with the mode avaible, you can mantain the mode after renaming... but you know more than me XD
 # TODO: add List Of Textures
-# TODO: add Preferences
+
 # TODO: Wait for asset manager and otherwise import Auto updater again
-# TODO: Regex
+# DONE: Regex
 # TODO: Alt+N for quick rename
 # TODO: Blendshapes
+# DONE: add Preferences
 # DONE: add Actions
 # DONE: Split to multifile
+# DONE: And the second one is have the posibiliti to turn off the popup message after renaming, they are a bit annoying when you have to renamin diferent selections.
+
 
 
 
@@ -195,6 +197,12 @@ def register():
         description="",
         default=True,
     )
+    IDStore.renaming_useRegex = BoolProperty(
+        name="Use Regex",
+        description="",
+        default=False,
+    )
+
     IDStore.renaming_base_numerate = IntProperty(name="Step Size", default=1)
     IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
     IDStore.renaming_cut_size = IntProperty(name="Trim Size", default=3)
