@@ -127,7 +127,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
                             elif wm.renaming_object_types == 'SHAPEKEYS':
                                 if newName in shapeKeyNamesList and newName != entity.name:
-                                    shapeKeyNamesList.append(replaceName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits)))
+                                    print("SHAPEKEYS"   + newName)
+                                    shapeKeyNamesList.append(newName)
                                     i = i + 1
                                 else:
                                     break

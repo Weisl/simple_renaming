@@ -32,6 +32,7 @@ bl_info = {
     "category": "Scene"
 }
 
+# TODO: Create Properties group for add suffix prefix type
 # TODO: add List Of Textures
 # TODO: Wait for asset manager and otherwise import Auto updater again
 # TODO: Alt+N for quick rename
@@ -149,8 +150,8 @@ def register():
                ('DATA', "Data", "Object Data"),
                ('BONE', "Bone", "Bones"),
                ('COLLECTION', "Collection", "Rename collections"),
-               ('ACTIONS', "Actions", "Rename Actions")
-               #('SHAPEKEYS',"Shape Keys", "Rename shape keys"),
+               ('ACTIONS', "Actions", "Rename Actions"),
+               #('SHAPEKEYS',"Shape Keys", "Rename shape keys")
                #('VERTEXGROUPS',"Vertex Groups", "Rename vertex groups")
                # ('UVMaps')
                # ('FACEMAPS')
