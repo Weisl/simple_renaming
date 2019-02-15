@@ -42,12 +42,13 @@ def getRenamingList(self, context):
 
     elif wm.renaming_object_types == 'BONE':
         if wm.renaming_only_selection == True:
-            mode = bpy.context.mode
+            modeOld = bpy.context.mode
             bpy.ops.object.mode_set(mode='POSE')
             for pose_bone in bpy.context.selected_pose_bones:
                 print(pose_bone)
                 renamingList.append(pose_bone)
-            bpy.ops.object.mode_set(mode='OBJECT')
+            #bpy.ops.object.mode_set(mode='OBJECT')
+            bpy.ops.object.mode_set(mode=modeOld)
         else:
             for arm in bpy.data.armatures:
                 for bone in arm.bones:
