@@ -113,6 +113,13 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                     i = i + 1
                                 else:
                                     break
+
+                            elif wm.renaming_object_types == 'ACTIONS':
+                                if newName in bpy.data.actions and newName != entity.name:
+                                    i = i + 1
+                                else:
+                                    break
+
                             elif wm.renaming_object_types == 'SHAPEKEYS':
                                 if newName in shapeKeyNamesList and newName != entity.name:
                                     shapeKeyNamesList.append(replaceName + '_' + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits)))

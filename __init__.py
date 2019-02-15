@@ -35,13 +35,14 @@ bl_info = {
 # TODO: And the second one is have the posibiliti to turn off the popup message after renaming, they are a bit annoying when you have to renamin diferent selections.
 # TODO: The first one is to keep the mode (edit, pose, etc) after renaming, because if you are switching in objet mode an pose mode all the time, the workflow become a bit slow, especialy in rigging process. I think if yo make a variable before with the process with the mode avaible, you can mantain the mode after renaming... but you know more than me XD
 # TODO: add List Of Textures
-# TODO: add Actions
 # TODO: add Preferences
-# DONE: Split to multifile
 # TODO: Wait for asset manager and otherwise import Auto updater again
 # TODO: Regex
 # TODO: Alt+N for quick rename
 # TODO: Blendshapes
+# DONE: add Actions
+# DONE: Split to multifile
+
 
 
 
@@ -150,7 +151,7 @@ def register():
                ('DATA', "Data", "Object Data"),
                ('BONE', "Bone", "Bones"),
                ('COLLECTION', "Collection", "Rename collections"),
-
+               ('ACTIONS', "Actions", "Rename Actions")
                #('SHAPEKEYS',"Shape Keys", "Rename shape keys"),
                #('VERTEXGROUPS',"Vertex Groups", "Rename vertex groups")
                # ('UVMaps')

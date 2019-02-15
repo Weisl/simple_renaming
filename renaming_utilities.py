@@ -62,17 +62,20 @@ def getRenamingList(self, context):
             for key in key_grp.key_blocks:
                 renamingList.append(key)
 
-    elif wm.renaming_object_types == 'VERTEXGROUP':
-        if wm.renaming_only_selection == True:
-            for obj in bpy.context.selected_objects:
-                for vtx in obj.vertex_groups:
-                    if vtx is not None and vtx.name != '':
-                        renamingList.append(obj.vertex_groups[vtx.name])
-        else:
-            for obj in bpy.data.objects:
-                for vtx in obj.vertex_groups:
-                    if vtx is not None and vtx.name != '':
-                        renamingList.append(obj.vertex_groups[vtx.name])
+    # elif wm.renaming_object_types == 'VERTEXGROUP':
+    #     if wm.renaming_only_selection == True:
+    #         for obj in bpy.context.selected_objects:
+    #             for vtx in obj.vertex_groups:
+    #                 if vtx is not None and vtx.name != '':
+    #                     renamingList.append(obj.vertex_groups[vtx.name])
+    #     else:
+    #         for obj in bpy.data.objects:
+    #             for vtx in obj.vertex_groups:
+    #                 if vtx is not None and vtx.name != '':
+    #                     renamingList.append(obj.vertex_groups[vtx.name])
+
+    elif wm.renaming_object_types == 'ACTIONS':
+        renamingList = list(bpy.data.actions)
 
     #renamingList.sort(key=lambda x: x.name, reverse=False)
     return renamingList
