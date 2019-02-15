@@ -31,7 +31,8 @@ bl_info = {
     "support": "COMMUNITY",
     "category": "Scene"
 }
-
+# TODO: And the second one is have the posibiliti to turn off the popup message after renaming, they are a bit annoying when you have to renamin diferent selections.
+# TODO: The first one is to keep the mode (edit, pose, etc) after renaming, because if you are switching in objet mode an pose mode all the time, the workflow become a bit slow, especialy in rigging process. I think if yo make a variable before with the process with the mode avaible, you can mantain the mode after renaming... but you know more than me XD
 # TODO: add List Of Textures
 # TODO: add Actions
 # TODO: add Preferences
@@ -39,6 +40,7 @@ bl_info = {
 # TODO: Wait for asset manager and otherwise import Auto updater again
 # TODO: Regex
 # TODO: Alt+N for quick rename
+# TODO: Blendshapes
 
 import bpy
 import re
@@ -994,6 +996,12 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         description="Defines in which category of the tools panel the simple renaimg panel is listed",
         default='Misc',
         # update = update_panel_position,
+    )
+
+    renamingPanel_showPopup = bpy.props.BoolProperty(
+       name="Show Popup",
+       description="Enable or Disable Popup",
+       default=True,
     )
 
     # addon updater preferences from `__init__`, be sure to copy all of them
