@@ -1,6 +1,6 @@
 import bpy, re
 from .renaming_utilities import getRenamingList,trimString,callPopup
-
+import time
 #############################################
 ############ OPERATORS ########################
 #############################################
@@ -51,7 +51,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
     def execute(self, context):
         wm = context.scene
-        replaceName = wm.renaming_newName
+        replaceName = replaceInputString(context,wm.renaming_newName)
+
         renamingList = getRenamingList(self, context)
 
         shapeKeyNamesList = []
@@ -295,3 +296,31 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         callPopup(context)
         return {'FINISHED'}
 
+def replaceInputString(context,inputTest):
+    print(inputTest)
+    inputTest = re.sub(r'@f', getfileName(context), inputTest)
+    inputTest = re.sub(r'@o', 'OBJECT', inputTest)
+    inputTest = re.sub(r'@h', 'HIGH', inputTest)
+    inputTest = re.sub(r'@l', 'LOW', inputTest)
+    inputTest = re.sub(r'@c', 'CAGE', inputTest)
+    inputTest = re.sub(r'@d', getDateName(context), inputTest)
+    inputTest = re.sub(r'@a', 'ACTIVE', inputTest)
+    inputTest = re.sub(r'@t',  getTimeName(context), inputTest)
+    print(inputTest)
+    return inputTest
+
+def getfileName(context):
+    filename = "UNSAVED"
+    if bpy.data.is_saved:
+        filename = bpy.path.display_name(bpy.context.blend_data.filepath)
+    return filename
+
+def getDateName(context):
+    t = time.localtime()
+    t = time.mktime(t)
+    return time.strftime("%d%b%Y", time.gmtime(t))
+
+def getTimeName(context):
+    t = time.localtime()
+    t = time.mktime(t)
+    return time.strftime("%H:%M", time.gmtime(t))

@@ -33,9 +33,14 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         layout.separator()
 
         layout.prop(scene, "renaming_newName")
+
+        drop = layout.prop(scene, "renaming_presetNaming")
+
         layout.operator("renaming.name_replace")
         layout.prop(scene, "renaming_search")
+        drop = layout.prop(scene, "renaming_presetNaming1")
         layout.prop(scene, "renaming_replace")
+        drop = layout.prop(scene, "renaming_presetNaming2")
         layout.prop(scene, "renaming_useRegex")
 
         if scene.renaming_useRegex == False:
@@ -44,9 +49,11 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         layout.operator("renaming.search_replace")
 
         layout.prop(scene, "renaming_prefix")
+        drop = layout.prop(scene, "renaming_presetNaming3")
         layout.operator("renaming.add_prefix")
 
         layout.prop(scene, "renaming_suffix")
+        drop = layout.prop(scene, "renaming_presetNaming4")
         layout.operator("renaming.add_suffix")
 
         layout.prop(scene, "renaming_digits_numerate")

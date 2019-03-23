@@ -32,6 +32,9 @@ bl_info = {
     "category": "Scene"
 }
 
+
+
+
 # TODO: Create Properties group for add suffix prefix type
 # TODO: add List Of Textures
 # TODO: Wait for asset manager and otherwise import Auto updater again
@@ -92,6 +95,34 @@ classes = (
     addon_preferenecs.VIEW3D_OT_renaming_preferences,
 )
 
+def tChange(self, context):
+    #The print function works fine
+    nameingPreset = bpy.context.scene.renaming_presetNaming
+    nameVar = ""
+
+    print('T changed to ', nameingPreset)
+    if nameingPreset == 'FILE':
+        nameVar = "@f"
+    if nameingPreset == 'OBJECT':
+        nameVar = "@o"
+    if nameingPreset == "HIGH":
+        nameVar = "@h"
+    if nameingPreset == "LOW":
+        nameVar = "@l"
+    if nameingPreset == "CAGE":
+        nameVar = "@c"
+    if nameingPreset == "DATE":
+        nameVar = "@d"
+    if nameingPreset == "ACTIVE":
+        nameVar = "@a"
+    if nameingPreset == "USER":
+        nameVar = "@u"
+    if nameingPreset == "TIME":
+        nameVar = "@t"
+
+    bpy.context.scene.renaming_newName += str(nameVar)
+
+
 
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
@@ -128,6 +159,16 @@ enumObjectTypesExt = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY',
                       ('METABALL', "", "Rename metaball objects", 'OUTLINER_OB_META', 2048),
                       ('COLLECTION', "", "Rename collections", 'GROUP', 4096),
                       ('BONE', "", "", 'BONE_DATA', 8192), ]
+
+enumPresetItems = [('FILE', "File", "", '', 1),
+    ('OBJECT', "Object", "", '', 2),
+    ('HIGH', "High", "", '', 4),
+    ('LOW', "Low", "", '', 8),
+    ('CAGE', "Cage", "", '', 16),
+    ('DATE', "Date", "", '', 32),
+    ('ACTIVE', "Active", "", '', 32),
+    ('USER', "User", "", '', 64),
+    ('TIME', "Time", "", '', 128),]
 
 def register():
     # bpy.types.INFO_MT_mesh_add.append(menu_add_suffix)
@@ -240,6 +281,39 @@ def register():
     IDStore.renaming_sufpre_bone = StringProperty(name="Bones", default='')
     IDStore.renaming_sufpre_speakers = StringProperty(name="Speakers", default='')
     IDStore.renaming_sufpre_lightprops = StringProperty(name="LightProps", default='')
+
+
+    #Pro Features
+    IDStore.renaming_presetNaming = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
+    IDStore.renaming_presetNaming1 = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
+    IDStore.renaming_presetNaming2 = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
+    IDStore.renaming_presetNaming3 = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
+    IDStore.renaming_presetNaming4 = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
 
 
     from bpy.utils import register_class
