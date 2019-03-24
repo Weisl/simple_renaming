@@ -24,7 +24,17 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
        description="Enable or Disable Popup",
        default=True,
     )
+    # renamingPanel_showPopup: bpy.props.BoolProperty(
+    #    name="Auto Fill Separator",
+    #    description="Enable or Disable Popup",
+    #    default=False,
+    # )
 
+    renamingPanel_defaultseperator: bpy.props.StringProperty(
+       name="Separator",
+       description="Enable or Disable Popup",
+       default='_',
+    )
 
 
     renaming_stringHigh: bpy.props.StringProperty(
@@ -71,8 +81,12 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         row.prop(self,"renaming_category", expand = True)
         row = layout.row()
         row.prop(self,"renamingPanel_showPopup")
-        row = layout.row()
 
+        row = layout.row()
+        row.prop(self,"renamingPanel_defaultseperator")
+        layout.separator()
+
+        row = layout.row()
         row.prop(self,"renaming_stringHigh")
         row = layout.row()
         row.prop(self,"renaming_stringLow")

@@ -57,6 +57,7 @@ if "bpy" in locals():
     importlib.reload(renaming_utilities)
     importlib.reload(renaming_panels)
     importlib.reload(renaming_sufPre_operators)
+    importlib.reload(renaming_proFeatures)
 else:
     from . import addon_preferenecs
     from . import renaming_operators
@@ -64,6 +65,7 @@ else:
     from . import renaming_utilities
     from . import renaming_panels
     from . import renaming_sufPre_operators
+    from . import renaming_proFeatures
 
 import bpy
 
@@ -83,6 +85,7 @@ from .renaming_utilities import RENAMING_MESSAGES
 classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
+    renaming_panels.VIEW3D_OT_SimpleOperator,
     renaming_popup.VIEW3D_OT_renaming_popup,
     renaming_operators.VIEW3D_OT_add_suffix,
     renaming_operators.VIEW3D_OT_add_prefix,
@@ -93,6 +96,8 @@ classes = (
     renaming_operators.VIEW3D_OT_replace_name,
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
     addon_preferenecs.VIEW3D_OT_renaming_preferences,
+    renaming_proFeatures.RENAMING_MT_variableMenu,
+    renaming_proFeatures.VIEW3D_OT_inputVariables,
 )
 
 def tChange(self, context):
@@ -180,7 +185,10 @@ enumPresetItems = [('FILE', "File", "", '', 1),
     ('ACTIVE', "Active", "", '', 4096),
     ('USER1', "User1", "", '', 64),
     ('USER2', "User2", "", '', 256),
-    ('USER3', "User3", "", '', 512),]
+    ('USER3', "User3", "", '', 512),
+    ('NUMBER', "Number", "", '', 512),
+
+]
 
 
 def register():
@@ -294,6 +302,7 @@ def register():
     IDStore.renaming_sufpre_bone = StringProperty(name="Bones", default='')
     IDStore.renaming_sufpre_speakers = StringProperty(name="Speakers", default='')
     IDStore.renaming_sufpre_lightprops = StringProperty(name="LightProps", default='')
+    IDStore.renaming_inputContext = StringProperty(name="LightProps", default='')
 
 
     #Pro Features

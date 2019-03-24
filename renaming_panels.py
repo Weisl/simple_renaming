@@ -1,5 +1,6 @@
 import bpy
-
+from .renaming_proFeatures import RENAMING_MT_variableMenu
+from bpy.props import StringProperty
 #############################################
 ############ PANELS ########################
 #############################################
@@ -31,38 +32,49 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
             layout.prop(scene, "renaming_only_selection", text="Only Selected")
 
         layout.separator()
+        layout.use_property_split = False  # Activate single-column layout
 
-        layout.prop(scene, "renaming_newName")
-
-        drop = layout.prop(scene, "renaming_presetNaming")
-
+        row = layout.row(align=True)
+        split = layout.split(factor=0.9, align = True)
+        split.prop(scene, "renaming_newName", text = 'Name')
+        button = split.operator("object.simple_operator", text = "@").inputBox = "newName"
         layout.operator("renaming.name_replace")
-        layout.prop(scene, "renaming_search")
-        drop = layout.prop(scene, "renaming_presetNaming1")
-        layout.prop(scene, "renaming_replace")
-        drop = layout.prop(scene, "renaming_presetNaming2")
-        layout.prop(scene, "renaming_useRegex")
 
+        row = layout.row(align=True)
+        split = row.split(factor=0.9, align = True)
+        split.prop(scene, "renaming_search", text = 'Search')
+        button = split.operator("object.simple_operator", text = "@").inputBox = "search"
+        row = layout.row(align=True)
+        split = row.split(factor=0.9, align = True)
+        split.prop(scene, "renaming_replace", text = 'Replace')
+        button = split.operator("object.simple_operator", text = "@").inputBox = "replace"
+        layout.prop(scene, "renaming_useRegex")
         if scene.renaming_useRegex == False:
             layout.prop(scene, "renaming_matchcase")
-
         layout.operator("renaming.search_replace")
 
-        layout.prop(scene, "renaming_prefix")
-        drop = layout.prop(scene, "renaming_presetNaming3")
+        row = layout.row(align=True)
+        split = row.split(factor=0.9, align = True)
+        split.prop(scene, "renaming_prefix", text = 'Prefix')
+        button = split.operator("object.simple_operator", text = "@").inputBox = "prefix"
         layout.operator("renaming.add_prefix")
 
-        layout.prop(scene, "renaming_suffix")
-        drop = layout.prop(scene, "renaming_presetNaming4")
+        row = layout.row(align=True)
+        split = row.split(factor=0.9, align = True)
+        split.prop(scene, "renaming_suffix", text = 'Suffix')
+        button = split.operator("object.simple_operator", text = "@").inputBox = "suffix"
         layout.operator("renaming.add_suffix")
 
-        layout.prop(scene, "renaming_digits_numerate")
-        layout.operator("renaming.numerate")
-        layout.prop(scene, "renaming_cut_size")
-        layout.operator("renaming.cut_string")
+        #layout.prop(scene, "renaming_digits_numerate")
+        #layout.operator("renaming.numerate")
+        #layout.prop(scene, "renaming_cut_size")
+        #layout.operator("renaming.cut_string")
 
         if str(scene.renaming_object_types) in ('DATA', 'OBJECT','ADDOBJECTS'):
-            layout.prop(scene, "renaming_sufpre_data_02")
+            row = layout.row(align=True)
+            split = row.split(factor=0.9, align=True)
+            split.prop(scene, "renaming_sufpre_data_02", text = 'Data')
+            button = split.operator("object.simple_operator", text="@").inputBox = "dataFromObj"
             layout.operator("renaming.dataname_from_obj")
 
 # addon Panel
@@ -159,3 +171,17 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
         row.prop(scene, "renaming_sufpre_lightprops", text = "")
         row.operator('renaming.add_sufpre_by_type', text = "Light Probes").option = 'lightprops'
 
+
+
+
+class VIEW3D_OT_SimpleOperator(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.simple_operator"
+    bl_label = "Simple Object Operator"
+
+    inputBox: StringProperty()
+
+    def execute(self, context):
+        bpy.context.scene.renaming_inputContext = self.inputBox
+        bpy.ops.wm.call_menu(name = RENAMING_MT_variableMenu.bl_idname)
+        return {'FINISHED'}
