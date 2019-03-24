@@ -344,23 +344,22 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
             for obj in bpy.context.selected_objects:
 
                 objName = obj.name + suffix_data
-                if suffix_data is not '':
-                    if (
-                            obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
-                        oldName = obj.data.name
-                        newName = objName
-                        obj.data.name = newName
-                        wm.renaming_messages.addMessage(oldName, obj.data.name)
+                #if suffix_data is not '':
+                if  hasattr(obj, 'data') and obj.data is not None:
+                    oldName = obj.data.name
+                    newName = objName
+                    obj.data.name = newName
+                    wm.renaming_messages.addMessage(oldName, obj.data.name)
         else:
             for obj in bpy.data.objects:
                 objName = obj.name + suffix_data
-                if suffix_data is not '':
-                    if (
-                            obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
-                        oldName = obj.data.name
-                        newName = objName
-                        obj.data.name = newName
-                        wm.renaming_messages.addMessage(oldName, obj.data.name)
+                #if suffix_data is not '':
+                #if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
+                if hasattr(obj, 'data') and obj.data is not None:
+                    oldName = obj.data.name
+                    newName = objName
+                    obj.data.name = newName
+                    wm.renaming_messages.addMessage(oldName, obj.data.name)
 
         callPopup(context)
         return {'FINISHED'}
