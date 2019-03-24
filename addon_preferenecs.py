@@ -25,6 +25,45 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
        default=True,
     )
 
+
+
+    renaming_stringHigh: bpy.props.StringProperty(
+        name="High-Poly",
+        description="String used for high poly meshes",
+        default='high',
+        # update = update_panel_position,
+    )
+    renaming_stringLow: bpy.props.StringProperty(
+        name="Low-Poly",
+        description="String used for high poly meshes",
+        default='low',
+        # update = update_panel_position,
+    )
+    renaming_stringCage: bpy.props.StringProperty(
+        name="Cage",
+        description="String used for high poly meshes",
+        default='cage',
+        # update = update_panel_position,
+    )
+    renaming_user1: bpy.props.StringProperty(
+        name="User1",
+        description="Custom String",
+        default='',
+        # update = update_panel_position,
+    )
+    renaming_user2: bpy.props.StringProperty(
+        name="User2",
+        description="Custom String",
+        default='',
+        # update = update_panel_position,
+    )
+    renaming_user3: bpy.props.StringProperty(
+        name="User3",
+        description="Custom String",
+        default='',
+        # update = update_panel_position,
+    )
+
     def draw(self, context):
         layout = self.layout
 
@@ -32,5 +71,19 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         row.prop(self,"renaming_category", expand = True)
         row = layout.row()
         row.prop(self,"renamingPanel_showPopup")
+        row = layout.row()
+
+        row.prop(self,"renaming_stringHigh")
+        row = layout.row()
+        row.prop(self,"renaming_stringLow")
+        row = layout.row()
+        row.prop(self,"renaming_stringCage")
+        row = layout.row()
+        row.prop(self,"renaming_user1")
+        row = layout.row()
+        row.prop(self,"renaming_user2")
+        row = layout.row()
+        row.prop(self,"renaming_user3")
+
 
 

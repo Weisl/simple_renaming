@@ -115,10 +115,18 @@ def tChange(self, context):
         nameVar = "@d"
     if nameingPreset == "ACTIVE":
         nameVar = "@a"
-    if nameingPreset == "USER":
-        nameVar = "@u"
+    if nameingPreset == "USER1":
+        nameVar = "@u1"
+    if nameingPreset == "USER2":
+        nameVar = "@u2"
+    if nameingPreset == "USER3":
+        nameVar = "@u3"
     if nameingPreset == "TIME":
         nameVar = "@t"
+    if nameingPreset == "TYPE":
+        nameVar = "@y"
+    if nameingPreset == "PARENT":
+        nameVar = "@p"
 
     bpy.context.scene.renaming_newName += str(nameVar)
 
@@ -166,9 +174,14 @@ enumPresetItems = [('FILE', "File", "", '', 1),
     ('LOW', "Low", "", '', 8),
     ('CAGE', "Cage", "", '', 16),
     ('DATE', "Date", "", '', 32),
-    ('ACTIVE', "Active", "", '', 32),
-    ('USER', "User", "", '', 64),
-    ('TIME', "Time", "", '', 128),]
+    ('TIME', "Time", "", '', 128),
+    ('TYPE', "Type", "", '', 1024),
+    ('PARENT', "Parent", "", '', 2048),
+    ('ACTIVE', "Active", "", '', 4096),
+    ('USER1', "User1", "", '', 64),
+    ('USER2', "User2", "", '', 256),
+    ('USER3', "User3", "", '', 512),]
+
 
 def register():
     # bpy.types.INFO_MT_mesh_add.append(menu_add_suffix)

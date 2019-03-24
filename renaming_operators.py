@@ -5,6 +5,31 @@ import time
 ############ OPERATORS ########################
 #############################################
 
+def getfileName(context):
+    filename = "UNSAVED"
+    if bpy.data.is_saved:
+        filename = bpy.path.display_name(bpy.context.blend_data.filepath)
+    return filename
+
+def getDateName(context):
+    t = time.localtime()
+    t = time.mktime(t)
+    return time.strftime("%d%b%Y", time.gmtime(t))
+
+def getTimeName(context):
+    t = time.localtime()
+    t = time.mktime(t)
+    return time.strftime("%H:%M", time.gmtime(t))
+
+def getActive(context):
+    return context.object.name
+
+def getType(context):
+    return str(context.object.type)
+
+def getParent(context):
+    return context.object.parent.name
+
 
 
 class VIEW3D_OT_search_and_replace(bpy.types.Operator):
@@ -49,9 +74,15 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
     bl_description = "replaces the names of the objects"
     bl_options = {'REGISTER', 'UNDO'}
 
+    addon_prefs = None
+
     def execute(self, context):
         wm = context.scene
-        replaceName = replaceInputString(context,wm.renaming_newName)
+
+        print(str(__name__))
+        self.addon_prefs = bpy.context.preferences.addons[__package__].preferences
+
+        replaceName = self.replaceInputString(context,wm.renaming_newName)
 
         renamingList = getRenamingList(self, context)
 
@@ -158,6 +189,44 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         i = 0
         callPopup(context)
         return {'FINISHED'}
+
+    def replaceInputString(self,context,inputTest):
+        print(inputTest)
+        inputTest = re.sub(r'@f', getfileName(context), inputTest)
+        inputTest = re.sub(r'@o', 'OBJECT', inputTest)
+        inputTest = re.sub(r'@h', self.getPrefString('high'), inputTest)
+        inputTest = re.sub(r'@l', self.getPrefString('low'), inputTest)
+        inputTest = re.sub(r'@c', self.getPrefString('cage'), inputTest)
+        inputTest = re.sub(r'@u1', self.getPrefString('user1'), inputTest)
+        inputTest = re.sub(r'@u2', self.getPrefString('user2'), inputTest)
+        inputTest = re.sub(r'@u3', self.getPrefString('user3'), inputTest)
+        inputTest = re.sub(r'@d', getDateName(context), inputTest)
+        inputTest = re.sub(r'@a', getActive(context), inputTest)
+        inputTest = re.sub(r'@t', getTimeName(context), inputTest)
+        inputTest = re.sub(r'@y', getType(context), inputTest)
+        #inputTest = re.sub(r'@p', getParent(context), inputTest)
+        inputTest = re.sub(r'@r', 'RESOLUTION', inputTest)
+        inputTest = re.sub(r'@i', 'FILETYPE', inputTest)
+        print(inputTest)
+        return inputTest
+
+    def high(self):
+        return self.addon_prefs.renaming_stringHigh
+    def low(self):
+        return self.addon_prefs.renaming_stringLow
+    def cage(self):
+        return self.addon_prefs.renaming_stringCage
+    def user1(self):
+        return self.addon_prefs.renaming_user1
+    def user2(self):
+        return self.addon_prefs.renaming_user2
+    def user3(self):
+        return self.addon_prefs.renaming_user3
+
+    def getPrefString(self, suffixStringd):
+        method = getattr(self, suffixStringd, lambda: "Invalid month")
+        return method()
+
 
 class VIEW3D_OT_trim_string(bpy.types.Operator):
     bl_idname = "renaming.cut_string"
@@ -296,31 +365,9 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         callPopup(context)
         return {'FINISHED'}
 
-def replaceInputString(context,inputTest):
-    print(inputTest)
-    inputTest = re.sub(r'@f', getfileName(context), inputTest)
-    inputTest = re.sub(r'@o', 'OBJECT', inputTest)
-    inputTest = re.sub(r'@h', 'HIGH', inputTest)
-    inputTest = re.sub(r'@l', 'LOW', inputTest)
-    inputTest = re.sub(r'@c', 'CAGE', inputTest)
-    inputTest = re.sub(r'@d', getDateName(context), inputTest)
-    inputTest = re.sub(r'@a', 'ACTIVE', inputTest)
-    inputTest = re.sub(r'@t',  getTimeName(context), inputTest)
-    print(inputTest)
-    return inputTest
 
-def getfileName(context):
-    filename = "UNSAVED"
-    if bpy.data.is_saved:
-        filename = bpy.path.display_name(bpy.context.blend_data.filepath)
-    return filename
 
-def getDateName(context):
-    t = time.localtime()
-    t = time.mktime(t)
-    return time.strftime("%d%b%Y", time.gmtime(t))
 
-def getTimeName(context):
-    t = time.localtime()
-    t = time.mktime(t)
-    return time.strftime("%H:%M", time.gmtime(t))
+
+
+
