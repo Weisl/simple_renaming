@@ -132,7 +132,9 @@ def tChange(self, context):
         nameVar = "@y"
     if nameingPreset == "PARENT":
         nameVar = "@p"
-
+    if nameingPreset == "NUMERATE":
+        nameVar = "@n"
+        
     bpy.context.scene.renaming_newName += str(nameVar)
 
 

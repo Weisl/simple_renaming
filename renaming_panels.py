@@ -173,7 +173,6 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
 
 
 
-
 class VIEW3D_OT_SimpleOperator(bpy.types.Operator):
     """Tooltip"""
     bl_idname = "object.simple_operator"

@@ -6,10 +6,13 @@ import time
 #############################################
 
 def getfileName(context):
+    scn = context.scene
+
     if bpy.data.is_saved:
         filename = bpy.path.display_name(bpy.context.blend_data.filepath)
     else:
         filename = "UNSAVED"
+        #scn.renaming_messages.addMessage(oldName, entity.name)
         #TODO: Error message! is unsaved
     return filename
 
