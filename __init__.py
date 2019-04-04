@@ -38,8 +38,8 @@ bl_info = {
 # TODO: Create Properties group for add suffix prefix type
 # TODO: add List Of Textures
 # TODO: Wait for asset manager and otherwise import Auto updater again
-# TODO: Alt+N for quick rename
-# TODO: Blendshapes
+# DONE: F2 for quick rename
+# DONE: Blendshapes
 # DONE: The first one is to keep the mode (edit, pose, etc) after renaming, because if you are switching in objet mode an pose mode all the time, the workflow become a bit slow, especialy in rigging process. I think if yo make a variable before with the process with the mode avaible, you can mantain the mode after renaming... but you know more than me XD
 # DONE: Regex
 # DONE: add Preferences
@@ -86,6 +86,7 @@ classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
     renaming_panels.VIEW3D_OT_SimpleOperator,
+    renaming_panels.VIEW3D_OT_RenamingPopupOperator,
     renaming_popup.VIEW3D_OT_renaming_popup,
     renaming_operators.VIEW3D_OT_add_suffix,
     renaming_operators.VIEW3D_OT_add_prefix,
@@ -193,6 +194,11 @@ enumPresetItems = [('FILE', "File", "", '', 1),
 ]
 
 
+
+
+
+keys = []
+
 def register():
     # bpy.types.INFO_MT_mesh_add.append(menu_add_suffix)
     # IDStore = bpy.types.
@@ -247,6 +253,7 @@ def register():
     IDStore.renaming_replace = StringProperty(name='Replace', default='')
     IDStore.renaming_suffix = StringProperty(name="Suffix", default='')
     IDStore.renaming_prefix = StringProperty(name="Prefix", default='')
+    IDStore.renaming_numerate = StringProperty(name="Numerate", default='###')
     IDStore.renaming_only_selection = BoolProperty(
         name="Selected Objects",
         description="Rename Selected Objects",
@@ -338,13 +345,43 @@ def register():
                                                  update= tChange
                                                  )
 
-
-
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
 
+    #KEYMAP!!
+    global keys
+
+    wm = bpy.context.window_manager
+    active_keyconfig = wm.keyconfigs.active
+    addon_keyconfig = wm.keyconfigs.addon
+
+    kc = addon_keyconfig
+    if not kc:
+        return
+
+    # Activate tool
+    #TODO: Make it work in all the different editors
+    km = kc.keymaps.new(name = "Window",space_type='EMPTY', region_type='WINDOW')
+    #km = kc.keymaps.new(name='WINDOW')
+
+    #kmi = km.keymap_items.new(idname='renaming.f_popup_operator', type='F2', value='PRESS')
+    kmi = km.keymap_items.new(idname='wm.call_panel', type='F5', value='PRESS')
+    kmi.properties.name = 'VIEW3D_PT_tools_renaming_panel'
+    kmi = km.keymap_items.new(idname='wm.call_panel', type='F5', value='PRESS', shift = True)
+    kmi.properties.name = 'VIEW3D_PT_tools_type_suffix'
+
+    keys.append((km, kmi))
+
 def unregister():
+
+    global keys
+
+    for km, kmi in keys:
+        km.keymap_items.remove(kmi)
+    keys.clear()
+
+
     # IDStore = bpy.types.Scene
     IDStore = bpy.types.Scene
     del IDStore.renaming_search
