@@ -5,9 +5,6 @@ import time
 ############ OPERATORS ########################
 #############################################
 
-
-
-
 class VariableReplacer():
     addon_prefs = None
     entity = None
