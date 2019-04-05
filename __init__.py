@@ -78,6 +78,8 @@ from .renaming_utilities import RENAMING_MESSAGES
 
 
 classes = (
+    addon_preferenecs.TEMPLATE_OT_add_hotkey,
+    addon_preferenecs.VIEW3D_OT_renaming_preferences,
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
     renaming_popup.VIEW3D_OT_renaming_popup,
@@ -89,9 +91,7 @@ classes = (
     renaming_operators.VIEW3D_OT_use_objectname_for_data,
     renaming_operators.VIEW3D_OT_replace_name,
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
-    addon_preferenecs.VIEW3D_OT_renaming_preferences,
 )
-
 
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
@@ -241,13 +241,16 @@ def register():
     IDStore.renaming_sufpre_speakers = StringProperty(name="Speakers", default='')
     IDStore.renaming_sufpre_lightprops = StringProperty(name="LightProps", default='')
 
+    from .addon_preferenecs import add_hotkey
+    add_hotkey()
 
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
 
+
 def unregister():
-    # IDStore = bpy.types.Scene
+
     IDStore = bpy.types.Scene
     del IDStore.renaming_search
     del IDStore.renaming_newName
@@ -282,8 +285,9 @@ def unregister():
     from bpy.utils import unregister_class
     for cls in reversed(classes):
         unregister_class(cls)
+    from .addon_preferenecs import remove_hotkey
+    remove_hotkey()
 
-# register, unregister = bpy.utils.register_classes_factory(classes)
 
 if __name__ == "__main__":
     register()
