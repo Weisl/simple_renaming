@@ -48,14 +48,14 @@ bl_info = {
 # support reloading sub-modules
 if "bpy" in locals():
     import importlib
-    importlib.reload(addon_preferenecs)
+    # importlib.reload(addon_preferenecs)
     importlib.reload(renaming_operators)
     importlib.reload(renaming_popup)
     importlib.reload(renaming_utilities)
     importlib.reload(renaming_panels)
     importlib.reload(renaming_sufPre_operators)
 else:
-    from . import addon_preferenecs
+    # from . import addon_preferenecs
     from . import renaming_operators
     from . import renaming_popup
     from . import renaming_utilities
@@ -79,12 +79,28 @@ from .renaming_utilities import RENAMING_MESSAGES
 
 addon_keymaps = []
 
+def add_hotkey():
+    prefs = bpy.context.preferences.addons[__name__].preferences
+
+    wm = bpy.context.window_manager
+    kc = wm.keyconfigs.addon
+    if not kc:
+        return
+
+    km = kc.keymaps.new(name="Renaming Panel", space_type='EMPTY', region_type='WINDOW')
+    kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl = True)
+    kmi.properties.name = 'VIEW3D_PT_tools_renaming_panel'
+    kmi.active = True
+
+    addon_keymaps.append((km, kmi))
+
+
 # addon Preferences
 class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     """Contains the blender addon preferences"""
     # this must match the addon name, use '__package__'
     # when defining this in a submodule of a python package.
-    bl_idname = __package__  ### __package__ works on multifile and __name__ not
+    bl_idname = __name__  ### __package__ works on multifile and __name__ not
 
     prefs_tabs : bpy.props.EnumProperty(
         items=(('ui', "UI", "UI"),
@@ -120,37 +136,15 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = layout.row()
             row.prop(self,"renamingPanel_showPopup")
 
-        # ####### custom keymap preferences ###########
-        # box = layout.box()
-        # split = box.split()
-        # col = split.column()
-        # col.label(text = 'Setup Hotkeys')
-        # col.separator()
-        #
-        # kc = wm.keyconfigs.addon
-        # km = kc.keymaps['Renaming Panel']
-        # kmi = get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel')
-        # if kmi:
-        #     col.context_pointer_set("keymap", km)
-        #     rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
-        # else:
-        #     col.label("No hotkey entry found")
-        #     col.operator(TEMPLATE_OT_add_hotkey.bl_idname, text = "Add hotkey entry", icon = 'ZOOMIN')
-
-
 
         if self.prefs_tabs == 'keymaps':
             box = layout.box()
             split = box.split()
             col = split.column()
-            # if self.choose_menu_type == 'pie':
-            #     col.label(text='Setup Pie menu Hotkey')
-            # elif self.choose_menu_type == 'menu':
-            #     col.label(text='Setup Normal menu Hotkey')
-            # col.separator()
+
             wm = bpy.context.window_manager
             kc = wm.keyconfigs.addon
-            km = kc.keymaps['3D View Generic']
+            km = kc.keymaps['Renaming Panel']
 
             kmi = get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel')
             # if self.choose_menu_type == 'pie':
@@ -163,7 +157,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
             else:
                 col.label(text="No hotkey entry found")
-                col.operator(TEMPLATE_OT_add_hotkey.bl_idname, text = "Add hotkey entry", icon = 'ADD')
+                col.operator(RENAMING_OT_add_hotkey.bl_idname, text = "Add hotkey entry", icon = 'ADD')
 
 
 def get_hotkey_entry_item(km, kmi_name, kmi_value):
@@ -177,35 +171,16 @@ def get_hotkey_entry_item(km, kmi_name, kmi_value):
                 return km_item
     return None
 
-def add_hotkey():
-    prefs = bpy.context.preferences.addons[__name__].preferences
 
-    wm = bpy.context.window_manager
-    addon_keyconfig = wm.keyconfigs.addon
 
-    kc = addon_keyconfig
-    if not kc:
-        return
-
-    km = kc.keymaps.new(name="Renaming Panel", space_type='EMPTY', region_type='WINDOW')
-    kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl = True)
-    kmi.properties.name = 'VIEW3D_PT_tools_renaming_panel'
-    kmi.active = True
-
-    # kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl = True, shift = True)
-    # kmi.properties.name = 'VIEW3D_PT_tools_type_suffix'
-
-    addon_keymaps.append((km, kmi))
-
-class TEMPLATE_OT_add_hotkey(bpy.types.Operator):
+class RENAMING_OT_add_hotkey(bpy.types.Operator):
     ''' Add hotkey entry '''
-    bl_idname = "template.add_hotkey"
+    bl_idname = "renaming.add_hotkey"
     bl_label = "Addon Preferences Example"
     bl_options = {'REGISTER', 'INTERNAL'}
 
     def execute(self, context):
         add_hotkey()
-
         self.report({'INFO'}, "Hotkey added in User Preferences -> Input -> Screen -> Screen (Global)")
         return {'FINISHED'}
 
@@ -213,7 +188,7 @@ def remove_hotkey():
     ''' clears addon keymap hotkeys stored in addon_keymaps '''
     wm = bpy.context.window_manager
     kc = wm.keyconfigs.addon
-    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
+    km = kc.keymaps.new(name="Renaming Panel", space_type='VIEW_3D', region_type='WINDOW')
 
     for km, kmi in addon_keymaps:
         if hasattr(kmi.properties, 'name'):
@@ -224,7 +199,7 @@ def remove_hotkey():
 
 
 classes = (
-    TEMPLATE_OT_add_hotkey,
+    RENAMING_OT_add_hotkey,
     VIEW3D_OT_renaming_preferences,
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
@@ -388,12 +363,11 @@ def register():
     IDStore.renaming_sufpre_speakers = StringProperty(name="Speakers", default='')
     IDStore.renaming_sufpre_lightprops = StringProperty(name="LightProps", default='')
 
-    # from .addon_preferenecs import add_hotkey
-    # add_hotkey()
-
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
+
+    add_hotkey()
 
 
 def unregister():
@@ -439,6 +413,3 @@ def unregister():
 if __name__ == "__main__":
     register()
 
-# import bpy
-# filename = "G:/GitHub/mp_simple_renaming_panel/simple_renaming_panel.py"
-# exec(compile(open(filename).read(), filename, 'exec'))
