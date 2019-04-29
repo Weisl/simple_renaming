@@ -89,6 +89,12 @@ def add_hotkey():
     kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl = True)
     kmi.properties.name = 'VIEW3D_PT_tools_renaming_panel'
     kmi.active = True
+
+    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
+    kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl = True, shift = True)
+    kmi.properties.name = 'VIEW3D_PT_tools_type_suffix'
+    kmi.active = True
+
     addon_keymaps.append((km, kmi))
 
 def get_hotkey_entry_item(km, kmi_name, kmi_value):
@@ -203,7 +209,7 @@ classes = (
     renaming_operators.VIEW3D_OT_replace_name,
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
     RENAMING_OT_add_hotkey,
-    VIEW3D_OT_renaming_preferences,
+    VIEW3D_OT_renaming_preferences, # Preferences need to be after Operators for the hotkeys to work
 )
 
 def menu_add_suffix(self, context):
