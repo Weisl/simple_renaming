@@ -75,8 +75,6 @@ from bpy.props import (
 )
 from .renaming_utilities import RENAMING_MESSAGES
 
-
-
 addon_keymaps = []
 
 def add_hotkey():
@@ -84,16 +82,49 @@ def add_hotkey():
 
     wm = bpy.context.window_manager
     kc = wm.keyconfigs.addon
-    if not kc:
-        return
+    # if not kc:
+    #     return
 
-    km = kc.keymaps.new(name="Renaming Panel", space_type='EMPTY', region_type='WINDOW')
+    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
     kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl = True)
     kmi.properties.name = 'VIEW3D_PT_tools_renaming_panel'
     kmi.active = True
-
     addon_keymaps.append((km, kmi))
 
+def get_hotkey_entry_item(km, kmi_name, kmi_value):
+    '''
+    returns hotkey of specific type, with specific properties.name (keymap is not a dict, so referencing by keys is not enough
+    if there are multiple hotkeys!)
+    '''
+    for i, km_item in enumerate(km.keymap_items):
+        if km.keymap_items.keys()[i] == kmi_name:
+            if km.keymap_items[i].properties.name == kmi_value:
+                return km_item
+    return None
+
+def remove_hotkey():
+    ''' clears addon keymap hotkeys stored in addon_keymaps '''
+    wm = bpy.context.window_manager
+    kc = wm.keyconfigs.addon
+    km = kc.keymaps.new(name="Renaming Panel", space_type='VIEW_3D', region_type='WINDOW')
+
+    for km, kmi in addon_keymaps:
+        if hasattr(kmi.properties, 'name'):
+            if kmi.properties.name in ['VIEW3D_PT_tools_renaming_panel', 'VIEW3D_PT_tools_type_suffix']:
+                km.keymap_items.remove(kmi)
+
+    addon_keymaps.clear()
+
+class RENAMING_OT_add_hotkey(bpy.types.Operator):
+    ''' Add hotkey entry '''
+    bl_idname = "renaming.add_hotkey"
+    bl_label = "Addon Preferences Example"
+    bl_options = {'REGISTER', 'INTERNAL'}
+
+    def execute(self, context):
+        add_hotkey()
+        self.report({'INFO'}, "Hotkey added in User Preferences -> Input -> Screen -> Screen (Global)")
+        return {'FINISHED'}
 
 # addon Preferences
 class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
@@ -159,48 +190,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 col.label(text="No hotkey entry found")
                 col.operator(RENAMING_OT_add_hotkey.bl_idname, text = "Add hotkey entry", icon = 'ADD')
 
-
-def get_hotkey_entry_item(km, kmi_name, kmi_value):
-    '''
-    returns hotkey of specific type, with specific properties.name (keymap is not a dict, so referencing by keys is not enough
-    if there are multiple hotkeys!)
-    '''
-    for i, km_item in enumerate(km.keymap_items):
-        if km.keymap_items.keys()[i] == kmi_name:
-            if km.keymap_items[i].properties.name == kmi_value:
-                return km_item
-    return None
-
-
-
-class RENAMING_OT_add_hotkey(bpy.types.Operator):
-    ''' Add hotkey entry '''
-    bl_idname = "renaming.add_hotkey"
-    bl_label = "Addon Preferences Example"
-    bl_options = {'REGISTER', 'INTERNAL'}
-
-    def execute(self, context):
-        add_hotkey()
-        self.report({'INFO'}, "Hotkey added in User Preferences -> Input -> Screen -> Screen (Global)")
-        return {'FINISHED'}
-
-def remove_hotkey():
-    ''' clears addon keymap hotkeys stored in addon_keymaps '''
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    km = kc.keymaps.new(name="Renaming Panel", space_type='VIEW_3D', region_type='WINDOW')
-
-    for km, kmi in addon_keymaps:
-        if hasattr(kmi.properties, 'name'):
-            if kmi.properties.name in ['VIEW3D_PT_tools_renaming_panel', 'VIEW3D_PT_tools_type_suffix']:
-                km.keymap_items.remove(kmi)
-
-    addon_keymaps.clear()
-
-
 classes = (
-    RENAMING_OT_add_hotkey,
-    VIEW3D_OT_renaming_preferences,
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
     renaming_popup.VIEW3D_OT_renaming_popup,
@@ -212,6 +202,8 @@ classes = (
     renaming_operators.VIEW3D_OT_use_objectname_for_data,
     renaming_operators.VIEW3D_OT_replace_name,
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
+    RENAMING_OT_add_hotkey,
+    VIEW3D_OT_renaming_preferences,
 )
 
 def menu_add_suffix(self, context):
