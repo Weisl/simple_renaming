@@ -1,6 +1,7 @@
 import bpy
 from .renaming_proFeatures import RENAMING_MT_variableMenu
 from bpy.props import StringProperty
+from . import get_hotkey_entry_item
 #############################################
 ############ PANELS ########################
 #############################################
@@ -17,6 +18,36 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
         layout = self.layout
         scene = context.scene
+        prefs = bpy.context.preferences.addons[__package__].preferences
+        #
+        wm = bpy.context.window_manager
+        kc = wm.keyconfigs.addon
+        km = kc.keymaps['3D View Generic']
+
+        kmi1 = get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel')
+        kmi2 = get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix')
+
+        keys = ""
+        if kmi1.shift:
+            keys += " Shift "
+        if kmi1.alt:
+            keys += " Alt "
+        if kmi1.ctrl:
+            keys += " Ctrl "
+        keys += " " + kmi1.type
+
+        keys2 = ""
+        if kmi2.ctrl:
+            keys2 += " Ctrl "
+        if kmi2.shift:
+            keys2 += " Shift "
+        if kmi2.alt:
+            keys2 += " Alt "
+        keys2 += " " + kmi2.type
+
+
+        layout.label(text = keys)
+        layout.label(text = keys2)
 
         layout.prop(scene, "renaming_object_types")
         if str(scene.renaming_object_types) == 'OBJECT':
@@ -112,7 +143,7 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Simple Renaming Panel"
-    #bl_parent_id = "VIEW3D_PT_tools_renaming_panel" # is child of regular panel
+
 
     def draw(self, context):
         scene = context.scene
