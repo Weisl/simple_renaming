@@ -158,6 +158,13 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     # --UI OPTIONS
 
+    renamingPanel_advancedMode : bpy.props.BoolProperty(
+       name="Use Advanced Mode",
+       description="Enable or Disable Advanced Mode",
+       default=True,
+    )
+    #TODO: disable regex on simple
+
     renamingPanel_showPopup: bpy.props.BoolProperty(
        name="Show Popup",
        description="Enable or Disable Popup",
@@ -177,6 +184,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row.prop(self,"renaming_category", expand = True)
             row = layout.row()
             row.prop(self,"renamingPanel_showPopup")
+            row = layout.row()
+            row.prop(self,"renamingPanel_advancedMode")
 
 
         if self.prefs_tabs == 'keymaps':

@@ -18,7 +18,11 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
         layout = self.layout
         scene = context.scene
+
         prefs = bpy.context.preferences.addons[__package__].preferences
+        advancedMode = prefs.renamingPanel_advancedMode
+
+        layout.prop(prefs, "renamingPanel_advancedMode")
         #
         # wm = bpy.context.window_manager
         # kc = wm.keyconfigs.addon
@@ -66,44 +70,69 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         layout.use_property_split = False  # Activate single-column layout
 
         if str(scene.renaming_object_types) in ('OBJECT'):
-            row = layout.row(align=True)
-            split = layout.split(factor=0.6, align = True)
 
-            split.prop(scene, "renaming_newName", text = 'Name')
-            split = split.split(factor=0.75, align=True)
-            split.prop(scene, "renaming_numerate", text = '')
-            button = split.operator("object.renaming_set_variable", text = "@").inputBox = "newName"
+            ###### NEW NAME #######
+            row = layout.row(align=True)
+            if advancedMode == True:
+                split = layout.split(factor=0.6, align = True)
+                split.prop(scene, "renaming_newName", text = 'Name')
+                split = split.split(factor=0.75, align=True)
+                split.prop(scene, "renaming_numerate", text = '')
+                button = split.operator("object.renaming_set_variable", text = "@").inputBox = "newName"
+            else:
+                split = layout.split(factor=0.75, align = True)
+                split.prop(scene, "renaming_newName", text = 'Name')
+                split.prop(scene, "renaming_numerate", text = '')
             layout.operator("renaming.name_replace")
 
-            row = layout.row(align=True)
-            split = row.split(factor=0.9, align = True)
-            split.prop(scene, "renaming_search", text = 'Search')
-            button = split.operator("object.renaming_set_variable", text = "@").inputBox = "search"
-            row = layout.row(align=True)
-            split = row.split(factor=0.9, align = True)
-            split.prop(scene, "renaming_replace", text = 'Replace')
-            button = split.operator("object.renaming_set_variable", text = "@").inputBox = "replace"
-            layout.prop(scene, "renaming_useRegex")
-            if scene.renaming_useRegex == False:
+            ###### SEARCH REPLACE #######
+
+            if advancedMode == True:
+                row = layout.row(align=True)
+                split = row.split(factor=0.9, align = True)
+                split.prop(scene, "renaming_search", text = 'Search')
+                button = split.operator("object.renaming_set_variable", text = "@").inputBox = "search"
+                row = layout.row(align=True)
+                split = row.split(factor=0.9, align = True)
+                split.prop(scene, "renaming_replace", text = 'Replace')
+                button = split.operator("object.renaming_set_variable", text = "@").inputBox = "replace"
+                layout.prop(scene, "renaming_useRegex")
+                if scene.renaming_useRegex == False:
+                    layout.prop(scene, "renaming_matchcase")
+            else: # if advancedMode is off
+                row = layout.row()
+                row.prop(scene, "renaming_search", text = 'Search')
+                row = layout.row()
+                row.prop(scene, "renaming_replace", text = 'Replace')
                 layout.prop(scene, "renaming_matchcase")
             layout.operator("renaming.search_replace")
 
-            row = layout.row(align=True)
-            split = row.split(factor=0.9, align = True)
-            split.prop(scene, "renaming_prefix", text = 'Prefix')
-            button = split.operator("object.renaming_set_variable", text = "@").inputBox = "prefix"
-            layout.operator("renaming.add_prefix")
+            #### REFIX SUFFIX
+            if advancedMode == True:
+                row = layout.row(align=True)
+                split = row.split(factor=0.9, align = True)
+                split.prop(scene, "renaming_prefix", text = 'Prefix')
+                button = split.operator("object.renaming_set_variable", text = "@").inputBox = "prefix"
+                layout.operator("renaming.add_prefix")
 
-            row = layout.row(align=True)
-            split = row.split(factor=0.9, align = True)
-            split.prop(scene, "renaming_suffix", text = 'Suffix')
-            button = split.operator("object.renaming_set_variable", text = "@").inputBox = "suffix"
-            layout.operator("renaming.add_suffix")
+                row = layout.row(align=True)
+                split = row.split(factor=0.9, align = True)
+                split.prop(scene, "renaming_suffix", text = 'Suffix')
+                button = split.operator("object.renaming_set_variable", text = "@").inputBox = "suffix"
+                layout.operator("renaming.add_suffix")
+            else:
+                row = layout.row()
+                row.prop(scene, "renaming_prefix", text = 'Prefix')
+                layout.operator("renaming.add_prefix")
+                row = layout.row()
+                row.prop(scene, "renaming_suffix", text = 'Suffix')
+                layout.operator("renaming.add_suffix")
 
-            layout.prop(scene, "renaming_digits_numerate")
-            layout.operator("renaming.numerate")
-            layout.prop(scene, "renaming_cut_size")
-            layout.operator("renaming.cut_string")
+            if advancedMode == True:
+                layout.prop(scene, "renaming_digits_numerate")
+                layout.operator("renaming.numerate")
+                layout.prop(scene, "renaming_cut_size")
+                layout.operator("renaming.cut_string")
 
         else:
             layout.prop(scene, "renaming_newName", text = 'Name')
@@ -129,11 +158,16 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
             layout.operator("renaming.cut_string")
 
         if str(scene.renaming_object_types) in ('DATA', 'OBJECT', 'ADDOBJECTS'):
-            row = layout.row(align=True)
-            split = row.split(factor=0.9, align=True)
-            split.prop(scene, "renaming_sufpre_data_02", text='Data')
-            button = split.operator("object.renaming_set_variable", text="@").inputBox = "dataFromObj"
-            layout.operator("renaming.dataname_from_obj")
+            if advancedMode == True:
+                row = layout.row(align=True)
+                split = row.split(factor=0.9, align=True)
+                split.prop(scene, "renaming_sufpre_data_02", text='Data')
+                button = split.operator("object.renaming_set_variable", text="@").inputBox = "dataFromObj"
+                layout.operator("renaming.dataname_from_obj")
+            else:
+                row = layout.row()
+                row.prop(scene, "renaming_sufpre_data_02", text='Data')
+                layout.operator("renaming.dataname_from_obj")
 
 
 # addon Panel
