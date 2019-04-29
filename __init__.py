@@ -1,5 +1,5 @@
 '''
-Copyright (C) 2017 Matthias Patscheider
+Copyright (C) 2019 Matthias Patscheider
 patscheider.matthias@gmail.com
 
 Created by Matthias Patscheider
@@ -32,20 +32,10 @@ bl_info = {
     "category": "Scene"
 }
 
-
-
-
+# TODO: Make work in different windows (Shader graph automatically detect nodes)
 # TODO: Create Properties group for add suffix prefix type
 # TODO: add List Of Textures
 # TODO: Wait for asset manager and otherwise import Auto updater again
-# DONE: F2 for quick rename
-# DONE: Blendshapes
-# DONE: The first one is to keep the mode (edit, pose, etc) after renaming, because if you are switching in objet mode an pose mode all the time, the workflow become a bit slow, especialy in rigging process. I think if yo make a variable before with the process with the mode avaible, you can mantain the mode after renaming... but you know more than me XD
-# DONE: Regex
-# DONE: add Preferences
-# DONE: add Actions
-# DONE: Split to multifile
-# DONE: And the second one is have the posibiliti to turn off the popup message after renaming, they are a bit annoying when you have to renamin diferent selections.
 
 
 # support reloading sub-modules
