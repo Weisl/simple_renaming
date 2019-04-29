@@ -178,6 +178,44 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
        default=True,
     )
 
+    renaming_stringHigh: bpy.props.StringProperty(
+        name="Category",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default="high",
+        # update = update_panel_position,
+    )
+    renaming_stringLow: bpy.props.StringProperty(
+        name="Category",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default='low',
+        # update = update_panel_position,
+    )
+    renaming_stringCage: bpy.props.StringProperty(
+        name="Category",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default='cage',
+        # update = update_panel_position,
+    )
+    renaming_user1: bpy.props.StringProperty(
+        name="Category",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default='',
+        # update = update_panel_position,
+    )
+    renaming_user2: bpy.props.StringProperty(
+        name="Category",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default='',
+        # update = update_panel_position,
+    )
+    renaming_user3: bpy.props.StringProperty(
+        name="Category",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default='',
+        # update = update_panel_position,
+    )
+
+
     def draw(self, context):
         layout = self.layout
         wm = bpy.context.window_manager
@@ -192,9 +230,21 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = layout.row()
             row.prop(self,"renamingPanel_showPopup")
             row = layout.row()
-
             row.prop(self,"renamingPanel_advancedMode")
+            row = layout.row()
             row.prop(self, "renaming_separator")
+            row = layout.row()
+            row.prop(self,"renaming_stringLow")
+            row = layout.row()
+            row.prop(self,"renaming_stringHigh")
+            row = layout.row()
+            row.prop(self,"renaming_stringCage")
+            row = layout.row()
+            row.prop(self,"renaming_user1")
+            row = layout.row()
+            row.prop(self,"renaming_user2")
+            row = layout.row()
+            row.prop(self,"renaming_user3")
 
 
         if self.prefs_tabs == 'keymaps':
@@ -273,7 +323,6 @@ def tChange(self, context):
         nameVar = "@n"
 
     bpy.context.scene.renaming_newName += str(nameVar)
-
 
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
@@ -490,14 +539,6 @@ def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
-
-def unregister():
-
-
-    for km, kmi in keys:
-        km.keymap_items.remove(kmi)
-    keys.clear()
-
 
 def unregister():
     IDStore = bpy.types.Scene

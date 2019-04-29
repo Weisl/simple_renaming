@@ -177,11 +177,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
     def execute(self, context):
 
         wm = context.scene
-        addon_prefs = bpy.context.preferences.addons[__package__].preferences
-        seperator = addon_prefs.renamingPanel_defaultseperator
 
         replaceName = wm.renaming_newName
-
         renamingList = getRenamingList(self, context)
 
         digits = len(wm.renaming_numerate)

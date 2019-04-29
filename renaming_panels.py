@@ -20,6 +20,9 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         scene = context.scene
 
         prefs = bpy.context.preferences.addons[__package__].preferences
+        advancedMode = prefs.renamingPanel_advancedMode
+
+        layout.prop(prefs, "renamingPanel_advancedMode")
 
         # wm = bpy.context.window_manager
         # kc = wm.keyconfigs.addon

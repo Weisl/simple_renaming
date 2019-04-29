@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/__init__.py" line="182" />
+    <bookmark url="file://$PROJECT_DIR$/__init__.py" line="220" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85c96c2a-82d7-4aed-93fb-1636fbfc8c3a" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renaming_operators.py" beforeDir="false" afterPath="$PROJECT_DIR$/renaming_operators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renaming_panels.py" beforeDir="false" afterPath="$PROJECT_DIR$/renaming_panels.py" afterDir="false" />
@@ -17,13 +18,17 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="196" column="46" selection-start-line="196" selection-start-column="37" selection-end-line="196" selection-end-column="46" />
+            <state relative-caret-position="442">
+              <caret line="215" column="5" lean-forward="true" selection-start-line="215" selection-start-column="5" selection-end-line="215" selection-end-column="5" />
               <folding>
                 <element signature="e#2704#2714#0" expanded="true" />
+                <element signature="e#7831#8641#0" />
+                <element signature="e#8743#9734#0" />
+                <element signature="e#9777#9855#0" />
+                <element signature="e#12892#21503#0" />
               </folding>
             </state>
           </provider>
@@ -41,8 +46,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/renaming_operators.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="434" column="24" selection-start-line="434" selection-start-column="24" selection-end-line="434" selection-end-column="24" />
+            <state relative-caret-position="200">
+              <caret line="44" column="30" selection-start-line="44" selection-start-column="25" selection-end-line="44" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -61,11 +66,11 @@
           <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/renaming_panels.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="45" column="30" lean-forward="true" selection-start-line="45" selection-start-column="30" selection-end-line="45" selection-end-column="30" />
+            <state relative-caret-position="330">
+              <caret line="180" lean-forward="true" selection-start-line="180" selection-end-line="180" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -96,7 +101,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>IDStorerenaming</find>
       <find>rename_</find>
       <find>ui.regi</find>
       <find>register</find>
@@ -126,6 +130,7 @@
       <find>HEAD</find>
       <find>separator</find>
       <find>get_hotkey_entry_item</find>
+      <find>prefs</find>
     </findStrings>
     <replaceStrings>
       <replace>_sufpre_</replace>
@@ -153,15 +158,15 @@
         <option value="$PROJECT_DIR$/renaming_proFeatures.py" />
         <option value="$PROJECT_DIR$/addon_preferenecs.py" />
         <option value="$PROJECT_DIR$/renaming_popup.py" />
-        <option value="$PROJECT_DIR$/__init__.py" />
-        <option value="$PROJECT_DIR$/renaming_operators.py" />
         <option value="$PROJECT_DIR$/renaming_panels.py" />
+        <option value="$PROJECT_DIR$/renaming_operators.py" />
+        <option value="$PROJECT_DIR$/__init__.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-10" />
-    <option name="width" value="979" />
+    <option name="width" value="980" />
     <option name="height" value="1040" />
   </component>
   <component name="ProjectView">
@@ -215,6 +220,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1665565" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -305,29 +311,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/renaming_panels.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="180" lean-forward="true" selection-start-line="180" selection-end-line="180" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/renaming_operators.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="434" column="24" selection-start-line="434" selection-start-column="24" selection-end-line="434" selection-end-column="24" />
+        <state relative-caret-position="200">
+          <caret line="44" column="30" selection-start-line="44" selection-start-column="25" selection-end-line="44" selection-end-column="30" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="196" column="46" selection-start-line="196" selection-start-column="37" selection-end-line="196" selection-end-column="46" />
+        <state relative-caret-position="442">
+          <caret line="215" column="5" lean-forward="true" selection-start-line="215" selection-start-column="5" selection-end-line="215" selection-end-column="5" />
           <folding>
             <element signature="e#2704#2714#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/renaming_panels.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="45" column="30" lean-forward="true" selection-start-line="45" selection-start-column="30" selection-end-line="45" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
+            <element signature="e#7831#8641#0" />
+            <element signature="e#8743#9734#0" />
+            <element signature="e#9777#9855#0" />
+            <element signature="e#12892#21503#0" />
           </folding>
         </state>
       </provider>
