@@ -186,7 +186,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             kmis = []
             kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel'))
             kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix'))
-            for kmi in kmis: 
+            for kmi in kmis:
                 if kmi:
                     col.context_pointer_set("keymap", km)
                     rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
@@ -305,6 +305,12 @@ def register():
         name="Selected Objects",
         description="Rename Selected Objects",
         default=True,
+    )
+
+    IDStore.renaming_advancedMode = BoolProperty(
+        name="Advanced Renaming",
+        description="Enable additional feautres for renaming",
+        default=False,
     )
 
     IDStore.renaming_matchcase = BoolProperty(
