@@ -1,5 +1,5 @@
 import bpy
-from .__init__ import get_hotkey_entry_item
+from . import get_hotkey_entry_item
 #############################################
 ############ PANELS ########################
 #############################################
@@ -95,7 +95,7 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Simple Renaming Panel"
-    #bl_parent_id = "VIEW3D_PT_tools_renaming_panel" # is child of regular panel
+
 
     def draw(self, context):
         scene = context.scene
