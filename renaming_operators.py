@@ -185,6 +185,9 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         renamingList = getRenamingList(self, context)
 
         digits = len(wm.renaming_numerate)
+        prefs = bpy.context.preferences.addons[__package__].preferences
+        separator = prefs.renaming_separator
+
         shapeKeyNamesList = []
         if wm.renaming_object_types == 'SHAPEKEYS':
             for key_grp in bpy.data.shape_keys:
@@ -221,7 +224,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                     dataList.append(obj.data.name)
 
                         while True:
-                            newName = replaceName + seperator + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
+                            newName = replaceName + separator + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
 
                             if wm.renaming_object_types == 'OBJECT':
                                 if newName in bpy.data.objects and newName != entity.name:
@@ -273,7 +276,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                             else:
                                 break
 
-                        newName = replaceName + seperator + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
+                        newName = replaceName + separator + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
                         entity.name = newName
                         wm.renaming_messages.addMessage(oldName, entity.name)
                         i = i + 1
@@ -371,11 +374,16 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
+        prefs = bpy.context.preferences.addons[__package__].preferences
+        separator = prefs.renaming_separator
+
         wm = context.scene
         i = 1
 
         step = wm.renaming_base_numerate
         digits = wm.renaming_digits_numerate
+
+
 
         renamingList = []
         renamingList = getRenamingList(self, context)
@@ -384,7 +392,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
             for entity in renamingList:
                 if entity is not None:
                     oldName = entity.name
-                    newName = entity.name + '_' + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width=digits))
+                    newName = entity.name + separator + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width=digits))
                     entity.name = newName
                     wm.renaming_messages.addMessage(oldName, entity.name)
                     i = i + 1

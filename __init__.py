@@ -156,6 +156,13 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         # update = update_panel_position,
     )
 
+    renaming_separator: bpy.props.StringProperty(
+        name="Separator",
+        description="Defines the separator between different operations",
+        default='_',
+        # update = update_panel_position,
+    )
+
     # --UI OPTIONS
 
     renamingPanel_advancedMode : bpy.props.BoolProperty(
@@ -185,7 +192,9 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = layout.row()
             row.prop(self,"renamingPanel_showPopup")
             row = layout.row()
+
             row.prop(self,"renamingPanel_advancedMode")
+            row.prop(self, "renaming_separator")
 
 
         if self.prefs_tabs == 'keymaps':
@@ -262,7 +271,7 @@ def tChange(self, context):
         nameVar = "@p"
     if nameingPreset == "NUMERATE":
         nameVar = "@n"
-        
+
     bpy.context.scene.renaming_newName += str(nameVar)
 
 
