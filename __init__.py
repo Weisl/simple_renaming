@@ -78,7 +78,7 @@ from .renaming_utilities import RENAMING_MESSAGES
 addon_keymaps = []
 
 def add_hotkey():
-    prefs = bpy.context.preferences.addons[__name__].preferences
+    prefs = bpy.context.preferences.addons[__package__].preferences
 
     wm = bpy.context.window_manager
     kc = wm.keyconfigs.addon
@@ -112,7 +112,7 @@ def remove_hotkey():
     ''' clears addon keymap hotkeys stored in addon_keymaps '''
     wm = bpy.context.window_manager
     kc = wm.keyconfigs.addon
-    km = kc.keymaps.new(name="Renaming Panel", space_type='VIEW_3D', region_type='WINDOW')
+    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
 
     for km, kmi in addon_keymaps:
         if hasattr(kmi.properties, 'name'):
@@ -137,7 +137,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     """Contains the blender addon preferences"""
     # this must match the addon name, use '__package__'
     # when defining this in a submodule of a python package.
-    bl_idname = __name__  ### __package__ works on multifile and __name__ not
+    bl_idname = __package__  ### __package__ works on multifile and __name__ not
 
     prefs_tabs : bpy.props.EnumProperty(
         items=(('ui', "UI", "UI"),
@@ -181,20 +181,18 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
             wm = bpy.context.window_manager
             kc = wm.keyconfigs.addon
-            km = kc.keymaps['Renaming Panel']
+            km = kc.keymaps['3D View Generic']
 
-            kmi = get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel')
-            # if self.choose_menu_type == 'pie':
-            #     kmi = get_hotkey_entry_item(km, 'wm.call_menu_pie', 'SPEEDFLOW_MT_pie_menu')
-            # elif self.choose_menu_type == 'menu':
-            #     kmi = get_hotkey_entry_item(km, 'wm.call_menu', 'SPEEDFLOW_MT_simple_menu')
-
-            if kmi:
-                col.context_pointer_set("keymap", km)
-                rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
-            else:
-                col.label(text="No hotkey entry found")
-                col.operator(RENAMING_OT_add_hotkey.bl_idname, text = "Add hotkey entry", icon = 'ADD')
+            kmis = []
+            kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel'))
+            kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix'))
+            for kmi in kmis: 
+                if kmi:
+                    col.context_pointer_set("keymap", km)
+                    rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
+                else:
+                    col.label(text="No hotkey entry found")
+                    col.operator(RENAMING_OT_add_hotkey.bl_idname, text = "Add hotkey entry", icon = 'ADD')
 
 classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
