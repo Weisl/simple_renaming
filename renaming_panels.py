@@ -18,34 +18,34 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         scene = context.scene
         prefs = bpy.context.preferences.addons[__package__].preferences
 
-        # wm = bpy.context.window_manager
-        # kc = wm.keyconfigs.addon
-        # km = kc.keymaps['3D View Generic']
-        #
-        # kmi1 = get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel')
-        # kmi2 = get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix')
-        #
-        # keys = ""
-        # if kmi1.shift:
-        #     keys += " Shift "
-        # if kmi1.alt:
-        #     keys += " Alt "
-        # if kmi1.ctrl:
-        #     keys += " Ctrl "
-        # keys += " " + kmi1.type
-        #
-        # keys2 = ""
-        # if kmi2.ctrl:
-        #     keys2 += " Ctrl "
-        # if kmi2.shift:
-        #     keys2 += " Shift "
-        # if kmi2.alt:
-        #     keys2 += " Alt "
-        # keys2 += " " + kmi2.type
-        #
-        #
-        # layout.label(text = keys)
-        # layout.label(text = keys2)
+        wm = bpy.context.window_manager
+        kc = wm.keyconfigs.addon
+        km = kc.keymaps['3D View Generic']
+
+        kmi1 = get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel')
+        kmi2 = get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix')
+
+        keys = ""
+        if kmi1.shift:
+            keys += " Shift "
+        if kmi1.alt:
+            keys += " Alt "
+        if kmi1.ctrl:
+            keys += " Ctrl "
+        keys += " " + kmi1.type
+
+        keys2 = ""
+        if kmi2.ctrl:
+            keys2 += " Ctrl "
+        if kmi2.shift:
+            keys2 += " Shift "
+        if kmi2.alt:
+            keys2 += " Alt "
+        keys2 += " " + kmi2.type
+
+
+        layout.label(text = keys)
+        layout.label(text = keys2)
 
         layout.prop(scene, "renaming_object_types")
         if str(scene.renaming_object_types) == 'OBJECT':
