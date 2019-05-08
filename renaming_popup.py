@@ -1,7 +1,7 @@
 import bpy
 from .renaming_utilities import getRenamingList,trimString
 
-class VIEW3D_OT_renaming_popup(bpy.types.Operator):
+class VIEW3D_OT_renaming_popup(bpy.types.Panel):
     """Tooltip"""
     bl_idname = "renaming.popup"
     bl_label = "Renaming Panel"
@@ -11,19 +11,19 @@ class VIEW3D_OT_renaming_popup(bpy.types.Operator):
         description="message",
         default=''
     )
-    @classmethod
-    def poll(cls, context):
-        user_preferences = context.preferences
-        addon_prefs = user_preferences.addons[__name__].preferences
-        return addon_prefs.renamingPanel_showPopup
+    # @classmethod
+    # def poll(cls, context):
+    #     user_preferences = context.preferences
+    #     addon_prefs = user_preferences.addons[__name__].preferences
+    #     return addon_prefs.renamingPanel_showPopup
 
-    def execute(self, context):
-        # self.report({'INFO'}, self.message)
-        print(self.message)
-        return {'FINISHED'}
-
-    def invoke(self, context, event):
-        return context.window_manager.invoke_props_dialog(self, width=600)
+    # def execute(self, context):
+    #     # self.report({'INFO'}, self.message)
+    #     print(self.message)
+    #     return {'FINISHED'}
+    #
+    # def invoke(self, context, event):
+    #     return context.window_manager.invoke_props_dialog(self, width=600)
 
     def draw(self, context):
         wm = bpy.context.scene
