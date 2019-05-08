@@ -41,14 +41,12 @@ bl_info = {
 # support reloading sub-modules
 if "bpy" in locals():
     import importlib
-    # importlib.reload(addon_preferenecs)
     importlib.reload(renaming_operators)
     importlib.reload(renaming_popup)
     importlib.reload(renaming_utilities)
     importlib.reload(renaming_panels)
     importlib.reload(renaming_sufPre_operators)
 else:
-    # from . import addon_preferenecs
     from . import renaming_operators
     from . import renaming_popup
     from . import renaming_utilities
@@ -66,6 +64,7 @@ from bpy.props import (
     PointerProperty,
     CollectionProperty,
 )
+
 from .renaming_utilities import RENAMING_MESSAGES
 
 addon_keymaps = []
@@ -114,7 +113,7 @@ def remove_hotkey():
 
     addon_keymaps.clear()
 
-class RENAMING_OT_add_hotkey(bpy.types.Operator):
+class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
     ''' Add hotkey entry '''
     bl_idname = "renaming.add_hotkey"
     bl_label = "Addon Preferences Example"
@@ -194,7 +193,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                     rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
                 else:
                     col.label(text="No hotkey entry found")
-                    col.operator(RENAMING_OT_add_hotkey.bl_idname, text = "Add hotkey entry", icon = 'ADD')
+                    col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, text = "Add hotkey entry", icon = 'ADD')
 
 classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
@@ -208,12 +207,12 @@ classes = (
     renaming_operators.VIEW3D_OT_use_objectname_for_data,
     renaming_operators.VIEW3D_OT_replace_name,
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
-    RENAMING_OT_add_hotkey,
+    RENAMING_OT_add_hotkey_renaming,
     VIEW3D_OT_renaming_preferences, # Preferences need to be after Operators for the hotkeys to work
 )
 
-def menu_add_suffix(self, context):
-    self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
+# def menu_add_suffix(self, context):
+#     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
 
 enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1),
                    ('MESH', "", "Rename mesh objects", 'OUTLINER_OB_MESH', 2),
