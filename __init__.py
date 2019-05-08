@@ -37,25 +37,16 @@ bl_info = {
 # TODO: Wait for asset manager and otherwise import Auto updater again
 # TODO: Alt+N for quick rename
 # TODO: Blendshapes
-# DONE: The first one is to keep the mode (edit, pose, etc) after renaming, because if you are switching in objet mode an pose mode all the time, the workflow become a bit slow, especialy in rigging process. I think if yo make a variable before with the process with the mode avaible, you can mantain the mode after renaming... but you know more than me XD
-# DONE: Regex
-# DONE: add Preferences
-# DONE: add Actions
-# DONE: Split to multifile
-# DONE: And the second one is have the posibiliti to turn off the popup message after renaming, they are a bit annoying when you have to renamin diferent selections.
-
 
 # support reloading sub-modules
 if "bpy" in locals():
     import importlib
-    # importlib.reload(addon_preferenecs)
     importlib.reload(renaming_operators)
     importlib.reload(renaming_popup)
     importlib.reload(renaming_utilities)
     importlib.reload(renaming_panels)
     importlib.reload(renaming_sufPre_operators)
 else:
-    # from . import addon_preferenecs
     from . import renaming_operators
     from . import renaming_popup
     from . import renaming_utilities
@@ -73,6 +64,7 @@ from bpy.props import (
     PointerProperty,
     CollectionProperty,
 )
+
 from .renaming_utilities import RENAMING_MESSAGES
 
 addon_keymaps = []
@@ -121,7 +113,7 @@ def remove_hotkey():
 
     addon_keymaps.clear()
 
-class RENAMING_OT_add_hotkey(bpy.types.Operator):
+class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
     ''' Add hotkey entry '''
     bl_idname = "renaming.add_hotkey"
     bl_label = "Addon Preferences Example"
@@ -201,12 +193,12 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                     rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
                 else:
                     col.label(text="No hotkey entry found")
-                    col.operator(RENAMING_OT_add_hotkey.bl_idname, text = "Add hotkey entry", icon = 'ADD')
+                    col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, text = "Add hotkey entry", icon = 'ADD')
 
 classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
-    renaming_popup.VIEW3D_OT_renaming_popup,
+    renaming_popup.VIEW3D_PT_renaming_popup,
     renaming_operators.VIEW3D_OT_add_suffix,
     renaming_operators.VIEW3D_OT_add_prefix,
     renaming_operators.VIEW3D_OT_search_and_replace,
@@ -215,12 +207,12 @@ classes = (
     renaming_operators.VIEW3D_OT_use_objectname_for_data,
     renaming_operators.VIEW3D_OT_replace_name,
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
-    RENAMING_OT_add_hotkey,
+    RENAMING_OT_add_hotkey_renaming,
     VIEW3D_OT_renaming_preferences, # Preferences need to be after Operators for the hotkeys to work
 )
 
-def menu_add_suffix(self, context):
-    self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
+# def menu_add_suffix(self, context):
+#     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
 
 enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1),
                    ('MESH', "", "Rename mesh objects", 'OUTLINER_OB_MESH', 2),
