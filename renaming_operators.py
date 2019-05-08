@@ -164,7 +164,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
                             entity.name = newName
                             wm.renaming_messages.addMessage(oldName, entity.name)
 
-        callPopup(context)
+        # callPopup(context)
         return {'FINISHED'}
 
 class VIEW3D_OT_replace_name(bpy.types.Operator):
@@ -282,7 +282,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             wm.renaming_messages.addMessage(None, None, "Insert a valid string to replace names")
 
         i = 0
-        callPopup(context)
+        # callPopup(context)
         return {'FINISHED'}
 
 
@@ -306,7 +306,7 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
                     entity.name = newName
                     wm.renaming_messages.addMessage(oldName, entity.name)
 
-        callPopup(context)
+        # callPopup(context)
         return {'FINISHED'}
 
 class VIEW3D_OT_add_suffix(bpy.types.Operator):
@@ -336,7 +336,7 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         else:
             wm.renaming_messages.addMessage(None, None, "Insert Valide String")
 
-        callPopup(context)
+        # callPopup(context)
         return {'FINISHED'}
 
 class VIEW3D_OT_add_prefix(bpy.types.Operator):
@@ -361,7 +361,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
                         entity.name = newName
                         wm.renaming_messages.addMessage(oldName, entity.name)
 
-        callPopup(context)
+        # callPopup(context)
         return {'FINISHED'}
 
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
@@ -394,7 +394,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
                     wm.renaming_messages.addMessage(oldName, entity.name)
                     i = i + 1
 
-        callPopup(context)
+        # callPopup(context)
         return {'FINISHED'}
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
@@ -428,7 +428,7 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
                     obj.data.name = newName
                     wm.renaming_messages.addMessage(oldName, obj.data.name)
 
-        callPopup(context)
+        # callPopup(context)
         return {'FINISHED'}
 
 
