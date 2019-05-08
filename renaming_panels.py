@@ -17,8 +17,8 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
         prefs = bpy.context.preferences.addons[__package__].preferences
+        wm = bpy.context.window_manager
 
-        # wm = bpy.context.window_manager
         # kc = wm.keyconfigs.addon
         # km = kc.keymaps['3D View Generic']
         #

@@ -37,13 +37,6 @@ bl_info = {
 # TODO: Wait for asset manager and otherwise import Auto updater again
 # TODO: Alt+N for quick rename
 # TODO: Blendshapes
-# DONE: The first one is to keep the mode (edit, pose, etc) after renaming, because if you are switching in objet mode an pose mode all the time, the workflow become a bit slow, especialy in rigging process. I think if yo make a variable before with the process with the mode avaible, you can mantain the mode after renaming... but you know more than me XD
-# DONE: Regex
-# DONE: add Preferences
-# DONE: add Actions
-# DONE: Split to multifile
-# DONE: And the second one is have the posibiliti to turn off the popup message after renaming, they are a bit annoying when you have to renamin diferent selections.
-
 
 # support reloading sub-modules
 if "bpy" in locals():
@@ -206,7 +199,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
-    renaming_popup.VIEW3D_OT_renaming_popup,
+    renaming_popup.VIEW3D_PT_renaming_popup,
     renaming_operators.VIEW3D_OT_add_suffix,
     renaming_operators.VIEW3D_OT_add_prefix,
     renaming_operators.VIEW3D_OT_search_and_replace,

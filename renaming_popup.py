@@ -1,7 +1,7 @@
 import bpy
 from .renaming_utilities import getRenamingList,trimString
 
-class VIEW3D_OT_renaming_popup(bpy.types.Panel):
+class VIEW3D_PT_renaming_popup(bpy.types.Panel):
     """Tooltip"""
     bl_idname = "renaming.popup"
     bl_label = "Renaming Panel"
