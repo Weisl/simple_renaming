@@ -22,6 +22,12 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
+        prefs = bpy.context.preferences.addons[__package__].preferences
+        advancedMode = prefs.renamingPanel_advancedMode
+
+        layout.prop(prefs, "renamingPanel_advancedMode")
+
+
         layout.prop(scene, "renaming_object_types")
         if str(scene.renaming_object_types) == 'OBJECT':
             layout.prop(scene, "renaming_object_types_specified", expand=True)
