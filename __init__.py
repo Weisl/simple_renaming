@@ -36,12 +36,13 @@ bl_info = {
 # TODO: Create Properties group for add suffix prefix type
 # TODO: add List Of Textures
 # TODO: Wait for asset manager and otherwise import Auto updater again
+# TODO: Alt+N for quick rename
+# TODO: Blendshapes
 
 
 # support reloading sub-modules
 if "bpy" in locals():
     import importlib
-    # importlib.reload(addon_preferenecs)
     importlib.reload(renaming_operators)
     importlib.reload(renaming_popup)
     importlib.reload(renaming_utilities)
@@ -49,7 +50,6 @@ if "bpy" in locals():
     importlib.reload(renaming_sufPre_operators)
     importlib.reload(renaming_proFeatures)
 else:
-    # from . import addon_preferenecs
     from . import renaming_operators
     from . import renaming_popup
     from . import renaming_utilities
@@ -68,6 +68,7 @@ from bpy.props import (
     PointerProperty,
     CollectionProperty,
 )
+
 from .renaming_utilities import RENAMING_MESSAGES
 
 addon_keymaps = []
@@ -116,7 +117,7 @@ def remove_hotkey():
 
     addon_keymaps.clear()
 
-class RENAMING_OT_add_hotkey(bpy.types.Operator):
+class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
     ''' Add hotkey entry '''
     bl_idname = "renaming.add_hotkey"
     bl_label = "Addon Preferences Example"
@@ -255,14 +256,14 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                     rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
                 else:
                     col.label(text="No hotkey entry found")
-                    col.operator(RENAMING_OT_add_hotkey.bl_idname, text = "Add hotkey entry", icon = 'ADD')
+                    col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, text = "Add hotkey entry", icon = 'ADD')
 
 classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
     renaming_panels.VIEW3D_OT_SimpleOperator,
     renaming_panels.VIEW3D_OT_RenamingPopupOperator,
-    renaming_popup.VIEW3D_OT_renaming_popup,
+    renaming_popup.VIEW3D_PT_renaming_popup,
     renaming_operators.VIEW3D_OT_add_suffix,
     renaming_operators.VIEW3D_OT_add_prefix,
     renaming_operators.VIEW3D_OT_search_and_replace,
@@ -273,7 +274,7 @@ classes = (
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
     renaming_proFeatures.RENAMING_MT_variableMenu,
     renaming_proFeatures.VIEW3D_OT_inputVariables,
-    RENAMING_OT_add_hotkey,
+    RENAMING_OT_add_hotkey_renaming,
     VIEW3D_OT_renaming_preferences,  # Preferences need to be after Operators for the hotkeys to work
 )
 
@@ -316,6 +317,7 @@ def tChange(self, context):
 
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
+
 
 enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1),
                    ('MESH', "", "Rename mesh objects", 'OUTLINER_OB_MESH', 2),
@@ -363,7 +365,6 @@ enumPresetItems = [('FILE', "File", "", '', 1),
     ('USER2', "User2", "", '', 256),
     ('USER3', "User3", "", '', 512),
     ('NUMBER', "Number", "", '', 512),
-
 ]
 
 
