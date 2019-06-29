@@ -239,6 +239,8 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
         row.prop(scene, "renaming_sufpre_lightprops", text = "")
         row.operator('renaming.add_sufpre_by_type', text = "Light Probes").option = 'lightprops'
 
+        row = col.row()
+        row.operator('renaming.add_sufpre_by_type', text = "All").option = 'all'
 
 
 class VIEW3D_OT_SimpleOperator(bpy.types.Operator):
