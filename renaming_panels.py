@@ -1,22 +1,26 @@
 import bpy
 
+
 # addon Panel
 class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     """Creates a renaming Panel"""
     bl_label = "Simple Renaming Panel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Simple Renaming Panel"
+    bl_category = "Rename"
 
     def draw(self, context):
 
         layout = self.layout
         scene = context.scene
-        
-        layout.prop(scene, "renaming_object_types")
+
+        layout.label(text="Target")
+        split = layout.split(align=True, factor=0.3)
+        split.label(text="Type")
+        split.prop(scene, "renaming_object_types", text="")
         if str(scene.renaming_object_types) == 'OBJECT':
             layout.prop(scene, "renaming_object_types_specified", expand=True)
-        #elif str(scene.renaming_object_types) == 'ADDOBJECTS':
+        # elif str(scene.renaming_object_types) == 'ADDOBJECTS':
         #    layout.prop(scene, "renaming_object_addtypes_specified", expand=True)
 
         layout.use_property_split = True  # Activate single-column layout
@@ -28,31 +32,58 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
         layout.separator()
 
-        layout.prop(scene, "renaming_newName")
-        layout.operator("renaming.name_replace")
+        ###############################################
+        layout.label(text="Rename")
+
+        row = layout.row(align=True)
+        row.scale_y = 1.5
+        row.operator("renaming.name_replace", icon="FORWARD")
+        row.prop(scene, "renaming_newName", text="")
+        layout.separator()
+
+        ###############################################
+        row = layout.row(align=True)
+        row.scale_y = 1.5
+        row.operator("renaming.search_replace", icon="FILE_REFRESH")
+        if scene.renaming_useRegex == False:
+            row = layout.row(align=True)
+            row.prop(scene, "renaming_matchcase")
+            row.prop(scene, "renaming_useRegex")
+        else:
+            layout.prop(scene, "renaming_useRegex")
+
         layout.prop(scene, "renaming_search")
         layout.prop(scene, "renaming_replace")
-        layout.prop(scene, "renaming_useRegex")
+        layout.separator()
 
-        if scene.renaming_useRegex == False:
-            layout.prop(scene, "renaming_matchcase")
+        ###############################################
+        layout.label(text="Other")
 
-        layout.operator("renaming.search_replace")
+        ###############################################
+        row = layout.row(align=True)
+        row.operator("renaming.add_prefix", icon="REW")
+        row.prop(scene, "renaming_prefix", text="")
 
-        layout.prop(scene, "renaming_prefix")
-        layout.operator("renaming.add_prefix")
+        ###############################################
+        row = layout.row(align=True)
+        row.operator("renaming.add_suffix", icon="FF")
+        row.prop(scene, "renaming_suffix", text="")
 
-        layout.prop(scene, "renaming_suffix")
-        layout.operator("renaming.add_suffix")
+        ###############################################
+        row = layout.row(align=True)
+        row.operator("renaming.numerate", icon="LINENUMBERS_ON")
+        row.prop(scene, "renaming_digits_numerate", text="")
 
-        layout.prop(scene, "renaming_digits_numerate")
-        layout.operator("renaming.numerate")
-        layout.prop(scene, "renaming_cut_size")
-        layout.operator("renaming.cut_string")
+        ###############################################
+        row = layout.row(align=True)
+        row.operator("renaming.cut_string", icon="X")
+        row.prop(scene, "renaming_cut_size", text="")
 
-        if str(scene.renaming_object_types) in ('DATA', 'OBJECT','ADDOBJECTS'):
-            layout.prop(scene, "renaming_sufpre_data_02")
-            layout.operator("renaming.dataname_from_obj")
+        if str(scene.renaming_object_types) in ('DATA', 'OBJECT', 'ADDOBJECTS'):
+            row = layout.row(align=True)
+            row.operator("renaming.dataname_from_obj", icon="MOD_DATA_TRANSFER")
+            row.prop(scene, "renaming_sufpre_data_02", text="")
+
 
 # addon Panel
 class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
