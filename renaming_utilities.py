@@ -85,7 +85,7 @@ def callPopup(context):
     preferences = context.preferences
     addon_prefs = preferences.addons[__package__].preferences
     if addon_prefs.renamingPanel_showPopup == True:
-        bpy.ops.wm.call_panel('renaming.popup')
+        bpy.ops.wm.call_panel(name="renaming.popup")
     return
 
 windowVariables = []

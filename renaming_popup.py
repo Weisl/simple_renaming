@@ -7,7 +7,7 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
     bl_label = "Renaming Popup"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Simple Renaming Panel"
+    # bl_category = "Rename"
     bl_ui_units_x = 30
 
     message: bpy.props.StringProperty(

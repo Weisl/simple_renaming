@@ -23,7 +23,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         # elif str(scene.renaming_object_types) == 'ADDOBJECTS':
         #    layout.prop(scene, "renaming_object_addtypes_specified", expand=True)
 
-        layout.use_property_split = True  # Activate single-column layout
+        layout.use_property_split = False  # Activate single-column layout
 
         if str(scene.renaming_object_types) in ('MATERIAL', 'DATA'):
             layout.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
@@ -36,24 +36,25 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         layout.label(text="Rename")
 
         row = layout.row(align=True)
-        row.scale_y = 1.5
-        row.operator("renaming.name_replace", icon="FORWARD")
+        # row.scale_y = 1.5
         row.prop(scene, "renaming_newName", text="")
+        row.operator("renaming.name_replace", icon="FORWARD")
         layout.separator()
 
         ###############################################
-        row = layout.row(align=True)
-        row.scale_y = 1.5
-        row.operator("renaming.search_replace", icon="FILE_REFRESH")
+
         if scene.renaming_useRegex == False:
             row = layout.row(align=True)
-            row.prop(scene, "renaming_matchcase")
             row.prop(scene, "renaming_useRegex")
+            row.prop(scene, "renaming_matchcase")
         else:
             layout.prop(scene, "renaming_useRegex")
 
         layout.prop(scene, "renaming_search")
         layout.prop(scene, "renaming_replace")
+        row = layout.row(align=True)
+        # row.scale_y = 1.5
+        row.operator("renaming.search_replace", icon="FILE_REFRESH")
         layout.separator()
 
         ###############################################
@@ -61,29 +62,28 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
         ###############################################
         row = layout.row(align=True)
-        row.operator("renaming.add_prefix", icon="REW")
         row.prop(scene, "renaming_prefix", text="")
+        row.operator("renaming.add_prefix", icon="REW")
 
         ###############################################
         row = layout.row(align=True)
-        row.operator("renaming.add_suffix", icon="FF")
         row.prop(scene, "renaming_suffix", text="")
+        row.operator("renaming.add_suffix", icon="FF")
 
         ###############################################
         row = layout.row(align=True)
-        row.operator("renaming.numerate", icon="LINENUMBERS_ON")
         row.prop(scene, "renaming_digits_numerate", text="")
+        row.operator("renaming.numerate", icon="LINENUMBERS_ON")
 
         ###############################################
         row = layout.row(align=True)
-        row.operator("renaming.cut_string", icon="X")
         row.prop(scene, "renaming_cut_size", text="")
+        row.operator("renaming.cut_string", icon="X")
 
         if str(scene.renaming_object_types) in ('DATA', 'OBJECT', 'ADDOBJECTS'):
             row = layout.row(align=True)
-            row.operator("renaming.dataname_from_obj", icon="MOD_DATA_TRANSFER")
             row.prop(scene, "renaming_sufpre_data_02", text="")
-
+            row.operator("renaming.dataname_from_obj", icon="MOD_DATA_TRANSFER")
 
 # addon Panel
 class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
@@ -91,7 +91,7 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
     bl_label = "Prefix/Suffix by Type"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Simple Renaming Panel"
+    bl_category = "Rename"
 
 
     def draw(self, context):
