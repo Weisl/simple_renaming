@@ -47,6 +47,7 @@ if "bpy" in locals():
     importlib.reload(renaming_popup)
     importlib.reload(renaming_utilities)
     importlib.reload(renaming_panels)
+    importlib.reload(renaming_vallidate)
     importlib.reload(renaming_sufPre_operators)
     importlib.reload(renaming_proFeatures)
 else:
@@ -54,6 +55,7 @@ else:
     from . import renaming_popup
     from . import renaming_utilities
     from . import renaming_panels
+    from . import renaming_vallidate
     from . import renaming_sufPre_operators
     from . import renaming_proFeatures
 
@@ -276,7 +278,9 @@ classes = (
     renaming_proFeatures.RENAMING_MT_variableMenu,
     renaming_proFeatures.VIEW3D_OT_inputVariables,
     RENAMING_OT_add_hotkey_renaming,
-    VIEW3D_OT_renaming_preferences,  # Preferences need to be after Operators for the hotkeys to work
+    renaming_vallidate.VIEW3D_OT_Vallidate,
+    renaming_vallidate.VIEW3D_PT_vallidation,
+    VIEW3D_OT_renaming_preferences, # Preferences need to be after Operators for the hotkeys to work
 )
 
 def tChange(self, context):
