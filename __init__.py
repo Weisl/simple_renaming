@@ -197,6 +197,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
 classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
+    renaming_panels.VIEW3D_PT_advanced_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
     renaming_popup.VIEW3D_PT_renaming_popup,
     renaming_operators.VIEW3D_OT_add_suffix,
@@ -308,7 +309,7 @@ def register():
         default=True,
     )
 
-    IDStore.renaming_advancedMode = BoolProperty(
+    IDStore.renamingPanel_advancedMode = BoolProperty(
         name="Advanced Renaming",
         description="Enable additional feautres for renaming",
         default=False,
