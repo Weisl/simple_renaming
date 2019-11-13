@@ -53,7 +53,7 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
 
                             i += 1
 
-                    else:
+                    else: #if msg['warning'] == True
                         if msg['newName'] is not None and msg['oldName'] is not None:
                             box.label(text="Warning", icon="ERROR")
                             box.label(text="       " + "Name: " + str(msg['oldName']))

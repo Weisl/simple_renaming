@@ -1,11 +1,127 @@
 import bpy, re
 from .renaming_utilities import getRenamingList,trimString,callPopup
-
+import time
 #############################################
 ############ OPERATORS ########################
 #############################################
 
+class VariableReplacer():
+    addon_prefs = None
+    entity = None
 
+    @classmethod
+    def replaceInputString(cls,context,inputText,entity):
+        print ("Replacer inputText: " + inputText)
+        print ("Replacer Entity1: " + entity.name)
+        cls.addon_prefs = bpy.context.preferences.addons[__package__].preferences
+        inputText = re.sub(r'@f', cls.getfileName(context), inputText)      # file name
+        ##### System ################
+        inputText = re.sub(r'@d', cls.getDateName(context), inputText)      # date
+        inputText = re.sub(r'@t', cls.getTimeName(context), inputText)      # time
+        ##### UserStrings ################
+        inputText = re.sub(r'@h', cls.gethigh(), inputText)     # high
+        inputText = re.sub(r'@l', cls.getlow(), inputText)      # low
+        inputText = re.sub(r'@c', cls.getcage(), inputText)     # cage
+        inputText = re.sub(r'@u1', cls.getuser1(), inputText)
+        inputText = re.sub(r'@u2', cls.getuser2(), inputText)
+        inputText = re.sub(r'@u3', cls.getuser3(), inputText)
+        ##### GetScene ################
+        inputText = re.sub(r'@a', cls.getActive(context), inputText)        # active object
+        ##### Objects #################
+        print ("Replacer Entity2: " + cls.getObject(context, entity))
+        print ("Replacer Entity3: " + inputText)
+        inputText = re.sub(r'@o', cls.getObject(context, entity), inputText) # object
+        print ("Replacer Entity4: " + inputText)
+        inputText = re.sub(r'@y', cls.getType(context, entity), inputText)   # type
+        inputText = re.sub(r'@p', cls.getParent(context, entity), inputText) # parent
+        ###### IMAGES ###########
+        inputText = re.sub(r'@r', 'RESOLUTION', inputText)
+        inputText = re.sub(r'@i', 'FILETYPE', inputText)
+        print ("Replacer Entity5: " + inputText)
+        return inputText
+
+    @classmethod
+    def gethigh(cls):
+        return cls.addon_prefs.renaming_stringHigh
+
+    @classmethod
+    def getlow(cls):
+        return cls.addon_prefs.renaming_stringLow
+
+    @classmethod
+    def getcage(cls):
+        return cls.addon_prefs.renaming_stringCage
+
+    @classmethod
+    def getuser1(cls):
+        return cls.addon_prefs.renaming_user1
+
+    @classmethod
+    def getuser2(cls):
+        return cls.addon_prefs.renaming_user2
+
+    @classmethod
+    def getuser3(cls):
+        return cls.addon_prefs.renaming_user3
+
+    @classmethod
+    def getPrefString(cls, suffixString):
+        method = getattr(cls, suffixString, lambda: "Undefined variable")
+        return method()
+
+    @classmethod
+    def getfileName(cls,context):
+        scn = context.scene
+
+        if bpy.data.is_saved:
+            filename = bpy.path.display_name(bpy.context.blend_data.filepath)
+        else:
+            filename = "UNSAVED"
+            #scn.renaming_messages.addMessage(oldName, entity.name)
+            #TODO: Error message! is unsaved
+        return filename
+
+    @classmethod
+    def getDateName(cls,context):
+        #Todo: Specify Date Layout in preferences
+        #TODO: Fix Timezone
+        t = time.localtime()
+        t = time.mktime(t)
+        return time.strftime("%d%b%Y", time.gmtime(t))
+
+    @classmethod
+    def getTimeName(cls,context):
+        #TODO: Specify Time Layout in preferences
+        t = time.localtime()
+        t = time.mktime(t)
+        return time.strftime("%H:%M", time.gmtime(t))
+
+    @classmethod
+    def getActive(cls,context):
+        return context.object.name
+
+    ################## OBJECTS ####################################
+    @classmethod
+    def getObject(cls,context, entity):
+        objName = entity.name
+        print ("getObject Entity: " + objName)
+        return objName
+
+
+    @classmethod
+    def getType(cls,context, entity):
+        #TODO: Error Case
+        #TODO: Per Object
+        return str(entity.type)
+
+    @classmethod
+    def getParent(cls,context, entity):
+        #TODO: Error Case
+        if entity.parent is not None:
+            return str(entity.parent.name)
+        else:
+            return ""
+        #return "Parent"
 
 class VIEW3D_OT_search_and_replace(bpy.types.Operator):
     bl_idname = "renaming.search_replace"
@@ -19,24 +135,32 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
         renamingList = []
         renamingList = getRenamingList(self, context)
 
+        searchName = wm.renaming_search
+        replaceName = wm.renaming_replace
+
         if len(renamingList) > 0:
             for entity in renamingList:
                 if entity is not None:
-                    if wm.renaming_search is not '':
+                    if searchName is not '':
                         oldName = entity.name
                         if wm.renaming_useRegex == False:
+
+                            searchReplaced = VariableReplacer.replaceInputString(context, wm.renaming_search, entity)
+                            replaceReplaced = VariableReplacer.replaceInputString(context, wm.renaming_replace, entity)
+
+
                             if wm.renaming_matchcase:
-                                newName = str(entity.name).replace(wm.renaming_search, wm.renaming_replace)
+                                newName = str(entity.name).replace(searchReplaced, replaceReplaced)
                                 entity.name = newName
                                 wm.renaming_messages.addMessage(oldName, entity.name)
                             else:
-                                replaceSearch = re.compile(re.escape(wm.renaming_search), re.IGNORECASE)
-                                newName = replaceSearch.sub(wm.renaming_replace, entity.name)
+                                replaceSearch = re.compile(re.escape(searchReplaced), re.IGNORECASE)
+                                newName = replaceSearch.sub(replaceReplaced, entity.name)
                                 entity.name = newName
                                 wm.renaming_messages.addMessage(oldName, entity.name)
                         else: # Use regex
-                            #pattern = re.compile(re.escape(wm.renaming_search))
-                            newName = re.sub(wm.renaming_search, wm.renaming_replace, str(entity.name))
+                            #pattern = re.compile(re.escape(searchName))
+                            newName = re.sub(searchReplaced, replaceReplaced, str(entity.name))
                             entity.name = newName
                             wm.renaming_messages.addMessage(oldName, entity.name)
 
@@ -49,14 +173,17 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
     bl_description = "replaces the names of the objects"
     bl_options = {'REGISTER', 'UNDO'}
 
+
     def execute(self, context):
+
         wm = context.scene
+
         replaceName = wm.renaming_newName
         renamingList = getRenamingList(self, context)
 
+        digits = len(wm.renaming_numerate)
         prefs = bpy.context.preferences.addons[__package__].preferences
         separator = prefs.renaming_separator
-
 
         shapeKeyNamesList = []
         if wm.renaming_object_types == 'SHAPEKEYS':
@@ -66,17 +193,13 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             # for key in bpy.data.shape_keys[0].key_blocks:
             #     shapeKeyNamesList.append(key.name)
 
-        print ("shape key list " + str(shapeKeyNamesList))
-
         if len(str(replaceName)) > 0:
-            digits = 3
             if len(renamingList) > 0:
-
-
                 for entity in renamingList:
-
-
                     if entity is not None:
+                        replaceName = VariableReplacer.replaceInputString(context, wm.renaming_newName, entity)
+                        print ("Entity: " + entity.name + "         " + "replaced: " + replaceName)
+
                         i = 1
                         if wm.renaming_object_types == 'COLLECTION' or wm.renaming_object_types == 'IMAGE':
                             i = 0
@@ -162,6 +285,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         callPopup(context)
         return {'FINISHED'}
 
+
+
 class VIEW3D_OT_trim_string(bpy.types.Operator):
     bl_idname = "renaming.cut_string"
     bl_label = "Trim End of String"
@@ -193,7 +318,8 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
     def execute(self, context):
 
         wm = context.scene
-        suffix = wm.renaming_suffix
+
+
 
         renamingList = []
         renamingList = getRenamingList(self, context)
@@ -201,6 +327,7 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         if len(renamingList) > 0:
             for entity in renamingList:
                 if entity is not None:
+                    suffix = VariableReplacer.replaceInputString(context, wm.renaming_suffix, entity)
                     if entity.name.endswith(suffix) is not True:
                         oldName = entity.name
                         newName = entity.name + suffix
@@ -220,7 +347,6 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
 
     def execute(self, context):
         wm = context.scene
-        pre = wm.renaming_prefix
 
         renamingList = []
         renamingList = getRenamingList(self, context)
@@ -228,6 +354,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
         if len(renamingList) > 0:
             for entity in renamingList:
                 if entity is not None:
+                    pre = VariableReplacer.replaceInputString(context, wm.renaming_prefix, entity)
                     if entity.name.startswith(pre) is not True:
                         oldName = entity.name
                         newName = pre + entity.name
@@ -249,6 +376,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
 
         wm = context.scene
         i = 1
+
         step = wm.renaming_base_numerate
         digits = wm.renaming_digits_numerate
 
@@ -302,4 +430,10 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
 
         callPopup(context)
         return {'FINISHED'}
+
+
+
+
+
+
 

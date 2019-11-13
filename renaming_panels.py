@@ -1,7 +1,15 @@
 import bpy
 
+from .renaming_proFeatures import RENAMING_MT_variableMenu
+from bpy.props import StringProperty
 
-# addon simple Panel
+#############################################
+############ PANELS ########################
+#############################################
+
+
+# addon Panel
+
 class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     """Creates a renaming Panel"""
     bl_label = "Simple Renaming Panel"
@@ -191,7 +199,6 @@ class VIEW3D_PT_advanced_renaming_panel(bpy.types.Panel):
             layout.operator("renaming.name_replace")
 
             layout.prop(scene, "renaming_search", text = 'Search')
-
             layout.prop(scene, "renaming_replace", text = 'Replace')
             layout.prop(scene, "renaming_useRegex")
             if scene.renaming_useRegex == False:
@@ -316,3 +323,36 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
         row.prop(scene, "renaming_sufpre_lightprops", text = "")
         row.operator('renaming.add_sufpre_by_type', text = "Light Probes").option = 'lightprops'
 
+        row = col.row()
+        row.operator('renaming.add_sufpre_by_type', text = "All").option = 'all'
+
+
+class VIEW3D_OT_SimpleOperator(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.renaming_set_variable"
+    bl_label = "Simple Object Operator"
+
+    inputBox: StringProperty()
+
+    def execute(self, context):
+        bpy.context.scene.renaming_inputContext = self.inputBox
+        bpy.ops.wm.call_menu(name = RENAMING_MT_variableMenu.bl_idname)
+        return {'FINISHED'}
+
+
+
+class VIEW3D_OT_RenamingPopupOperator(bpy.types.Operator):
+    bl_idname = "renaming.f_popup_operator"
+    bl_label = "Simple Renaming Panel"
+
+    my_float : bpy.props.FloatProperty(name="Some Floating Point")
+    my_bool : bpy.props.BoolProperty(name="Toggle Option")
+    my_string : bpy.props.StringProperty(name="String Value")
+
+    def execute(self, context):
+        print("Dialog Runs")
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)

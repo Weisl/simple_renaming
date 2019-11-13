@@ -94,7 +94,7 @@ class RENAMING_MESSAGES():
     message = []
 
     @classmethod
-    def addMessage(cls, oldName, newName, obType=False, obIcon=False, warning=False):
+    def addMessage(cls, oldName, newName = None, obType=False, obIcon=False, warning=False):
         dict = {'oldName': oldName, 'newName': newName, 'obType': obType, 'obIcon': obIcon, 'warning': warning}
         cls.message.append(dict)
         return

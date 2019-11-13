@@ -229,6 +229,23 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         self.renameSufPre(objList, preSuf=wm.renaming_sufpre_bone, objectType='BONE', icon='BONE_DATA')
         return
 
+    def all(self):
+        self.empty()
+        self.mesh()
+        self.camera()
+        self.light()
+        self.armature()
+        self.lattice()
+        self.curve()
+        self.surface()
+        self.text()
+        self.gpencil()
+        self.metaball()
+        self.collection()
+        self.bone()
+        self.material()
+        self.data()
+
     def errorMsg(self):
         pass
 
@@ -252,7 +269,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
             13: 'bone',
             14: 'material',
             15: 'data',
-            #16: 'speakers',
+            16: 'all',
             #17: 'actions',
         }
 
@@ -294,78 +311,3 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         obj.name = nName
         return nName
 
-    # def suffixDataAdd(self, context, obj, sufpreName):
-    #     wm = context.scene
-    #
-    #     nName = obj.data.name
-    #     if wm.renaming_sufpre_type == 'SUF':
-    #         nName = nName + sufpreName
-    #     else:
-    #         nName = sufpreName + nName
-    #
-    #     if nName not in bpy.data.meshes and nName not in bpy.data.lattices and nName not in bpy.data.curves and nName not in bpy.data.METABALL:
-    #         obj.data.name = nName
-    #         return nName
-    #     else:
-    #         i = 1
-    #         while (
-    #                 nName in bpy.data.meshes or nName in bpy.data.lattices or nName in bpy.data.curves or nName in bpy.data.METABALL):
-    #             nName = obj.data.name + "_" + str(i)
-    #             i = i + 1
-    #         return nName
-
-    # def sufpreMatAdd(self, context, mat, sufpreName):
-    #     wm = context.scene
-    #     nName = mat.name
-    #     if wm.renaming_sufpre_type == 'SUF':
-    #         nName = nName + sufpreName
-    #     else:
-    #         nName = sufpreName + nName
-    #
-    #     if nName not in bpy.data.materials:
-    #         mat.name = nName
-    #         return nName
-    #     else:
-    #         i = 1
-    #         while (nName in bpy.data.materials):
-    #             nName = mat.name + "_" + str(i)
-    #             i = i + 1
-    #         return nName
-
-    # def suffixGrpAdd(self, context, grp, sufpreName):
-    #     scene = context.scene
-    #
-    #     nName = grp.name
-    #     if scene.renaming_sufpre_type == 'SUF':
-    #         nName = nName + sufpreName
-    #     else:
-    #         nName = sufpreName + nName
-    #
-    #     if nName not in bpy.data.groups:
-    #         grp.name = nName
-    #         return nName
-    #     else:
-    #         i = 1
-    #         while( nName in bpy.data.groups):
-    #             nName = grp.name + "_" + str(i)
-    #             i = i + 1
-    #         return nName
-
-    # def suffixArmAdd(self, context, arm, sufpreName):
-    #     wm = context.scene
-    #
-    #     nName = arm.name
-    #     if wm.renaming_sufpre_type == 'SUF':
-    #         nName = nName + sufpreName
-    #     else:
-    #         nName = sufpreName + nName
-    #
-    #     if nName not in bpy.data.armatures:
-    #         arm.name = nName
-    #         return nName
-    #     else:
-    #         i = 1
-    #         while (nName in bpy.data.armatures):
-    #             nName = arm.name + "_" + str(i)
-    #             i = i + 1
-    #         return nName
