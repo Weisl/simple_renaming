@@ -24,6 +24,7 @@ class RENAMING_MT_variableMenu(bpy.types.Menu):
         layout.operator("object.renaming_inuptvariables", text = "TYPE").nameingPreset = "TYPE"
         layout.operator("object.renaming_inuptvariables", text = "PARENT").nameingPreset = "PARENT"
         layout.operator("object.renaming_inuptvariables", text = "NUMBER").nameingPreset = "NUMBER"
+        layout.operator("object.renaming_inuptvariables", text = "RANDOM").nameingPreset = "RANDOM"
 
 
 
@@ -73,6 +74,8 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
             nameVar = "@p"
         if nameingPreset == "NUMBER":
             nameVar = "@n"
+        if nameingPreset == "RANDOM":
+            nameVar = "@r"
 
         scn = bpy.context.scene
         if scn.renaming_inputContext == 'newName':

@@ -5,7 +5,7 @@ from bpy.props import (
     BoolProperty,
     StringProperty,
 )
-from.renaming_utilities import callPopup
+from.renaming_utilities import callRenamingPopup
 
 
 class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
@@ -284,7 +284,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         wm = context.scene
         self.switch_type(self.option)
 
-        callPopup(context)
+        callRenamingPopup(context)
         return {'FINISHED'}
 
     def sufpreAdd(self, context, obj, sufpreName):

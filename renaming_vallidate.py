@@ -1,5 +1,5 @@
 import bpy, re
-from .renaming_utilities import getRenamingList,callPopup
+from .renaming_utilities import getRenamingList, callInfoPopup
 
 class VIEW3D_OT_Vallidate(bpy.types.Operator):
     bl_idname = "renaming.vallidate"
@@ -11,7 +11,7 @@ class VIEW3D_OT_Vallidate(bpy.types.Operator):
         wm = context.scene
 
         prefs = bpy.context.preferences.addons[__package__].preferences
-        regex = prefs.meshRegex
+        regex = prefs.regex_Mesh
         compiledRegex = re.compile(regex)
 
         renamingList = []
@@ -20,17 +20,19 @@ class VIEW3D_OT_Vallidate(bpy.types.Operator):
         if len(renamingList) > 0:
             for entity in renamingList:
                 if entity is not None:
+                    if regex is not '':
+                        match = bool(compiledRegex.match(entity.name))
 
-                    if wm.naming_vallidate is not '':
-                        pattern = re.compile(re.escape(wm.naming_vallidate))
-                        match = re.match(pattern, entity.name)
+                    # if wm.naming_vallidate is not '':
+                    #     pattern = re.compile(re.escape(wm.naming_vallidate))
+                    #     match = re.match(pattern, entity.name)
 
                         if match:
                             wm.renaming_messages.addMessage("Vallid", entity.name)
                         else:
                             wm.renaming_messages.addMessage("Not", entity.name)
 
-        callPopup(context)
+        callInfoPopup(context)
         return {'FINISHED'}
 
 
@@ -48,9 +50,9 @@ class VIEW3D_PT_vallidation(bpy.types.Panel):
         scene = context.scene
 
         prefs = bpy.context.preferences.addons[__package__].preferences
-        regex = prefs.meshRegex
+        regex = prefs.regex_Mesh
 
         row = layout.row()
-        row.label(text = prefs.meshRegex)
+        row.label(text = prefs.regex_Mesh)
         row = layout.row()
         row.operator("renaming.vallidate")
