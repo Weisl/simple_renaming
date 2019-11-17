@@ -262,7 +262,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
 classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
-    renaming_panels.VIEW3D_PT_advanced_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
     renaming_panels.VIEW3D_OT_SimpleOperator,
     renaming_panels.VIEW3D_OT_RenamingPopupOperator,
