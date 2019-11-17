@@ -1,5 +1,6 @@
 import bpy
 from abc import ABCMeta, abstractmethod
+from bpy.types import PoseBone
 
 def trimString(string, size):
     list1 = string
@@ -9,6 +10,7 @@ def trimString(string, size):
 def getRenamingList(self, context):
     wm = context.scene
     renamingList = []
+    switchEditMode = False
 
     if wm.renaming_object_types == 'OBJECT':
         if wm.renaming_only_selection == True:
@@ -48,28 +50,19 @@ def getRenamingList(self, context):
             selectedBones = []
             if modeOld == 'POSE':
                 selectedBones = bpy.context.selected_pose_bones.copy()
-                modeNew = 'POSE'
             else:
-                bpy.ops.object.mode_set(mode='OBJECT')
-                bpy.ops.object.mode_set(mode='EDIT')
                 selectedBones = bpy.context.selected_bones.copy()
-                modeNew = 'EDIT'
+                switchEditMode = True
 
-            print("yesssssss1")
+            bpy.ops.object.mode_set(mode='POSE')
             for selected_bone in selectedBones:
                 name = selected_bone.name
-                print("yesssssss2" + name)
                 for arm in bpy.data.armatures:
+
                     for bone in arm.bones:
-                        if bone.name == name:
-                            print("yesssssss3" + str(arm))
-                            # newBone = arm.pose.bones[name]
-                            newBone = arm.bones[name]
+                        if name == bone.name:
+                            newBone = PoseBone(arm.bones[name])
                             renamingList.append(newBone)
-                # print(selected_bone)
-                # renamingList.append(selected_bone)
-                #bpy.ops.object.mode_set(mode=modeNew)
-            #bpy.ops.object.mode_set(mode='OBJECT')
 
         else:
             for arm in bpy.data.armatures:
@@ -101,7 +94,7 @@ def getRenamingList(self, context):
         renamingList = list(bpy.data.actions)
 
     #renamingList.sort(key=lambda x: x.name, reverse=False)
-    return renamingList
+    return renamingList, switchEditMode
 
 def callRenamingPopup(context):
     preferences = context.preferences

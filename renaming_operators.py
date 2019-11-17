@@ -145,6 +145,8 @@ class VariableReplacer():
 #         TODO: implement
 #         return {'FINISHED'}
 
+def switchToEditMode(context):
+    bpy.ops.object.mode_set(mode='EDIT')
 
 class VIEW3D_OT_search_and_replace(bpy.types.Operator):
     bl_idname = "renaming.search_replace"
@@ -157,7 +159,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
 
         # get list of objects to be renamed
         renamingList = []
-        renamingList = getRenamingList(self, context)
+        renamingList, switchEditMode = getRenamingList(self, context)
 
         searchName = wm.renaming_search
         replaceName = wm.renaming_replace
@@ -190,7 +192,10 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
                             entity.name = newName
                             msg.addMessage(oldName, entity.name)
 
+
         callRenamingPopup(context)
+        if switchEditMode:
+            switchToEditMode(context)
         return {'FINISHED'}
 
 class VIEW3D_OT_replace_name(bpy.types.Operator):
@@ -204,7 +209,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         wm = context.scene
 
         replaceName = wm.renaming_newName
-        renamingList = getRenamingList(self, context)
+        renamingList, switchEditMode = getRenamingList(self, context)
 
         digits = len(wm.renaming_numerate)
         prefs = bpy.context.preferences.addons[__package__].preferences
@@ -311,7 +316,10 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             msg.addMessage(None, None, "Insert a valid string to replace names")
 
         i = 0
+
         callRenamingPopup(context)
+        if switchEditMode:
+            switchToEditMode(context)
         return {'FINISHED'}
 
 class VIEW3D_OT_trim_string(bpy.types.Operator):
@@ -323,7 +331,7 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
     def execute(self, context):
         wm = context.scene
         renamingList = []
-        renamingList = getRenamingList(self, context)
+        renamingList, switchEditMode = getRenamingList(self, context)
 
         msg = wm.renaming_messages
 
@@ -336,6 +344,10 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
                     msg.addMessage(oldName, entity.name)
 
         callRenamingPopup(context)
+
+        if switchEditMode:
+            switchToEditMode(context)
+
         return {'FINISHED'}
 
 class VIEW3D_OT_add_suffix(bpy.types.Operator):
@@ -349,7 +361,7 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         wm = context.scene
 
         renamingList = []
-        renamingList = getRenamingList(self, context)
+        renamingList, switchEditMode = getRenamingList(self, context)
 
         msg = wm.renaming_messages
 
@@ -364,7 +376,8 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
                         msg.addMessage(oldName, entity.name)
         else:
             msg.addMessage(None, None, "Insert Valide String")
-
+        if switchEditMode:
+            switchToEditMode(context)
         callRenamingPopup(context)
         return {'FINISHED'}
 
@@ -380,7 +393,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
         msg = wm.renaming_messages
 
         renamingList = []
-        renamingList = getRenamingList(self, context)
+        renamingList, switchEditMode = getRenamingList(self, context)
 
         if len(renamingList) > 0:
             for entity in renamingList:
@@ -393,6 +406,9 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
                         msg.addMessage(oldName, entity.name)
 
         callRenamingPopup(context)
+        if switchEditMode:
+            switchToEditMode(context)
+
         return {'FINISHED'}
 
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
@@ -414,7 +430,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         msg = wm.renaming_messages
 
         renamingList = []
-        renamingList = getRenamingList(self, context)
+        renamingList, switchEditMode = getRenamingList(self, context)
 
         if len(renamingList) > 0:
             for entity in renamingList:
@@ -425,8 +441,9 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
                     msg.addMessage(oldName, entity.name)
                     i = i + 1
 
-
         callRenamingPopup(context)
+        if switchEditMode:
+            switchToEditMode(context)
         return {'FINISHED'}
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
@@ -461,6 +478,8 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
                     msg.addMessage(oldName, obj.data.name)
 
         callRenamingPopup(context)
+        if switchEditMode:
+            switchToEditMode(context)
         return {'FINISHED'}
 
 
