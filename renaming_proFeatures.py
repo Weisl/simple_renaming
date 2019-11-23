@@ -1,6 +1,7 @@
 import bpy
 from bpy.props import StringProperty
 
+
 class RENAMING_MT_variableMenu(bpy.types.Menu):
     bl_label = "Renaming Variables"
     bl_idname = "renaming.mt_menu"
@@ -72,9 +73,9 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
         if nameingPreset == "USER3":
             nameVar = "@u3"
         if nameingPreset == "TIME":
-            nameVar = "@t"
+            nameVar = "@i"
         if nameingPreset == "TYPE":
-            nameVar = "@y"
+            nameVar = "@t"
         if nameingPreset == "PARENT":
             nameVar = "@p"
         if nameingPreset == "NUMBER":
@@ -89,6 +90,10 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
             bpy.context.scene.renaming_prefix += str(nameVar)
         if scn.renaming_inputContext == 'suffix':
             bpy.context.scene.renaming_suffix += str(nameVar)
+        if scn.renaming_inputContext == 'search':
+            bpy.context.scene.renaming_search += str(nameVar)
+        if scn.renaming_inputContext == 'replace':
+            bpy.context.scene.renaming_replace += str(nameVar)
 
         return {'FINISHED'}
 
@@ -109,7 +114,7 @@ def tChange(self, context):
     if nameingPreset == "DATE":
         nameVar = "@d"
     if nameingPreset == "TIME":
-        nameVar = "@t"
+        nameVar = "@i"
     if nameingPreset == "RANDOM":
         nameVar = "@r"
 
@@ -126,22 +131,18 @@ def tChange(self, context):
         nameVar = "@u2"
     if nameingPreset == "USER3":
         nameVar = "@u3"
-
-    ##### GetScene ################
-    if nameingPreset == "ACTIVE":
-        nameVar = "@a"
-
     if nameingPreset == "NUMERATE":
         nameVar = "@n"
 
 
     if wm.renaming_object_types == 'OBJECT':
-
         if nameingPreset == 'OBJECT':
             nameVar = "@o"
         if nameingPreset == "TYPE":
-            nameVar = "@y"
+            nameVar = "@t"
         if nameingPreset == "PARENT":
             nameVar = "@p"
+        if nameingPreset == "ACTIVE":
+            nameVar = "@a"
 
     bpy.context.scene.renaming_newName += str(nameVar)
