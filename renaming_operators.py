@@ -25,6 +25,7 @@ class VariableReplacer():
         inputText = re.sub(r'@d', cls.getDateName(context), inputText)      # date
         inputText = re.sub(r'@t', cls.getTimeName(context), inputText)      # time
         inputText = re.sub(r'@r', cls.getRandomString(context), inputText)
+
         ##### UserStrings ################
         inputText = re.sub(r'@h', cls.gethigh(), inputText)     # high
         inputText = re.sub(r'@l', cls.getlow(), inputText)      # low

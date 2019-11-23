@@ -159,7 +159,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     # --UI OPTIONS
 
     renamingPanel_advancedMode : bpy.props.BoolProperty(
-       name="Use Advanced Mode",
+       name="Advanced (Experimental)",
        description="Enable or Disable Advanced Mode",
        default=True,
     )
@@ -288,34 +288,48 @@ def tChange(self, context):
     nameVar = ""
 
     print('T changed to ', nameingPreset)
+
+    ##### System and Global Values ################
     if nameingPreset == 'FILE':
         nameVar = "@f"
-    if nameingPreset == 'OBJECT':
-        nameVar = "@o"
+    if nameingPreset == "DATE":
+        nameVar = "@d"
+    if nameingPreset == "TIME":
+        nameVar = "@t"
+    if nameingPreset == "RANDOM":
+        nameVar = "@r"
+
+    ##### UserStrings ################
     if nameingPreset == "HIGH":
         nameVar = "@h"
     if nameingPreset == "LOW":
         nameVar = "@l"
     if nameingPreset == "CAGE":
         nameVar = "@c"
-    if nameingPreset == "DATE":
-        nameVar = "@d"
-    if nameingPreset == "ACTIVE":
-        nameVar = "@a"
     if nameingPreset == "USER1":
         nameVar = "@u1"
     if nameingPreset == "USER2":
         nameVar = "@u2"
     if nameingPreset == "USER3":
         nameVar = "@u3"
-    if nameingPreset == "TIME":
-        nameVar = "@t"
-    if nameingPreset == "TYPE":
-        nameVar = "@y"
-    if nameingPreset == "PARENT":
-        nameVar = "@p"
+
+    ##### GetScene ################
+    if nameingPreset == "ACTIVE":
+        nameVar = "@a"
+
     if nameingPreset == "NUMERATE":
         nameVar = "@n"
+
+
+    if wm.renaming_object_types == 'OBJECT':
+        if nameingPreset == 'OBJECT':
+            nameVar = "@o"
+        if nameingPreset == "TYPE":
+            nameVar = "@y"
+        if nameingPreset == "PARENT":
+            nameVar = "@p"
+
+
 
     bpy.context.scene.renaming_newName += str(nameVar)
 
