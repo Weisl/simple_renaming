@@ -8,26 +8,28 @@ class RENAMING_MT_variableMenu(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
 
-        layout.operator("object.renaming_inuptvariables", text = 'FILE').nameingPreset = 'FILE'
-        layout.operator("object.renaming_inuptvariables", text = "HIGH").nameingPreset = "HIGH"
+
+        layout.operator("object.renaming_inuptvariables", text = "RANDOM").nameingPreset = "RANDOM"
+        layout.operator("object.renaming_inuptvariables", text="NUMBER").nameingPreset = "NUMBER"
+        layout.separator()
         layout.operator("object.renaming_inuptvariables", text = "LOW").nameingPreset = "LOW"
         layout.operator("object.renaming_inuptvariables", text = "HIGH").nameingPreset = "HIGH"
-        layout.operator("object.renaming_inuptvariables", text = "LOW").nameingPreset = "LOW"
         layout.operator("object.renaming_inuptvariables", text = "CAGE").nameingPreset = "CAGE"
+        layout.separator()
+        layout.operator("object.renaming_inuptvariables", text = 'FILE').nameingPreset = 'FILE'
+        layout.operator("object.renaming_inuptvariables", text = "TIME").nameingPreset = "TIME"
         layout.operator("object.renaming_inuptvariables", text = "DATE").nameingPreset = "DATE"
+        layout.separator()
         layout.operator("object.renaming_inuptvariables", text = "USER1").nameingPreset = "USER1"
         layout.operator("object.renaming_inuptvariables", text = "USER2").nameingPreset = "USER2"
         layout.operator("object.renaming_inuptvariables", text = "USER3").nameingPreset = "USER3"
-        layout.operator("object.renaming_inuptvariables", text = "TIME").nameingPreset = "TIME"
-        layout.operator("object.renaming_inuptvariables", text = "TYPE").nameingPreset = "TYPE"
-        layout.operator("object.renaming_inuptvariables", text="TYPE").nameingPreset = "TYPE"
-        layout.operator("object.renaming_inuptvariables", text = "RANDOM").nameingPreset = "RANDOM"
+        layout.separator()
 
         if wm.renaming_object_types == 'OBJECT':
             layout.operator("object.renaming_inuptvariables", text="PARENT").nameingPreset = "PARENT"
-            layout.operator("object.renaming_inuptvariables", text="NUMBER").nameingPreset = "NUMBER"
             layout.operator("object.renaming_inuptvariables", text="ACTIVE").nameingPreset = "ACTIVE"
             layout.operator("object.renaming_inuptvariables", text='FILE').nameingPreset = 'OBJECT'
+            layout.operator("object.renaming_inuptvariables", text="TYPE").nameingPreset = "TYPE"
 
 
 
