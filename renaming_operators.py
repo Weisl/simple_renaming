@@ -13,7 +13,11 @@ def randomString(stringLength=10):
 class VariableReplacer():
     addon_prefs = None
     entity = None
+    number = 0
 
+    @classmethod
+    def reset(cls):
+        cls.number = 0
 
     @classmethod
     def replaceInputString(cls,context,inputText,entity):
@@ -25,6 +29,7 @@ class VariableReplacer():
         inputText = re.sub(r'@d', cls.getDateName(context), inputText)      # date
         inputText = re.sub(r'@t', cls.getTimeName(context), inputText)      # time
         inputText = re.sub(r'@r', cls.getRandomString(context), inputText)
+
         ##### UserStrings ################
         inputText = re.sub(r'@h', cls.gethigh(), inputText)     # high
         inputText = re.sub(r'@l', cls.getlow(), inputText)      # low
@@ -35,6 +40,7 @@ class VariableReplacer():
 
         ##### GetScene ################
         inputText = re.sub(r'@a', cls.getActive(context), inputText)        # active object
+        inputText = re.sub(r'@n', cls.getNumber(context), inputText)
 
         if wm.renaming_object_types == 'OBJECT':
             ##### Objects #################
@@ -53,7 +59,7 @@ class VariableReplacer():
     def gethigh(cls):
         return cls.addon_prefs.renaming_stringHigh
 
-
+    # @classmethod
     def getRandomString(cls):
         return randomString(6)
 
@@ -81,6 +87,15 @@ class VariableReplacer():
     def getPrefString(cls, suffixString):
         method = getattr(cls, suffixString, lambda: "Undefined variable")
         return method()
+
+    @classmethod
+    def getNumber(cls,context):
+        wm = context.scene
+        digits = len(wm.renaming_numerate)
+        newNr = cls.number
+        nr = str('{num:{fill}{width}}'.format(num=newNr, fill='0', width=digits))
+        cls.number = newNr + 1
+        return nr
 
     @classmethod
     def getfileName(cls,context):
@@ -132,7 +147,7 @@ class VariableReplacer():
         if entity.parent is not None:
             return str(entity.parent.name)
         else:
-            return ""
+            return entity.name
         #return "Parent"
 
 # class VIEW3D_OT_search_and_select(bpy.types.Operator):
@@ -165,7 +180,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
         replaceName = wm.renaming_replace
 
         msg = wm.renaming_messages  # variable to save messages
-
+        VariableReplacer.reset()
         if len(renamingList) > 0:
             for entity in renamingList:     # iterate over all objects that are to be renamed
                 if entity is not None:
@@ -225,6 +240,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             # for key in bpy.data.shape_keys[0].key_blocks:
             #     shapeKeyNamesList.append(key.name)
 
+        VariableReplacer.reset()
         if len(str(replaceName)) > 0:
             if len(renamingList) > 0:
                 for entity in renamingList:
@@ -238,7 +254,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                             i = 0
 
                         oldName = entity.name
-                        newName = ""
+                        newName = replaceName
 
                         dataList = []
                         boneList = []
@@ -253,61 +269,63 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 if obj.data is not None:
                                     dataList.append(obj.data.name)
 
-                        while True:
+                        if wm.renaming_usenumerate == True:
+
+                            while True:
+                                newName = replaceName + separator + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
+
+                                if wm.renaming_object_types == 'OBJECT':
+                                    if newName in bpy.data.objects and newName != entity.name:
+                                        i = i + 1
+                                    else:
+                                        break
+                                elif wm.renaming_object_types == 'MATERIAL':
+                                    if newName in bpy.data.materials and newName != entity.name:
+                                        i = i + 1
+                                    else:
+                                        break
+
+                                elif wm.renaming_object_types == 'IMAGE':
+                                    if newName in bpy.data.images and newName != entity.name:
+                                        i = i + 1
+                                    else:
+                                        break
+                                elif wm.renaming_object_types == 'DATA':
+                                    if newName in dataList and newName != entity.name:
+                                        i = i + 1
+                                    else:
+                                        break
+
+                                elif wm.renaming_object_types == 'BONE':
+                                    if newName in boneList and newName != entity.name:
+                                        i = i + 1
+                                    else:
+                                        break
+                                elif wm.renaming_object_types == 'COLLECTION':
+                                    if newName in bpy.data.collections and newName != entity.name:
+                                        i = i + 1
+                                    else:
+                                        break
+
+                                elif wm.renaming_object_types == 'ACTIONS':
+                                    if newName in bpy.data.actions and newName != entity.name:
+                                        i = i + 1
+                                    else:
+                                        break
+
+                                elif wm.renaming_object_types == 'SHAPEKEYS':
+                                    # print (str(i) + "  " + str(shapeKeyNamesList))
+                                    if newName in shapeKeyNamesList:
+                                        # print('1')
+                                        shapeKeyNamesList.append(newName)
+                                        i = i + 1
+                                    else:
+                                        shapeKeyNamesList.append(newName)
+                                        break
+                                else:
+                                    break
+
                             newName = replaceName + separator + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
-
-                            if wm.renaming_object_types == 'OBJECT':
-                                if newName in bpy.data.objects and newName != entity.name:
-                                    i = i + 1
-                                else:
-                                    break
-                            elif wm.renaming_object_types == 'MATERIAL':
-                                if newName in bpy.data.materials and newName != entity.name:
-                                    i = i + 1
-                                else:
-                                    break
-
-                            elif wm.renaming_object_types == 'IMAGE':
-                                if newName in bpy.data.images and newName != entity.name:
-                                    i = i + 1
-                                else:
-                                    break
-                            elif wm.renaming_object_types == 'DATA':
-                                if newName in dataList and newName != entity.name:
-                                    i = i + 1
-                                else:
-                                    break
-
-                            elif wm.renaming_object_types == 'BONE':
-                                if newName in boneList and newName != entity.name:
-                                    i = i + 1
-                                else:
-                                    break
-                            elif wm.renaming_object_types == 'COLLECTION':
-                                if newName in bpy.data.collections and newName != entity.name:
-                                    i = i + 1
-                                else:
-                                    break
-
-                            elif wm.renaming_object_types == 'ACTIONS':
-                                if newName in bpy.data.actions and newName != entity.name:
-                                    i = i + 1
-                                else:
-                                    break
-
-                            elif wm.renaming_object_types == 'SHAPEKEYS':
-                                # print (str(i) + "  " + str(shapeKeyNamesList))
-                                if newName in shapeKeyNamesList:
-                                    # print('1')
-                                    shapeKeyNamesList.append(newName)
-                                    i = i + 1
-                                else:
-                                    shapeKeyNamesList.append(newName)
-                                    break
-                            else:
-                                break
-
-                        newName = replaceName + separator + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
                         entity.name = newName
                         msg.addMessage(oldName, entity.name)
                         i = i + 1
@@ -365,6 +383,7 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
 
         msg = wm.renaming_messages
 
+        VariableReplacer.reset()
         if len(renamingList) > 0:
             for entity in renamingList:
                 if entity is not None:
@@ -395,6 +414,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
         renamingList = []
         renamingList, switchEditMode = getRenamingList(self, context)
 
+        VariableReplacer.reset()
         if len(renamingList) > 0:
             for entity in renamingList:
                 if entity is not None:
@@ -456,6 +476,11 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         wm = context.scene
         suffix_data = wm.renaming_sufpre_data_02
 
+        msg = wm.renaming_messages  # variable to save messages
+        renamingList, switchEditMode = getRenamingList(self, context)
+
+        #TODO: Clean up. Should use getRenamingList instead of iterating through all objects by itself.
+
         if wm.renaming_only_selection == True:
             for obj in bpy.context.selected_objects:
 
@@ -480,6 +505,7 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         callRenamingPopup(context)
         if switchEditMode:
             switchToEditMode(context)
+
         return {'FINISHED'}
 
 
