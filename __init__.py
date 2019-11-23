@@ -76,6 +76,7 @@ from bpy.props import (
 from .renaming_utilities import RENAMING_MESSAGES
 from .renaming_proFeatures import tChange
 from .renaming_preferences import remove_hotkey
+from .renaming_panels import panel_func
 # Add default key configuration for batch renaming
 
 
@@ -85,6 +86,8 @@ classes = (
     renaming_panels.VIEW3D_PT_tools_type_suffix,
     renaming_panels.VIEW3D_OT_SimpleOperator,
     renaming_panels.VIEW3D_OT_RenamingPopupOperator,
+    renaming_panels.OBJECT_MT_sufpre_presets,
+    renaming_panels.AddPresetRenamingPresets,
     renaming_popup.VIEW3D_PT_renaming_popup,
     renaming_operators.VIEW3D_OT_add_suffix,
     renaming_operators.VIEW3D_OT_add_prefix,
@@ -176,6 +179,10 @@ renamingEntitiesItems = [('OBJECT', "Object", "Scene Objects"),
 ]
 
 keys = []
+
+# Display into an existing panel
+
+
 
 def register():
     # bpy.types.INFO_MT_mesh_add.append(menu_add_suffix)
@@ -297,6 +304,8 @@ def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
+
+    bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
 
 def unregister():
     IDStore = bpy.types.Scene
