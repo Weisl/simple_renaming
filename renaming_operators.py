@@ -147,7 +147,7 @@ class VariableReplacer():
         if entity.parent is not None:
             return str(entity.parent.name)
         else:
-            return ""
+            return entity.name
         #return "Parent"
 
 # class VIEW3D_OT_search_and_select(bpy.types.Operator):

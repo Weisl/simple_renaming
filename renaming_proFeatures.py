@@ -9,6 +9,7 @@ class RENAMING_MT_variableMenu(bpy.types.Menu):
     def draw(self, context):
         layout = self.layout
 
+        wm = bpy.context.scene
 
         layout.operator("object.renaming_inuptvariables", text = "RANDOM").nameingPreset = "RANDOM"
         layout.operator("object.renaming_inuptvariables", text="NUMBER").nameingPreset = "NUMBER"
@@ -24,9 +25,10 @@ class RENAMING_MT_variableMenu(bpy.types.Menu):
         layout.operator("object.renaming_inuptvariables", text = "USER1").nameingPreset = "USER1"
         layout.operator("object.renaming_inuptvariables", text = "USER2").nameingPreset = "USER2"
         layout.operator("object.renaming_inuptvariables", text = "USER3").nameingPreset = "USER3"
-        layout.separator()
+
 
         if wm.renaming_object_types == 'OBJECT':
+            layout.separator()
             layout.operator("object.renaming_inuptvariables", text="PARENT").nameingPreset = "PARENT"
             layout.operator("object.renaming_inuptvariables", text="ACTIVE").nameingPreset = "ACTIVE"
             layout.operator("object.renaming_inuptvariables", text='FILE').nameingPreset = 'OBJECT'
