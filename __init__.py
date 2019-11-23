@@ -1,5 +1,5 @@
 '''
-Copyright (C) 2017 Matthias Patscheider
+Copyright (C) 2019 Matthias Patscheider
 patscheider.matthias@gmail.com
 
 Created by Matthias Patscheider
@@ -32,11 +32,13 @@ bl_info = {
     "category": "Scene"
 }
 
+# TODO: Make work in different windows (Shader graph automatically detect nodes)
 # TODO: Create Properties group for add suffix prefix type
 # TODO: add List Of Textures
 # TODO: Wait for asset manager and otherwise import Auto updater again
 # TODO: Alt+N for quick rename
 # TODO: Blendshapes
+
 
 # support reloading sub-modules
 if "bpy" in locals():
@@ -45,16 +47,22 @@ if "bpy" in locals():
     importlib.reload(renaming_popup)
     importlib.reload(renaming_utilities)
     importlib.reload(renaming_panels)
+    importlib.reload(renaming_vallidate)
     importlib.reload(renaming_sufPre_operators)
+    importlib.reload(renaming_proFeatures)
+    importlib.reload(renaming_preferences)
 else:
     from . import renaming_operators
     from . import renaming_popup
     from . import renaming_utilities
     from . import renaming_panels
+    from . import renaming_vallidate
     from . import renaming_sufPre_operators
+    from . import renaming_proFeatures
+    from . import renaming_preferences
 
+# import standard modules
 import bpy
-import rna_keymap_ui
 from bpy.props import (
     BoolProperty,
     IntProperty,
@@ -66,138 +74,17 @@ from bpy.props import (
 )
 
 from .renaming_utilities import RENAMING_MESSAGES
-
-addon_keymaps = []
-
-def add_hotkey():
-    prefs = bpy.context.preferences.addons[__package__].preferences
-
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    # if not kc:
-    #     return
-
-    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
-    kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl = True)
-    kmi.properties.name = 'VIEW3D_PT_tools_renaming_panel'
-    kmi.active = True
-
-    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
-    kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl = True, shift = True)
-    kmi.properties.name = 'VIEW3D_PT_tools_type_suffix'
-    kmi.active = True
-
-    addon_keymaps.append((km, kmi))
-
-def get_hotkey_entry_item(km, kmi_name, kmi_value):
-    '''
-    returns hotkey of specific type, with specific properties.name (keymap is not a dict, so referencing by keys is not enough
-    if there are multiple hotkeys!)
-    '''
-    for i, km_item in enumerate(km.keymap_items):
-        if km.keymap_items.keys()[i] == kmi_name:
-            if km.keymap_items[i].properties.name == kmi_value:
-                return km_item
-    return None
-
-def remove_hotkey():
-    ''' clears addon keymap hotkeys stored in addon_keymaps '''
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
-
-    for km, kmi in addon_keymaps:
-        if hasattr(kmi.properties, 'name'):
-            if kmi.properties.name in ['VIEW3D_PT_tools_renaming_panel', 'VIEW3D_PT_tools_type_suffix']:
-                km.keymap_items.remove(kmi)
-
-    addon_keymaps.clear()
-
-class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
-    ''' Add hotkey entry '''
-    bl_idname = "renaming.add_hotkey"
-    bl_label = "Addon Preferences Example"
-    bl_options = {'REGISTER', 'INTERNAL'}
-
-    def execute(self, context):
-        add_hotkey()
-        self.report({'INFO'}, "Hotkey added in User Preferences -> Input -> Screen -> Screen (Global)")
-        return {'FINISHED'}
-
-# addon Preferences
-class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
-    """Contains the blender addon preferences"""
-    # this must match the addon name, use '__package__'
-    # when defining this in a submodule of a python package.
-    bl_idname = __package__  ### __package__ works on multifile and __name__ not
-
-    prefs_tabs : bpy.props.EnumProperty(
-        items=(('ui', "UI", "UI"),
-               ('keymaps', "Keymaps", "Keymaps")),
-               default='ui')
-
-    renaming_category: bpy.props.StringProperty(
-        name="Category",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
-        default='Misc',
-        # update = update_panel_position,
-    )
-
-    renaming_separator: bpy.props.StringProperty(
-        name="Separator",
-        description="Defines the separator between different operations",
-        default='_',
-        # update = update_panel_position,
-    )
-
-    # --UI OPTIONS
-
-    renamingPanel_showPopup: bpy.props.BoolProperty(
-       name="Show Popup",
-       description="Enable or Disable Popup",
-       default=True,
-    )
-
-    def draw(self, context):
-        layout = self.layout
-        wm = bpy.context.window_manager
-
-        row= layout.row(align=True)
-        row.prop(self, "prefs_tabs", expand=True)
-
-        if self.prefs_tabs == 'ui':
-
-            row = layout.row()
-            row.prop(self,"renaming_category", expand = True)
-            row = layout.row()
-            row.prop(self,"renamingPanel_showPopup")
-            row = layout.row()
-            row.prop(self, "renaming_separator")
+from .renaming_proFeatures import tChange
+from .renaming_preferences import remove_hotkey
+# Add default key configuration for batch renaming
 
 
-        if self.prefs_tabs == 'keymaps':
-            box = layout.box()
-            split = box.split()
-            col = split.column()
-
-            wm = bpy.context.window_manager
-            kc = wm.keyconfigs.addon
-            km = kc.keymaps['3D View Generic']
-
-            kmis = []
-            kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel'))
-            kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix'))
-            for kmi in kmis:
-                if kmi:
-                    col.context_pointer_set("keymap", km)
-                    rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
-                else:
-                    col.label(text="No hotkey entry found")
-                    col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, text = "Add hotkey entry", icon = 'ADD')
-
+# all classes that are supposed to be registered in the blender core.
 classes = (
     renaming_panels.VIEW3D_PT_tools_renaming_panel,
     renaming_panels.VIEW3D_PT_tools_type_suffix,
+    renaming_panels.VIEW3D_OT_SimpleOperator,
+    renaming_panels.VIEW3D_OT_RenamingPopupOperator,
     renaming_popup.VIEW3D_PT_renaming_popup,
     renaming_operators.VIEW3D_OT_add_suffix,
     renaming_operators.VIEW3D_OT_add_prefix,
@@ -207,12 +94,18 @@ classes = (
     renaming_operators.VIEW3D_OT_use_objectname_for_data,
     renaming_operators.VIEW3D_OT_replace_name,
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
-    RENAMING_OT_add_hotkey_renaming,
-    VIEW3D_OT_renaming_preferences, # Preferences need to be after Operators for the hotkeys to work
+    renaming_proFeatures.RENAMING_MT_variableMenu,
+    renaming_proFeatures.VIEW3D_OT_inputVariables,
+    # renaming_vallidate.VIEW3D_OT_Vallidate,
+    # renaming_vallidate.VIEW3D_PT_vallidation,
+    renaming_preferences.RENAMING_OT_add_hotkey_renaming,
+    renaming_preferences.VIEW3D_OT_renaming_preferences, # Preferences need to be after Operators for the hotkeys to work
 )
 
-# def menu_add_suffix(self, context):
-#     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
+
+def menu_add_suffix(self, context):
+    self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
+
 
 enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1),
                    ('MESH', "", "Rename mesh objects", 'OUTLINER_OB_MESH', 2),
@@ -246,23 +139,28 @@ enumObjectTypesExt = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY',
                       ('COLLECTION', "", "Rename collections", 'GROUP', 4096),
                       ('BONE', "", "", 'BONE_DATA', 8192), ]
 
-def register():
-    # bpy.types.INFO_MT_mesh_add.append(menu_add_suffix)
-    # IDStore = bpy.types.
+enumPresetItems = [('FILE', "File", "", '', 1),
+    ('OBJECT', "Object", "", '', 2),
+    ('HIGH', "High", "", '', 4),
+    ('LOW', "Low", "", '', 8),
+    ('CAGE', "Cage", "", '', 16),
+    ('DATE', "Date", "", '', 32),
+    ('TIME', "Time", "", '', 128),
+    ('TYPE', "Type", "", '', 1024),
+    ('PARENT', "Parent", "", '', 2048),
+    ('ACTIVE', "Active", "", '', 4096),
+    ('USER1', "User1", "", '', 64),
+    ('USER2', "User2", "", '', 256),
+    ('USER3', "User3", "", '', 512),
+    ('NUMBER', "Number", "", '', 512),
+]
 
 
-    IDStore = bpy.types.Scene
-    IDStore.renaming_sufpre_type = EnumProperty(
-        name="Suffix or Prefix by Type",
-        items=(('PRE', "Prefix", "prefix"),
-               ('SUF', "Suffix", "suffix"),),
-        description="Add Prefix or Suffix to type",
-        default = 'SUF'
-    )
+prefixSuffixItems = [('PRE', "Prefix", "prefix"),
+               ('SUF', "Suffix", "suffix")
+]
 
-    IDStore.renaming_object_types = EnumProperty(
-        name="Renaming Objects",
-        items=(('OBJECT', "Object", "Scene Objects"),
+renamingEntitiesItems = [('OBJECT', "Object", "Scene Objects"),
                #('ADDOBJECTS', "Objects (additional)","Scene Objects"),
                ('MATERIAL', "Material", "Materials"),
                ('IMAGE', "Image Textures", "Image Textures"),
@@ -275,11 +173,29 @@ def register():
                # ('UVMaps')
                # ('FACEMAPS')
                # ('PARTICLESYSTEM')
-               ),
+]
+
+keys = []
+
+def register():
+    # bpy.types.INFO_MT_mesh_add.append(menu_add_suffix)
+    # IDStore = bpy.types.
+
+
+    IDStore = bpy.types.Scene
+    IDStore.renaming_sufpre_type = EnumProperty(
+        name="Suffix or Prefix by Type",
+        items= prefixSuffixItems,
+        description="Add Prefix or Suffix to type",
+        default = 'SUF'
+    )
+
+    IDStore.renaming_object_types = EnumProperty(
+        name="Renaming Objects",
+        items= renamingEntitiesItems,
         description="Which kind of object to rename",
     )
 
-    # IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",items=enumObjectTypes,description="Which kind of object to export",options={'ENUM_FLAG'}, default= {'CURVE','LATTICE','SURFACE','METABALL','MESH','ARMATURE','LIGHT','CAMERA','EMPTY'})
     IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",
                                                            items=enumObjectTypes,
                                                            description="Which kind of object to rename",
@@ -289,42 +205,21 @@ def register():
                                                                     'TEXT', 'SPEAKER', 'LIGHT_PROBE'}
                                                            )
 
-    # IDStore.renaming_object_addtypes_specified = EnumProperty(name="Additional Object Types",
-    #                                                        items=enumObjectTypesAdd,
-    #                                                        description="Which kind of object to rename",
-    #                                                        options={'ENUM_FLAG'},
-    #                                                        default={'SPEAKER', 'LIGHT_PROBE'}
-    #                                                        )
-
-
     IDStore.renaming_newName = StringProperty(name="New Name", default='')
     IDStore.renaming_search = StringProperty(name='Search', default='')
     IDStore.renaming_replace = StringProperty(name='Replace', default='')
     IDStore.renaming_suffix = StringProperty(name="Suffix", default='')
     IDStore.renaming_prefix = StringProperty(name="Prefix", default='')
-    IDStore.renaming_only_selection = BoolProperty(
-        name="Selected Objects",
-        description="Rename Selected Objects",
-        default=True,
-    )
+    IDStore.renaming_numerate = StringProperty(name="Numerate", default='###')
 
-    IDStore.renaming_advancedMode = BoolProperty(
-        name="Advanced Renaming",
-        description="Enable additional feautres for renaming",
-        default=False,
+    IDStore.renaming_only_selection = BoolProperty(name="Selected Objects",description="Rename Selected Objects",default=True)
+    IDStore.renamingPanel_advancedMode = BoolProperty(name="Advanced Renaming",description="Enable additional feautres for renaming",default=False)
+    IDStore.renaming_matchcase = BoolProperty(name="Match Case",description="",default=True)
+    IDStore.renaming_useRegex = BoolProperty(name="Use Regex",description="",default=False)
+    IDStore.renaming_usenumerate = BoolProperty(name="Numerate",
+       description="Enable and Disable the numeration of objects. This can be especially useful in combination with the custom numberation variable @n",
+       default=True,
     )
-
-    IDStore.renaming_matchcase = BoolProperty(
-        name="Match Case",
-        description="",
-        default=True,
-    )
-    IDStore.renaming_useRegex = BoolProperty(
-        name="Use Regex",
-        description="",
-        default=False,
-    )
-
     IDStore.renaming_base_numerate = IntProperty(name="Step Size", default=1)
     IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
     IDStore.renaming_cut_size = IntProperty(name="Trim Size", default=3)
@@ -366,15 +261,44 @@ def register():
     IDStore.renaming_sufpre_speakers = StringProperty(name="Speakers", default='')
     IDStore.renaming_sufpre_lightprops = StringProperty(name="LightProps", default='')
 
+    IDStore.renaming_inputContext = StringProperty(name="LightProps", default='')
+
+    #Pro Features
+    IDStore.renaming_presetNaming = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
+    IDStore.renaming_presetNaming1 = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
+    IDStore.renaming_presetNaming2 = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
+    IDStore.renaming_presetNaming3 = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
+    IDStore.renaming_presetNaming4 = EnumProperty(name="Object Types",
+                                                 items=enumPresetItems,
+                                                 description="Which kind of object to rename",
+                                                 update= tChange
+                                                 )
+
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
 
-    add_hotkey()
-
-
 def unregister():
-
     IDStore = bpy.types.Scene
     del IDStore.renaming_search
     del IDStore.renaming_newName

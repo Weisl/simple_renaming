@@ -4,11 +4,12 @@ from .renaming_utilities import getRenamingList,trimString
 class VIEW3D_PT_renaming_popup(bpy.types.Panel):
     """Tooltip"""
     bl_idname = "renaming.popup"
-    bl_label = "Renaming Popup"
+    bl_label = "Renaming Info"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Simple Renaming Panel"
+    bl_category = "Rename"
     bl_ui_units_x = 30
+    bl_options = {'DEFAULT_CLOSED'}
 
     message: bpy.props.StringProperty(
         name="message",
@@ -53,7 +54,7 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
 
                             i += 1
 
-                    else:
+                    else: #if msg['warning'] == True
                         if msg['newName'] is not None and msg['oldName'] is not None:
                             box.label(text="Warning", icon="ERROR")
                             box.label(text="       " + "Name: " + str(msg['oldName']))
