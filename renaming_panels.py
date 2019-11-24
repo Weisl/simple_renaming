@@ -2,6 +2,8 @@ import bpy
 
 from .renaming_proFeatures import RENAMING_MT_variableMenu
 from bpy.props import StringProperty
+from bpy.types import Operator, Menu
+from bl_operators.presets import AddPresetBase
 
 #############################################
 ############ PANELS ########################
@@ -51,8 +53,17 @@ def drawSimpleUi(self, context):
 
     layout.prop(scene, "renaming_search")
     layout.prop(scene, "renaming_replace")
+
+    if scene.renaming_object_types == 'BONE':
+        if bpy.context.mode == 'POSE':
+            row = layout.row(align=True)
+            row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
+
+    elif scene.renaming_object_types == 'OBJECT':
+        row = layout.row(align=True)
+        row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
+
     row = layout.row(align=True)
-    #row.scale_y = 1.5
     row.operator("renaming.search_replace", icon="FILE_REFRESH")
     layout.separator()
 
@@ -145,8 +156,15 @@ def drawAdvancedUI(self, context, advancedMode):
             split.prop(scene, "renaming_replace", text='Replace')
             button = split.operator("object.renaming_set_variable", text="@").inputBox = "replace"
 
+        if scene.renaming_object_types == 'BONE':
+            if bpy.context.mode == 'POSE':
+                row = layout.row(align=True)
+                row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
 
-
+        elif scene.renaming_object_types == 'OBJECT':
+            row = layout.row(align=True)
+            row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
+            
         row = layout.row(align=True)
         row.scale_y = 1.5
         row.operator("renaming.search_replace", icon="FILE_REFRESH")
@@ -193,6 +211,15 @@ def drawAdvancedUI(self, context, advancedMode):
         split.prop(scene, "renaming_sufpre_data_02", text='')
         button = split.operator("object.renaming_set_variable", text="@").inputBox = "dataFromObj"
         layout.operator("renaming.dataname_from_obj", icon="MOD_DATA_TRANSFER")
+
+def panel_func(self, context):
+    layout = self.layout
+
+    row = layout.row(align=True)
+    row.menu(OBJECT_MT_sufpre_presets.__name__, text=OBJECT_MT_sufpre_presets.bl_label)
+    row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='ADD')
+    row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='REMOVE').remove_active = True
+
 
 class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     """Creates a renaming Panel"""
@@ -324,8 +351,6 @@ class VIEW3D_OT_SimpleOperator(bpy.types.Operator):
         bpy.ops.wm.call_menu(name = RENAMING_MT_variableMenu.bl_idname)
         return {'FINISHED'}
 
-
-
 class VIEW3D_OT_RenamingPopupOperator(bpy.types.Operator):
     bl_idname = "renaming.f_popup_operator"
     bl_label = "Simple Renaming Panel"
@@ -355,3 +380,45 @@ class LITTLE_RENAMING_HELPERS(bpy.types.Operator):
         scene = context.scene
         return {'FINISHED'}
 
+
+class OBJECT_MT_sufpre_presets(Menu):
+    bl_label = "Type Presets"
+    preset_subdir = "scene/display"
+    preset_operator = "script.execute_preset"
+    draw = Menu.draw_preset
+
+class AddPresetRenamingPresets(AddPresetBase, Operator):
+    '''Add a Object Display Preset'''
+    bl_idname = "renaming.sufpreadd_presets"
+    bl_label = "Add Renaming Preset"
+    preset_menu = "OBJECT_MT_sufpre_presets"
+
+    # variable used for all preset values
+    preset_defines = [
+        "scene = bpy.context.scene"
+    ]
+
+
+    # properties to store in the preset
+    preset_values = [
+        "scene.renaming_sufpre_empty",
+        "scene.renaming_sufpre_geometry",
+        "scene.renaming_sufpre_material",
+        "scene.renaming_sufpre_curve",
+        "scene.renaming_sufpre_armature",
+        "scene.renaming_sufpre_lattice",
+        "scene.renaming_sufpre_data",
+        "scene.renaming_sufpre_surfaces",
+        "scene.renaming_sufpre_cameras",
+        "scene.renaming_sufpre_lights",
+        "scene.renaming_sufpre_collection",
+        "scene.renaming_sufpre_text",
+        "scene.renaming_sufpre_gpencil",
+        "scene.renaming_sufpre_metaball",
+        "scene.renaming_sufpre_bone",
+        "scene.renaming_sufpre_speakers",
+        "scene.renaming_sufpre_lightprops",
+    ]
+
+    # where to store the preset
+    preset_subdir = "scene/display"
