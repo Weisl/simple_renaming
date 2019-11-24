@@ -51,6 +51,12 @@ This can be useful for baking multiple high poly object onto one low poly object
 
 Bones can now be renamed in the edit mode and the mode won’t change to pose mode. 
 
+<h4> Search and Select </h4> 
+The search can now be used to select objects. This uses works with the settings for renaming like only effecting selected and objects of a certain type. This feature works for object renaming as well as bone renaming in pose mode. 
+
+<h4> Presets for the Prefix/Suffix by Type Panel </h4> 
+The presets allow you to easily save different naming conventions for different object types and switch quickly between them.
+
 <h4>Known Issues: </h4> 
 
 •	Time: Ignores the current time zone and uses always Coordinated Universal Time (UTC)
