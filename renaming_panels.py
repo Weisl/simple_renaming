@@ -55,6 +55,7 @@ def drawSimpleUi(self, context):
     layout.prop(scene, "renaming_replace")
     row = layout.row(align=True)
     #row.scale_y = 1.5
+    row.operator("renaming.renaming.search_select", icon="FILE_REFRESH")
     row.operator("renaming.search_replace", icon="FILE_REFRESH")
     layout.separator()
 
@@ -151,6 +152,7 @@ def drawAdvancedUI(self, context, advancedMode):
 
         row = layout.row(align=True)
         row.scale_y = 1.5
+        row.operator("renaming.search_select", icon="FILE_REFRESH")
         row.operator("renaming.search_replace", icon="FILE_REFRESH")
         layout.separator()
 

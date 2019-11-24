@@ -7,13 +7,18 @@ def trimString(string, size):
     list2 = list1[:-size]
     return ''.join(list2)
 
-def getRenamingList(self, context):
+def getRenamingList(self, context, overrideSelection = False):
     wm = context.scene
     renamingList = []
     switchEditMode = False
 
+    if overrideSelection == True:
+        onlySelection = True
+    else:
+        onlySelection = wm.renaming_only_selection
+
     if wm.renaming_object_types == 'OBJECT':
-        if wm.renaming_only_selection == True:
+        if onlySelection == True:
             for obj in bpy.context.selected_objects:
                 if obj.type in wm.renaming_object_types_specified:
                     renamingList.append(obj)
@@ -23,7 +28,7 @@ def getRenamingList(self, context):
                     renamingList.append(obj)
 
     elif wm.renaming_object_types == 'DATA':
-        if wm.renaming_only_selection == True:
+        if onlySelection == True:
             for obj in bpy.context.selected_objects:
                 if obj.data not in renamingList:
                     renamingList.append(obj.data)
@@ -33,7 +38,7 @@ def getRenamingList(self, context):
                     renamingList.append(obj.data)
 
     elif wm.renaming_object_types == 'MATERIAL':
-        if wm.renaming_only_selection == True:
+        if onlySelection == True:
             for obj in bpy.context.selected_objects:
                 for mat in obj.material_slots:
                     if mat is not None and mat.name != '':
@@ -45,7 +50,7 @@ def getRenamingList(self, context):
         renamingList = list(bpy.data.images)
 
     elif wm.renaming_object_types == 'BONE':
-        if wm.renaming_only_selection == True:
+        if onlySelection == True:
             modeOld = bpy.context.mode
             selectedBones = []
             if modeOld == 'POSE':
@@ -79,7 +84,7 @@ def getRenamingList(self, context):
                 renamingList.append(key)
 
     # elif wm.renaming_object_types == 'VERTEXGROUP':
-    #     if wm.renaming_only_selection == True:
+    #     if onlySelection == True:
     #         for obj in bpy.context.selected_objects:
     #             for vtx in obj.vertex_groups:
     #                 if vtx is not None and vtx.name != '':
