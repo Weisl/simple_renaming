@@ -27,7 +27,7 @@ class VariableReplacer():
         ##### System and Global Values ################
         inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
         inputText = re.sub(r'@d', cls.getDateName(context), inputText)      # date
-        inputText = re.sub(r'@t', cls.getTimeName(context), inputText)      # time
+        inputText = re.sub(r'@i', cls.getTimeName(context), inputText)      # time
         inputText = re.sub(r'@r', cls.getRandomString(context), inputText)
 
         ##### UserStrings ################
@@ -45,7 +45,7 @@ class VariableReplacer():
         if wm.renaming_object_types == 'OBJECT':
             ##### Objects #################
             inputText = re.sub(r'@o', cls.getObject(context, entity), inputText) # object
-            inputText = re.sub(r'@y', cls.getType(context, entity), inputText)   # type
+            inputText = re.sub(r'@t', cls.getType(context, entity), inputText)   # type
             inputText = re.sub(r'@p', cls.getParent(context, entity), inputText) # parent
 
         ###### IMAGES ###########
