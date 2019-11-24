@@ -1,6 +1,7 @@
 import bpy, re, random, string
 from .renaming_utilities import getRenamingList,trimString,callRenamingPopup, RENAMING_MESSAGES
 import time
+
 #############################################
 ############ OPERATORS ########################
 #############################################
@@ -27,7 +28,7 @@ class VariableReplacer():
         ##### System and Global Values ################
         inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
         inputText = re.sub(r'@d', cls.getDateName(context), inputText)      # date
-        inputText = re.sub(r'@t', cls.getTimeName(context), inputText)      # time
+        inputText = re.sub(r'@i', cls.getTimeName(context), inputText)      # time
         inputText = re.sub(r'@r', cls.getRandomString(context), inputText)
 
         ##### UserStrings ################
@@ -45,7 +46,7 @@ class VariableReplacer():
         if wm.renaming_object_types == 'OBJECT':
             ##### Objects #################
             inputText = re.sub(r'@o', cls.getObject(context, entity), inputText) # object
-            inputText = re.sub(r'@y', cls.getType(context, entity), inputText)   # type
+            inputText = re.sub(r'@t', cls.getType(context, entity), inputText)   # type
             inputText = re.sub(r'@p', cls.getParent(context, entity), inputText) # parent
 
         ###### IMAGES ###########
@@ -150,15 +151,58 @@ class VariableReplacer():
             return entity.name
         #return "Parent"
 
-# class VIEW3D_OT_search_and_select(bpy.types.Operator):
-#     bl_idname = "renaming.search_select"
-#     bl_label = "Search and Select"
-#     bl_description = "Select Object By Name"
-#     bl_options = {'REGISTER', 'UNDO'}
-#
-#     def execute(self, context):
-#         TODO: implement
-#         return {'FINISHED'}
+class VIEW3D_OT_search_and_select(bpy.types.Operator):
+    bl_idname = "renaming.search_select"
+    bl_label = "Search and Select"
+    bl_description = "Select Object By Name"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        wm = context.scene
+
+        # get list of objects to be selected
+        selectionList = []
+
+        # renamingList, switchEditMode = getRenamingList(self, context, overrideSelection = True)
+        renamingList, switchEditMode = getRenamingList(self, context)
+
+        searchName = wm.renaming_search
+        msg = wm.renaming_messages  # variable to save messages
+
+        VariableReplacer.reset()
+
+        if len(renamingList) > 0:
+            print(renamingList)
+            for entity in renamingList:  # iterate over all objects that are to be renamed
+                if entity is not None and searchName is not '':
+                    entityName = entity.name
+                    searchReplaced = VariableReplacer.replaceInputString(context, searchName, entity)
+
+                    if wm.renaming_matchcase == True:
+                        if entityName.find(searchReplaced) >= 0:
+                            selectionList.append(entity)
+                            msg.addMessage("selected", entityName)
+                    else:
+                        if re.search(searchReplaced, entityName, re.IGNORECASE):
+                            selectionList.append(entity)
+
+        if str(wm.renaming_object_types) == 'OBJECT':
+            bpy.ops.object.select_all(action='DESELECT')
+
+            for obj in selectionList:
+                obj.select_set(True)
+
+        elif str(wm.renaming_object_types) == 'BONE':
+            bpy.ops.pose.select_all(action='DESELECT')
+
+            for bone in selectionList:
+                bone.select = True
+
+
+        # callRenamingPopup(context)
+        if switchEditMode:
+            switchToEditMode(context)
+        return {'FINISHED'}
 
 def switchToEditMode(context):
     bpy.ops.object.mode_set(mode='EDIT')

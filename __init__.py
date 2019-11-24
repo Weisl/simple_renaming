@@ -96,6 +96,7 @@ classes = (
     renaming_operators.VIEW3D_OT_trim_string,
     renaming_operators.VIEW3D_OT_use_objectname_for_data,
     renaming_operators.VIEW3D_OT_replace_name,
+    renaming_operators.VIEW3D_OT_search_and_select,
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
     renaming_proFeatures.RENAMING_MT_variableMenu,
     renaming_proFeatures.VIEW3D_OT_inputVariables,
