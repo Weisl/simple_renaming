@@ -186,10 +186,18 @@ class VIEW3D_OT_search_and_select(bpy.types.Operator):
                         if re.search(searchReplaced, entityName, re.IGNORECASE):
                             selectionList.append(entity)
 
-        bpy.ops.object.select_all(action='DESELECT')
+        if str(wm.renaming_object_types) == 'OBJECT':
+            bpy.ops.object.select_all(action='DESELECT')
 
-        for obj in selectionList:
-            obj.select_set(True)
+            for obj in selectionList:
+                obj.select_set(True)
+
+        elif str(wm.renaming_object_types) == 'BONE':
+            bpy.ops.pose.select_all(action='DESELECT')
+
+            for bone in selectionList:
+                bone.select = True
+
 
         # callRenamingPopup(context)
         if switchEditMode:

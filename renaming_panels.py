@@ -53,8 +53,16 @@ def drawSimpleUi(self, context):
 
     layout.prop(scene, "renaming_search")
     layout.prop(scene, "renaming_replace")
-    row = layout.row(align=True)
-    row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
+
+    if scene.renaming_object_types == 'BONE':
+        if bpy.context.mode == 'POSE':
+            row = layout.row(align=True)
+            row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
+
+    elif scene.renaming_object_types == 'OBJECT':
+        row = layout.row(align=True)
+        row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
+
     row = layout.row(align=True)
     row.operator("renaming.search_replace", icon="FILE_REFRESH")
     layout.separator()
@@ -148,8 +156,15 @@ def drawAdvancedUI(self, context, advancedMode):
             split.prop(scene, "renaming_replace", text='Replace')
             button = split.operator("object.renaming_set_variable", text="@").inputBox = "replace"
 
-        row = layout.row(align=True)
-        row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
+        if scene.renaming_object_types == 'BONE':
+            if bpy.context.mode == 'POSE':
+                row = layout.row(align=True)
+                row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
+
+        elif scene.renaming_object_types == 'OBJECT':
+            row = layout.row(align=True)
+            row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
+            
         row = layout.row(align=True)
         row.scale_y = 1.5
         row.operator("renaming.search_replace", icon="FILE_REFRESH")
