@@ -163,7 +163,8 @@ class VIEW3D_OT_search_and_select(bpy.types.Operator):
         # get list of objects to be selected
         selectionList = []
 
-        renamingList, switchEditMode = getRenamingList(self, context, overrideSelection = True)
+        # renamingList, switchEditMode = getRenamingList(self, context, overrideSelection = True)
+        renamingList, switchEditMode = getRenamingList(self, context)
 
         searchName = wm.renaming_search
         msg = wm.renaming_messages  # variable to save messages
@@ -171,26 +172,26 @@ class VIEW3D_OT_search_and_select(bpy.types.Operator):
         VariableReplacer.reset()
 
         if len(renamingList) > 0:
+            print(renamingList)
             for entity in renamingList:  # iterate over all objects that are to be renamed
                 if entity is not None and searchName is not '':
-
-                    searchReplaced = VariableReplacer.replaceInputString(context, wm.renaming_search, entity)
-
-                    if wm.renaming_matchcase == False:
-                        searchReplaced = re.compile(re.escape(searchReplaced), re.IGNORECASE)
-
                     entityName = entity.name
-                    print("Entity " + entityName + " searchstring " + searchReplaced)
-                    if entityName.find(searchReplaced) >= 0:
-                        selectionList.append(entity)
-                        msg.addMessage("selected", entityName)
+                    searchReplaced = VariableReplacer.replaceInputString(context, searchName, entity)
+
+                    if wm.renaming_matchcase == True:
+                        if entityName.find(searchReplaced) >= 0:
+                            selectionList.append(entity)
+                            msg.addMessage("selected", entityName)
+                    else:
+                        if re.search(searchReplaced, entityName, re.IGNORECASE):
+                            selectionList.append(entity)
 
         bpy.ops.object.select_all(action='DESELECT')
 
         for obj in selectionList:
             obj.select_set(True)
 
-        callRenamingPopup(context)
+        # callRenamingPopup(context)
         if switchEditMode:
             switchToEditMode(context)
         return {'FINISHED'}

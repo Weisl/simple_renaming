@@ -12,10 +12,9 @@ def getRenamingList(self, context, overrideSelection = False):
     renamingList = []
     switchEditMode = False
 
+    onlySelection = wm.renaming_only_selection
     if overrideSelection == True:
-        onlySelection = True
-    else:
-        onlySelection = wm.renaming_only_selection
+        onlySelection = False
 
     if wm.renaming_object_types == 'OBJECT':
         if onlySelection == True:
