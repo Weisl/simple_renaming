@@ -1,5 +1,5 @@
 import bpy, re, random, string
-from .renaming_utilities import getRenamingList,trimString,callRenamingPopup, RENAMING_MESSAGES
+from .renaming_utilities import getRenamingList,trimString,callRenamingPopup, callErrorPopup
 import time
 
 #############################################
@@ -151,6 +151,9 @@ class VariableReplacer():
             return entity.name
         #return "Parent"
 
+
+# TODO Parent class that contains common functionality like setting up variables, getRenamingList and Error Handling
+
 class VIEW3D_OT_search_and_select(bpy.types.Operator):
     bl_idname = "renaming.search_select"
     bl_label = "Search and Select"
@@ -164,10 +167,18 @@ class VIEW3D_OT_search_and_select(bpy.types.Operator):
         selectionList = []
 
         # renamingList, switchEditMode = getRenamingList(self, context, overrideSelection = True)
-        renamingList, switchEditMode = getRenamingList(self, context)
+        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
+
+        if errMsg is not None:
+            errorMsg = wm.renaming_error_messages
+            errorMsg.addMessage(errMsg)
+            callErrorPopup(context)
+            return {'CANCELLED'}
+
 
         searchName = wm.renaming_search
         msg = wm.renaming_messages  # variable to save messages
+
 
         VariableReplacer.reset()
 
@@ -218,12 +229,21 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
 
         # get list of objects to be renamed
         renamingList = []
-        renamingList, switchEditMode = getRenamingList(self, context)
+        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
+
+        if errMsg is not None:
+            errorMsg = wm.renaming_error_messages
+            errorMsg.addMessage(errMsg)
+            callErrorPopup(context)
+            return {'CANCELLED'}
+
 
         searchName = wm.renaming_search
         replaceName = wm.renaming_replace
 
         msg = wm.renaming_messages  # variable to save messages
+        errMsg = wm.renaming_error_messages
+
         VariableReplacer.reset()
         if len(renamingList) > 0:
             for entity in renamingList:     # iterate over all objects that are to be renamed
@@ -268,7 +288,14 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         wm = context.scene
 
         replaceName = wm.renaming_newName
-        renamingList, switchEditMode = getRenamingList(self, context)
+        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
+
+        if errMsg is not None:
+            errorMsg = wm.renaming_error_messages
+            errorMsg.addMessage(errMsg)
+            callErrorPopup(context)
+            return {'CANCELLED'}
+
 
         digits = len(wm.renaming_numerate)
         prefs = bpy.context.preferences.addons[__package__].preferences
@@ -393,7 +420,14 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
     def execute(self, context):
         wm = context.scene
         renamingList = []
-        renamingList, switchEditMode = getRenamingList(self, context)
+        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
+
+        if errMsg is not None:
+            errorMsg = wm.renaming_error_messages
+            errorMsg.addMessage(errMsg)
+            callErrorPopup(context)
+            return {'CANCELLED'}
+
 
         msg = wm.renaming_messages
 
@@ -423,7 +457,13 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         wm = context.scene
 
         renamingList = []
-        renamingList, switchEditMode = getRenamingList(self, context)
+        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
+
+        if errMsg is not None:
+            errorMsg = wm.renaming_error_messages
+            errorMsg.addMessage(errMsg)
+            callErrorPopup(context)
+            return {'CANCELLED'}
 
         msg = wm.renaming_messages
 
@@ -454,9 +494,16 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
         wm = context.scene
 
         msg = wm.renaming_messages
+        errMsg = wm.renaming_error_messages
 
         renamingList = []
-        renamingList, switchEditMode = getRenamingList(self, context)
+        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
+
+        if errMsg is not None:
+            errorMsg = wm.renaming_error_messages
+            errorMsg.addMessage(errMsg)
+            callErrorPopup(context)
+            return {'CANCELLED'}
 
         VariableReplacer.reset()
         if len(renamingList) > 0:
@@ -492,9 +539,17 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         digits = wm.renaming_digits_numerate
 
         msg = wm.renaming_messages
+        errMsg = wm.renaming_error_messages
 
         renamingList = []
-        renamingList, switchEditMode = getRenamingList(self, context)
+        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
+
+        if errMsg is not None:
+            errorMsg = wm.renaming_error_messages
+            errorMsg.addMessage(errMsg)
+            callErrorPopup(context)
+            return {'CANCELLED'}
+
 
         if len(renamingList) > 0:
             for entity in renamingList:
@@ -521,7 +576,15 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         suffix_data = wm.renaming_sufpre_data_02
 
         msg = wm.renaming_messages  # variable to save messages
-        renamingList, switchEditMode = getRenamingList(self, context)
+        errMsg = wm.renaming_error_messages
+
+        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
+
+        if errMsg is not None:
+            errorMsg = wm.renaming_error_messages
+            errorMsg.addMessage(errMsg)
+            callErrorPopup(context)
+            return {'CANCELLED'}
 
         #TODO: Clean up. Should use getRenamingList instead of iterating through all objects by itself.
 

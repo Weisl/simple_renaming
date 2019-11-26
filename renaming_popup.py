@@ -1,6 +1,88 @@
 import bpy
 from .renaming_utilities import getRenamingList,trimString
 
+class VIEW3D_PT_error_popup(bpy.types.Panel):
+    """Tooltip"""
+    bl_idname = "renaming.popup_error"
+    bl_label = "Renaming Info"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Rename"
+    bl_ui_units_x = 30
+    bl_options = {'DEFAULT_CLOSED'}
+
+
+    def draw(self, context):
+
+        layout = self.layout
+        box = layout.box()
+        wm = context.scene
+
+        messages = wm.renaming_error_messages
+
+        if len(messages.message) <= 0:
+            box.label(text="Unknown Error", icon="INFO")
+        else:
+            for msg in messages.message:
+                if msg is not None:
+                    row = box.row(align=False)
+                    # row.alignment = 'EXPAND'
+
+                    if msg['isError']:
+                        row.label(text=str('Error'), icon='ERROR')
+                        row = box.row(align=False)
+                        row.label(text=str(msg['message']), icon='ERROR')
+                    else:
+                        row.label(text=str('Warning'), icon='ERROR')
+                        row = box.row(align=False)
+                        row.label(text=str(msg['message']), icon='CANCEL')
+
+        messages.clear()
+        return
+
+class VIEW3D_PT_info_popup(bpy.types.Panel):
+    """Tooltip"""
+    bl_idname = "renaming.popup_info"
+    bl_label = "Renaming Info"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Rename"
+    bl_ui_units_x = 30
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self,context):
+
+        layout = self.layout
+
+        box = layout.box()
+        wm = context.scene
+        infos = wm.renaming_info_messages
+
+        print("Draw")
+        if len(infos.message) <= 0:
+            box.label(text="No Objects Validated", icon="INFO")
+        else:
+            i = 0
+            for msg in infos.message:
+                if msg is not None:
+                    if (msg['message'] is not None):
+
+                            row = box.row(align=True)
+                            row.alignment = 'EXPAND'
+
+                            if msg['obType'] is not False and msg['obIcon'] is not False:
+                                row.label(text=str(msg['obType']), icon=msg['obIcon'])
+                                # row.label(text = str(msg['obType']), icon = 'INFO')
+                            else:
+                                row.label(text=str(wm.renaming_object_types))
+
+                            row.label(text=str(msg['assetName']), icon='FILE_TICK')
+                            row.label(text=str(msg['oldName']))
+
+                            i += 1
+
+        infos.clear()
+
 class VIEW3D_PT_renaming_popup(bpy.types.Panel):
     """Tooltip"""
     bl_idname = "renaming.popup"
@@ -11,14 +93,10 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
     bl_ui_units_x = 30
     bl_options = {'DEFAULT_CLOSED'}
 
-    message: bpy.props.StringProperty(
-        name="message",
-        description="message",
-        default=''
-    )
 
     def draw(self, context):
         wm = bpy.context.scene
+
         layout = self.layout
         box = layout.box()
 
