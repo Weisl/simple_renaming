@@ -137,6 +137,33 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         # update = update_panel_position,
     )
 
+    masterRegex: bpy.props.StringProperty(
+        name="Naming Regex",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default='r"^[A-Za-z]{2}_[A-Za-z]{6}_[A-Za-z0-9]+(_[A-Za-z0-9]+)?$"',
+    )
+
+    assetRegex: bpy.props.StringProperty(
+        name="Asset Regex",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default='r"^[A-Za-z]+(_[A-Za-z0-9]+)?$"',
+    )
+    materialRegex: bpy.props.StringProperty(
+        name="Material Regex",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default='r"^[A-Za-z](_mat|_main_mat)?$"',
+    )
+    genericMaterialRegex: bpy.props.StringProperty(
+        name="Generic Material Regex",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default='r"^Gen[A-Za-z]+_mat"',
+    )
+
+    socketPrefix: bpy.props.StringProperty(
+        name="Socket Prefix",
+        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        default="SOCKET_",
+    )
 
     def draw(self, context):
         '''
@@ -149,28 +176,40 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         row.prop(self, "prefs_tabs", expand=True)
 
         if self.prefs_tabs == 'ui':
-
             row = layout.row()
             row.prop(self,"renaming_category", expand = True)
             row = layout.row()
             row.prop(self,"renamingPanel_showPopup")
             row = layout.row()
             row.prop(self,"renamingPanel_advancedMode")
+
+
             row = layout.row()
             row.prop(self, "renaming_separator")
-            row = layout.row()
+
+            box = layout.box()
+            row = box.row()
             row.prop(self,"renaming_stringLow")
-            row = layout.row()
+            row = box.row()
             row.prop(self,"renaming_stringHigh")
-            row = layout.row()
+            row = box.row()
             row.prop(self,"renaming_stringCage")
-            row = layout.row()
+            row = box.row()
             row.prop(self,"renaming_user1")
-            row = layout.row()
+            row = box.row()
             row.prop(self,"renaming_user2")
-            row = layout.row()
+            row = box.row()
             row.prop(self,"renaming_user3")
 
+            box = layout.box()
+            row = box.row()
+            row.prop(self,"masterRegex", expand = True)
+            row = box.row()
+            row.prop(self,"assetRegex", expand = True)
+            row = box.row()
+            row.prop(self,"materialRegex", expand = True)
+            row = box.row()
+            row.prop(self,"genericMaterialRegex", expand = True)
 
         if self.prefs_tabs == 'keymaps':
             box = layout.box()
