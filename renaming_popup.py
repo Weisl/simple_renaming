@@ -6,10 +6,8 @@ class VIEW3D_PT_error_popup(bpy.types.Panel):
     bl_idname = "renaming.popup_error"
     bl_label = "Renaming Info"
     bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = "Rename"
+    bl_region_type = "WINDOW"
     bl_ui_units_x = 30
-    bl_options = {'DEFAULT_CLOSED'}
 
 
     def draw(self, context):
@@ -45,10 +43,9 @@ class VIEW3D_PT_info_popup(bpy.types.Panel):
     bl_idname = "renaming.popup_info"
     bl_label = "Renaming Info"
     bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = "Rename"
+    bl_region_type = "WINDOW"
     bl_ui_units_x = 30
-    bl_options = {'DEFAULT_CLOSED'}
+
 
     def draw(self,context):
 
@@ -88,10 +85,9 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
     bl_idname = "renaming.popup"
     bl_label = "Renaming Info"
     bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = "Rename"
+    bl_region_type = "WINDOW"
     bl_ui_units_x = 30
-    bl_options = {'DEFAULT_CLOSED'}
+
 
 
     def draw(self, context):
