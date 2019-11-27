@@ -52,7 +52,12 @@ def getRenamingList(self, context, overrideSelection = False):
         if onlySelection == True:
             modeOld = bpy.context.mode
             selectedBones = []
-            if modeOld == 'POSE':
+
+            if modeOld == 'OBJECT':
+                errorMsg = "Renaming only selected Bones is only supported for EDIT and POSE mode by now."
+                return None, None, errorMsg
+
+            elif modeOld == 'POSE':
                 selectedBones = bpy.context.selected_pose_bones.copy()
             else:
                 selectedBones = bpy.context.selected_bones.copy()
@@ -98,22 +103,23 @@ def getRenamingList(self, context, overrideSelection = False):
         renamingList = list(bpy.data.actions)
 
     #renamingList.sort(key=lambda x: x.name, reverse=False)
-    return renamingList, switchEditMode
+    return renamingList, switchEditMode, None
 
 def callRenamingPopup(context):
     preferences = context.preferences
     addon_prefs = preferences.addons[__package__].preferences
+
     if addon_prefs.renamingPanel_showPopup == True:
         bpy.ops.wm.call_panel(name="renaming.popup")
     return
 
 def callInfoPopup(context):
-    preferences = context.preferences
-    addon_prefs = preferences.addons[__package__].preferences
-
-    bpy.ops.wm.call_panel(name="renamingValidation.popup")
+    bpy.ops.wm.call_panel(name="renaming.popup_info")
     return
 
+def callErrorPopup(context):
+    bpy.ops.wm.call_panel(name="renaming.popup_error")
+    return
 
 windowVariables = []
 
@@ -150,32 +156,13 @@ class INFO_MESSAGES(MESSAGE):
         cls.message.append(dict)
         return
 
-    def draw(cls,context, layout):
-        box = layout.box()
-        wm = context.scene
-        print("Draw")
-        if len(cls.message) <= 0:
-            box.label(text="No Objects Validated", icon="INFO")
-        else:
-            i = 0
-            for msg in cls.message:
-                if msg is not None:
-                    if (msg['message'] is not None):
+class WarningError_MESSAGES(MESSAGE):
 
-                            row = box.row(align=True)
-                            row.alignment = 'EXPAND'
-
-                            if msg['obType'] is not False and msg['obIcon'] is not False:
-                                row.label(text=str(msg['obType']), icon=msg['obIcon'])
-                                # row.label(text = str(msg['obType']), icon = 'INFO')
-                            else:
-                                row.label(text=str(wm.renaming_object_types))
-
-                            row.label(text=str(msg['assetName']), icon='FILE_TICK')
-                            row.label(text=str(msg['oldName']))
-
-                            i += 1
-
+    @classmethod
+    def addMessage(cls, message='', isError = False):
+        dict = {'message': message, 'isError' : isError}
+        cls.message.append(dict)
+        return
 
 class RENAMING_MESSAGES(MESSAGE):
     message = []
@@ -186,52 +173,6 @@ class RENAMING_MESSAGES(MESSAGE):
         cls.message.append(dict)
         return
 
-    def draw(cls, context, layout):
-        box = layout.box()
-        wm = context.scene
 
-        if len(wm.renaming_messages.message) <= 0:
-            box.label(text="No Objects Renamed", icon="INFO")
-        else:
-            i = 0
-            for msg in wm.renaming_messages.message:
-                if msg is not None:
-                    if msg['warning'] == False:
-                        if (msg['newName'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg[
-                            'newName']:
-
-                            if i == 0:
-                                row = box.row(align=True)
-                                row.alignment = 'EXPAND'
-                                row.label(text="OBJECT TYPE")
-                                row.label(text="NEW NAME")
-                                row.label(text="OLD NAME")
-                                row.separator()
-
-                            row = box.row(align=True)
-                            row.alignment = 'EXPAND'
-
-                            if msg['obType'] is not False and msg['obIcon'] is not False:
-                                row.label(text=str(msg['obType']), icon=msg['obIcon'])
-                                # row.label(text = str(msg['obType']), icon = 'INFO')
-                            else:
-                                row.label(text=str(wm.renaming_object_types))
-
-                            row.label(text=str(msg['newName']), icon='FILE_TICK')
-                            row.label(text=str(msg['oldName']))
-
-                            i += 1
-
-                    else: #if msg['warning'] == True
-                        if msg['newName'] is not None and msg['oldName'] is not None:
-                            box.label(text="Warning", icon="ERROR")
-                            box.label(text="       " + "Name: " + str(msg['oldName']))
-                            box.label(text="       " + msg['warning'])
-                        else:
-                            box.label(text="Warning", icon="ERROR")
-                            box.label(text="       " + msg['warning'])
-            if i == 0:
-                box.label(text="No Objects Renamed", icon="INFO")
-            return
 
 
