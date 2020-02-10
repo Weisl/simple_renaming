@@ -250,12 +250,9 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
                 if entity is not None:
                     if searchName is not '':
                         oldName = entity.name
+                        searchReplaced = VariableReplacer.replaceInputString(context, wm.renaming_search, entity)
+                        replaceReplaced = VariableReplacer.replaceInputString(context, wm.renaming_replace, entity)
                         if wm.renaming_useRegex == False:
-
-                            searchReplaced = VariableReplacer.replaceInputString(context, wm.renaming_search, entity)
-                            replaceReplaced = VariableReplacer.replaceInputString(context, wm.renaming_replace, entity)
-
-
                             if wm.renaming_matchcase:
                                 newName = str(entity.name).replace(searchReplaced, replaceReplaced)
                                 entity.name = newName
