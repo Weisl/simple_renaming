@@ -22,8 +22,8 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers the basic functionality of renaming a set of objects",
     "author": "Matthias Patscheider",
-    "version": (1, 3, 1),
-    "blender": (2, 80, 0),
+    "version": (1, 4, 1),
+    "blender": (2, 81, 0),
     "location": "View3D > Tools ",
     "warning": "",
     "wiki_url": "https://github.com/Weisl/simple_renaming_panel",
@@ -73,7 +73,7 @@ from bpy.props import (
     CollectionProperty,
 )
 
-from .renaming_utilities import RENAMING_MESSAGES
+from .renaming_utilities import RENAMING_MESSAGES, WarningError_MESSAGES, INFO_MESSAGES
 from .renaming_proFeatures import tChange
 from .renaming_preferences import remove_hotkey
 from .renaming_panels import panel_func
@@ -89,6 +89,8 @@ classes = (
     renaming_panels.OBJECT_MT_sufpre_presets,
     renaming_panels.AddPresetRenamingPresets,
     renaming_popup.VIEW3D_PT_renaming_popup,
+    renaming_popup.VIEW3D_PT_info_popup,
+    renaming_popup.VIEW3D_PT_error_popup,
     renaming_operators.VIEW3D_OT_add_suffix,
     renaming_operators.VIEW3D_OT_add_prefix,
     renaming_operators.VIEW3D_OT_search_and_replace,
@@ -232,6 +234,8 @@ def register():
     IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
     IDStore.renaming_cut_size = IntProperty(name="Trim Size", default=3)
     IDStore.renaming_messages = RENAMING_MESSAGES()
+    IDStore.renaming_error_messages = WarningError_MESSAGES()
+    IDStore.renaming_info_messages = INFO_MESSAGES()
 
     ############## Type Suffix Prefix ########################################
     IDStore.type_pre_sub_only_selection = BoolProperty(
