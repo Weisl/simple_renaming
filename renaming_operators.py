@@ -14,11 +14,21 @@ def randomString(stringLength=10):
 class VariableReplacer():
     addon_prefs = None
     entity = None
-    number = 0
+    number = 1
+    digits = 3
+    step = 1
 
     @classmethod
     def reset(cls):
-        cls.number = 0
+        prefs = bpy.context.preferences.addons[__package__].preferences
+        startNum = prefs.numerate_start_number
+        numerate_step = prefs.numerate_step
+        numerate_digits = prefs.numerate_digits
+
+        #print("reset = " + str(startNum))
+        cls.step =numerate_step
+        cls.digits = numerate_digits
+        cls.number = startNum
 
     @classmethod
     def replaceInputString(cls,context,inputText,entity):
@@ -92,10 +102,10 @@ class VariableReplacer():
     @classmethod
     def getNumber(cls,context):
         wm = context.scene
-        digits = len(wm.renaming_numerate)
+        # digits = len(wm.renaming_numerate)
         newNr = cls.number
-        nr = str('{num:{fill}{width}}'.format(num=newNr, fill='0', width=digits))
-        cls.number = newNr + 1
+        nr = str('{num:{fill}{width}}'.format(num=newNr, fill='0', width=cls.digits))
+        cls.number = newNr + cls.step
         return nr
 
     @classmethod
@@ -505,6 +515,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
             return {'CANCELLED'}
 
         VariableReplacer.reset()
+
         if len(renamingList) > 0:
             for entity in renamingList:
                 if entity is not None:

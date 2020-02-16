@@ -106,6 +106,17 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
        default=1,
     )
 
+    numerate_digits: bpy.props.IntProperty(
+       name="Digits",
+       description="Defines digits used for numerating. Number 1 with digits 3 would result in 001",
+       default=3,
+    )
+    numerate_step: bpy.props.IntProperty(
+       name="Numerate Step",
+       description="Defines the steps between numbers. E.g., 1 results in 1, 2, 3, a step siye ot two results in 1,3,5",
+       default=1,
+    )
+
 
     renaming_stringHigh: StringProperty(
         name="High",
@@ -195,6 +206,13 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row.prop(self, "renaming_separator")
             row = layout.row()
             row.prop(self, "numerate_start_number")
+            row = layout.row()
+            row.prop(self, "numerate_digits")
+            row = layout.row()
+            row.prop(self, "numerate_step")
+
+
+
 
             box = layout.box()
             row = box.row()
