@@ -298,6 +298,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         prefs = bpy.context.preferences.addons[__package__].preferences
         separator = prefs.renaming_separator
 
+        startNum = prefs.numerate_start_number
+
         msg = wm.renaming_messages
 
         shapeKeyNamesList = []
@@ -317,7 +319,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                         replaceName = VariableReplacer.replaceInputString(context, wm.renaming_newName, entity)
                         # print ("Entity: " + entity.name + "         " + "replaced: " + replaceName)
 
-                        i = 1
+                        i = startNum
                         if wm.renaming_object_types == 'COLLECTION' or wm.renaming_object_types == 'IMAGE':
                             i = 0
 
@@ -530,7 +532,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         separator = prefs.renaming_separator
 
         wm = context.scene
-        i = 1
+        startNum = prefs.numerate_start_number
 
         step = wm.renaming_base_numerate
         digits = wm.renaming_digits_numerate

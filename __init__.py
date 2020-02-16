@@ -231,6 +231,7 @@ def register():
        default=True,
     )
     IDStore.renaming_base_numerate = IntProperty(name="Step Size", default=1)
+    IDStore.renaming_start_number = IntProperty(name="Step Size", default=1)
     IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
     IDStore.renaming_cut_size = IntProperty(name="Trim Size", default=3)
     IDStore.renaming_messages = RENAMING_MESSAGES()
@@ -334,6 +335,7 @@ def unregister():
     del IDStore.renaming_sufpre_lattice
     del IDStore.renaming_sufpre_data
     del IDStore.renaming_sufpre_data_02
+    del IDStore.renaming_start_number
 
     del IDStore.renaming_sufpre_lights
     del IDStore.renaming_sufpre_cameras

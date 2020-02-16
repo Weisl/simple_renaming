@@ -4,6 +4,7 @@ import rna_keymap_ui
 from bpy.props import (
     BoolProperty,
     IntProperty,
+    FloatProperty,
     EnumProperty,
     StringProperty,
     FloatVectorProperty,
@@ -99,6 +100,12 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
        description="Enable or Disable Popup",
        default=True,
     )
+    numerate_start_number: bpy.props.IntProperty(
+       name="Numerate Start",
+       description="Defines the first number for iterating objects. E.g., 1 means that the first object will be named [objectname]001",
+       default=1,
+    )
+
 
     renaming_stringHigh: StringProperty(
         name="High",
@@ -186,6 +193,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
             row = layout.row()
             row.prop(self, "renaming_separator")
+            row = layout.row()
+            row.prop(self, "numerate_start_number")
 
             box = layout.box()
             row = box.row()
