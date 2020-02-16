@@ -201,7 +201,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = layout.row()
             row.prop(self,"renamingPanel_advancedMode")
 
-
             row = layout.row()
             row.prop(self, "renaming_separator")
             row = layout.row()
@@ -210,9 +209,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row.prop(self, "numerate_digits")
             row = layout.row()
             row.prop(self, "numerate_step")
-
-
-
 
             box = layout.box()
             row = box.row()

@@ -17,6 +17,7 @@ class VariableReplacer():
     number = 1
     digits = 3
     step = 1
+    startnumber = 0
 
     @classmethod
     def reset(cls):
@@ -28,7 +29,8 @@ class VariableReplacer():
         #print("reset = " + str(startNum))
         cls.step =numerate_step
         cls.digits = numerate_digits
-        cls.number = startNum
+        cls.startNum = startNum
+        cls.number = 0
 
     @classmethod
     def replaceInputString(cls,context,inputText,entity):
@@ -104,8 +106,10 @@ class VariableReplacer():
         wm = context.scene
         # digits = len(wm.renaming_numerate)
         newNr = cls.number
-        nr = str('{num:{fill}{width}}'.format(num=newNr, fill='0', width=cls.digits))
-        cls.number = newNr + cls.step
+        step = cls.step
+        startNum = cls.startNum
+        nr = str('{num:{fill}{width}}'.format(num=(newNr * step) + startNum , fill='0', width=cls.digits))
+        cls.number = newNr + 1
         return nr
 
     @classmethod
@@ -309,6 +313,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         separator = prefs.renaming_separator
 
         startNum = prefs.numerate_start_number
+        step = prefs.numerate_step
 
         msg = wm.renaming_messages
 
@@ -329,7 +334,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                         replaceName = VariableReplacer.replaceInputString(context, wm.renaming_newName, entity)
                         # print ("Entity: " + entity.name + "         " + "replaced: " + replaceName)
 
-                        i = startNum
+                        i = 0
+
                         if wm.renaming_object_types == 'COLLECTION' or wm.renaming_object_types == 'IMAGE':
                             i = 0
 
@@ -352,7 +358,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                         if wm.renaming_usenumerate == True:
 
                             while True:
-                                newName = replaceName + separator + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
+                                newName = replaceName + separator + ('{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
 
                                 if wm.renaming_object_types == 'OBJECT':
                                     if newName in bpy.data.objects and newName != entity.name:
@@ -405,7 +411,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 else:
                                     break
 
-                            newName = replaceName + separator + ('{num:{fill}{width}}'.format(num=i, fill='0', width=digits))
+                            newName = replaceName + separator + ('{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
                         entity.name = newName
                         msg.addMessage(oldName, entity.name)
                         i = i + 1
@@ -543,10 +549,11 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         separator = prefs.renaming_separator
 
         wm = context.scene
+
         startNum = prefs.numerate_start_number
 
-        step = wm.renaming_base_numerate
-        digits = wm.renaming_digits_numerate
+        step = prefs.numerate_step
+        digits =prefs.numerate_digits
 
         msg = wm.renaming_messages
         errMsg = wm.renaming_error_messages
@@ -562,10 +569,11 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
 
 
         if len(renamingList) > 0:
+            i = 0
             for entity in renamingList:
                 if entity is not None:
                     oldName = entity.name
-                    newName = entity.name + separator + ('{num:{fill}{width}}'.format(num=i * step, fill='0', width=digits))
+                    newName = entity.name + separator + ('{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
                     entity.name = newName
                     msg.addMessage(oldName, entity.name)
                     i = i + 1

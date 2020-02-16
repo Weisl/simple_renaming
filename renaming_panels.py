@@ -82,7 +82,7 @@ def drawSimpleUi(self, context):
 
     ###############################################
     row = layout.row(align=True)
-    row.prop(scene, "renaming_digits_numerate", text="")
+    # row.prop(scene, "renaming_digits_numerate", text="")
     row.operator("renaming.numerate", icon="LINENUMBERS_ON")
 
     ###############################################
@@ -194,7 +194,7 @@ def drawAdvancedUI(self, context, advancedMode):
         layout.label(text="Other")
         ###############################################
         row = layout.row(align=True)
-        row.prop(scene, "renaming_digits_numerate", text="")
+        # row.prop(scene, "renaming_digits_numerate", text="")
         row.operator("renaming.numerate", icon="LINENUMBERS_ON")
 
         ###############################################
