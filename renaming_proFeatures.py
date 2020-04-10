@@ -4,7 +4,7 @@ from bpy.props import StringProperty
 
 class RENAMING_MT_variableMenu(bpy.types.Menu):
     bl_label = "Renaming Variables"
-    bl_idname = "renaming.mt_menu"
+    bl_idname = "MENU_MT_renaming_variables"
 
     def draw(self, context):
         layout = self.layout
@@ -50,10 +50,10 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
 
         # The print function works fine
         nameingPreset = self.nameingPreset
-        print (self.nameingPreset)
+        #print (self.nameingPreset)
         nameVar = ""
 
-        print('T changed to ', nameingPreset)
+        #print('T changed to ', nameingPreset)
         if nameingPreset == 'FILE':
             nameVar = "@f"
         if nameingPreset == 'OBJECT':

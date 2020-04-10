@@ -220,7 +220,6 @@ def panel_func(self, context):
     row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='ADD')
     row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='REMOVE').remove_active = True
 
-
 class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     """Creates a renaming Panel"""
     bl_label = "Simple Renaming Panel"
@@ -379,7 +378,6 @@ class LITTLE_RENAMING_HELPERS(bpy.types.Operator):
         layout = self.layout
         scene = context.scene
         return {'FINISHED'}
-
 
 class OBJECT_MT_sufpre_presets(Menu):
     bl_label = "Type Presets"

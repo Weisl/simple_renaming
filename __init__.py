@@ -36,7 +36,6 @@ bl_info = {
 # TODO: Create Properties group for add suffix prefix type
 # TODO: add List Of Textures
 # TODO: Wait for asset manager and otherwise import Auto updater again
-# TODO: Alt+N for quick rename
 # TODO: Blendshapes
 
 
@@ -102,8 +101,8 @@ classes = (
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
     renaming_proFeatures.RENAMING_MT_variableMenu,
     renaming_proFeatures.VIEW3D_OT_inputVariables,
-    # renaming_vallidate.VIEW3D_OT_Vallidate,
-    # renaming_vallidate.VIEW3D_PT_vallidation,
+    renaming_vallidate.VIEW3D_OT_Vallidate,
+    renaming_vallidate.VIEW3D_PT_vallidation,
     renaming_preferences.RENAMING_OT_add_hotkey_renaming,
     renaming_preferences.VIEW3D_OT_renaming_preferences, # Preferences need to be after Operators for the hotkeys to work
 )

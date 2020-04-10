@@ -3,7 +3,7 @@ from .renaming_utilities import getRenamingList,trimString
 
 class VIEW3D_PT_error_popup(bpy.types.Panel):
     """Tooltip"""
-    bl_idname = "renaming.popup_error"
+    bl_idname = "POPUP_PT_error"
     bl_label = "Renaming Info"
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
@@ -40,7 +40,7 @@ class VIEW3D_PT_error_popup(bpy.types.Panel):
 
 class VIEW3D_PT_info_popup(bpy.types.Panel):
     """Tooltip"""
-    bl_idname = "renaming.popup_info"
+    bl_idname = "POPUP_PT_info"
     bl_label = "Renaming Info"
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
@@ -55,7 +55,6 @@ class VIEW3D_PT_info_popup(bpy.types.Panel):
         wm = context.scene
         infos = wm.renaming_info_messages
 
-        print("Draw")
         if len(infos.message) <= 0:
             box.label(text="No Objects Validated", icon="INFO")
         else:
@@ -82,7 +81,7 @@ class VIEW3D_PT_info_popup(bpy.types.Panel):
 
 class VIEW3D_PT_renaming_popup(bpy.types.Panel):
     """Tooltip"""
-    bl_idname = "renaming.popup"
+    bl_idname = "POPUP_PT_popup"
     bl_label = "Renaming Info"
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"

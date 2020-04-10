@@ -147,7 +147,6 @@ class VariableReplacer():
     @classmethod
     def getObject(cls,context, entity):
         objName = entity.name
-        # print ("getObject Entity: " + objName)
         return objName
 
     @classmethod
@@ -197,7 +196,6 @@ class VIEW3D_OT_search_and_select(bpy.types.Operator):
         VariableReplacer.reset()
 
         if len(renamingList) > 0:
-            print(renamingList)
             for entity in renamingList:  # iterate over all objects that are to be renamed
                 if entity is not None and searchName is not '':
                     entityName = entity.name
