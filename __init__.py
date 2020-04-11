@@ -104,7 +104,6 @@ classes = (
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
 
-
 enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1),
                    ('MESH', "", "Rename mesh objects", 'OUTLINER_OB_MESH', 2),
                    ('CAMERA', "", "Rename Camera objects", 'OUTLINER_OB_CAMERA', 4),
@@ -204,7 +203,7 @@ def register():
                                                            options={'ENUM_FLAG'},
                                                            default={'CURVE', 'LATTICE', 'SURFACE', 'METABALL', 'MESH',
                                                                     'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY', 'GPENCIL',
-                                                                    'TEXT', 'SPEAKER', 'LIGHT_PROBE'}
+                                                                    'TEXT', 'SPEAKER', 'LIGHT_PROBE', 'VOLUME'}
                                                            )
 
     IDStore.renaming_newName = StringProperty(name="New Name", default='')
