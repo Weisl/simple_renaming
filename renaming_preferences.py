@@ -12,6 +12,9 @@ from bpy.props import (
     CollectionProperty,
 )
 
+from .renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
+from .renaming_vallidate import VIEW3D_PT_vallidation
+
 addon_keymaps = []
 
 class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
@@ -74,6 +77,36 @@ def get_hotkey_entry_item(km, kmi_name, kmi_value):
                 return km_item
     return None
 
+def update_panel_category(self, context):
+  is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_renaming_panel')
+  is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_type_suffix')
+  is_panel = hasattr(bpy.types, 'VIEW3D_PT_vallidation')
+
+  if is_panel:
+    try:
+      bpy.utils.unregister_class(VIEW3D_PT_tools_renaming_panel)
+      bpy.utils.unregister_class(VIEW3D_PT_tools_type_suffix)
+    except:
+      pass
+
+  VIEW3D_PT_tools_renaming_panel.bl_category = self.renaming_category
+  VIEW3D_PT_tools_type_suffix.bl_category = self.renaming_category
+  bpy.utils.register_class(VIEW3D_PT_tools_renaming_panel)
+  bpy.utils.register_class(VIEW3D_PT_tools_type_suffix)
+
+def update_vallidate_panel_category(self, context):
+  is_panel = hasattr(bpy.types, 'VIEW3D_PT_vallidation')
+
+  if is_panel:
+    try:
+      bpy.utils.unregister_class(VIEW3D_PT_vallidation)
+    except:
+      pass
+
+  VIEW3D_PT_vallidation.bl_category = self.vallidation_category
+  bpy.utils.register_class(VIEW3D_PT_vallidation)
+
+
 # addon Preferences
 class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     """Contains the blender addon preferences"""
@@ -82,7 +115,9 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     bl_idname = __package__  ### __package__ works on multifile and __name__ not
 
     prefs_tabs : EnumProperty               (items=(('ui', "UI", "UI"),('keymaps', "Keymaps", "Keymaps")),default='ui')
-    renaming_category: StringProperty       (name="Category",description="Defines in which category of the tools panel the simple renaimg panel is listed",default='Misc') # update = update_panel_position,
+
+    renaming_category: StringProperty       (name="Category",description="Defines in which category of the tools panel the simple renaimg panel is listed",default='Rename', update=update_panel_category) # update = update_panel_position,
+
     renaming_separator: StringProperty      (
         name="Separator",
         description="Defines the separator between different operations",
@@ -120,66 +155,68 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     renaming_stringHigh: StringProperty(
         name="High",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default="high",
         # update = update_panel_position,
     )
     renaming_stringLow: StringProperty(
         name="Low",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default='low',
         # update = update_panel_position,
     )
     renaming_stringCage: StringProperty(
         name="Cage",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default='cage',
         # update = update_panel_position,
     )
     renaming_user1: StringProperty(
         name="User 1",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default='',
         # update = update_panel_position,
     )
     renaming_user2: StringProperty(
         name="User 2",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default='',
         # update = update_panel_position,
     )
     renaming_user3: StringProperty(
         name="User 3",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default='',
         # update = update_panel_position,
     )
 
-    masterRegex: bpy.props.StringProperty(
+    vallidation_category: StringProperty       (name="Vallidation Category",description="Defines in which category of the tools panel the simple renaimg vallidation panel is listed",default='Rename', update=update_panel_category) # update = update_panel_position,
+
+    regex_Mesh: bpy.props.StringProperty(
         name="Naming Regex",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default='r"^[A-Za-z]{2}_[A-Za-z]{6}_[A-Za-z0-9]+(_[A-Za-z0-9]+)?$"',
     )
 
     assetRegex: bpy.props.StringProperty(
         name="Asset Regex",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default='r"^[A-Za-z]+(_[A-Za-z0-9]+)?$"',
     )
     materialRegex: bpy.props.StringProperty(
         name="Material Regex",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default='r"^[A-Za-z](_mat|_main_mat)?$"',
     )
     genericMaterialRegex: bpy.props.StringProperty(
         name="Generic Material Regex",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default='r"^Gen[A-Za-z]+_mat"',
     )
 
     socketPrefix: bpy.props.StringProperty(
         name="Socket Prefix",
-        description="Defines in which category of the tools panel the simple renaimg panel is listed",
+        description="",
         default="SOCKET_",
     )
 
@@ -226,7 +263,9 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
             box = layout.box()
             row = box.row()
-            row.prop(self,"masterRegex", expand = True)
+            row.prop(self,"vallidation_category", expand = True)
+            row = box.row()
+            row.prop(self,"regex_Mesh", expand = True)
             row = box.row()
             row.prop(self,"assetRegex", expand = True)
             row = box.row()

@@ -32,13 +32,6 @@ bl_info = {
     "category": "Scene"
 }
 
-# TODO: Make work in different windows (Shader graph automatically detect nodes)
-# TODO: Create Properties group for add suffix prefix type
-# TODO: add List Of Textures
-# TODO: Wait for asset manager and otherwise import Auto updater again
-# TODO: Blendshapes
-
-
 # support reloading sub-modules
 if "bpy" in locals():
     import importlib
@@ -124,7 +117,8 @@ enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1)
                    ('GPENCIL', "", "Rename greace pencil objects", 'OUTLINER_OB_GREASEPENCIL', 512),
                    ('METABALL', "", "Rename metaball objects", 'OUTLINER_OB_META', 1024),
                    ('SPEAKER', "", "Rename empty speakers", 'OUTLINER_OB_SPEAKER', 2048),
-                   ('LIGHT_PROBE', "", "Rename mesh lightpropes", 'OUTLINER_OB_LIGHTPROBE', 4096)
+                   ('LIGHT_PROBE', "", "Rename mesh lightpropes", 'OUTLINER_OB_LIGHTPROBE', 4096),
+                   ('VOLUME', "", "Rename mesh volumes", 'OUTLINER_OB_VOLUME', 8192)
                    ]
 
 enumObjectTypesAdd = [('SPEAKER', "", "Rename empty speakers", 'OUTLINER_OB_SPEAKER', 1),
@@ -183,7 +177,6 @@ renamingEntitiesItems = [('OBJECT', "Object", "Scene Objects"),
 keys = []
 
 # Display into an existing panel
-
 
 
 def register():
