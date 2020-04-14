@@ -147,10 +147,10 @@ enumPresetItems = [('FILE', "File", "", '', 1),
     ('TYPE', "Type", "", '', 1024),
     ('PARENT', "Parent", "", '', 2048),
     ('ACTIVE', "Active", "", '', 4096),
-    ('USER1', "User1", "", '', 64),
+    ('USER1', "User1", "", '', 8192),
     ('USER2', "User2", "", '', 256),
     ('USER3', "User3", "", '', 512),
-    ('NUMBER', "Number", "", '', 512),
+    ('NUMBER', "Number", "", '', 1024),
 ]
 
 
@@ -175,15 +175,10 @@ renamingEntitiesItems = [('OBJECT', "Object", "Scene Objects"),
 
 keys = []
 
-# Display into an existing panel
-
-
 def register():
-    # bpy.types.INFO_MT_mesh_add.append(menu_add_suffix)
-    # IDStore = bpy.types.
-
 
     IDStore = bpy.types.Scene
+
     IDStore.renaming_sufpre_type = EnumProperty(
         name="Suffix or Prefix by Type",
         items= prefixSuffixItems,

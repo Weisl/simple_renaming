@@ -12,25 +12,20 @@ class VIEW3D_OT_Vallidate(bpy.types.Operator):
 
         prefs = bpy.context.preferences.addons[__package__].preferences
         regex = prefs.regex_Mesh
-        compiledRegex = re.compile(regex)
 
         renamingList = []
-        renamingList = getRenamingList(self, context)
+        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
 
         if len(renamingList) > 0:
             for entity in renamingList:
                 if entity is not None:
                     if regex is not '':
-                        match = bool(compiledRegex.match(entity.name))
-
-                    # if wm.naming_vallidate is not '':
-                    #     pattern = re.compile(re.escape(wm.naming_vallidate))
-                    #     match = re.match(pattern, entity.name)
+                        match = bool(re.compile(regex).match(entity.name))
 
                         if match:
-                            wm.renaming_messages.addMessage("Vallid", entity.name)
+                            wm.renaming_info_messages.addMessage("Vallid", entity.name)
                         else:
-                            wm.renaming_messages.addMessage("Not", entity.name)
+                            wm.renaming_info_messages.addMessage("Not", entity.name)
 
         callInfoPopup(context)
         return {'FINISHED'}
@@ -39,7 +34,7 @@ class VIEW3D_OT_Vallidate(bpy.types.Operator):
 # addon Panel
 class VIEW3D_PT_vallidation(bpy.types.Panel):
     """Creates a renaming Panel"""
-    bl_label = "Vallidation"
+    bl_label = "Rename"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Vallidation"
