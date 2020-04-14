@@ -18,11 +18,6 @@ Created by Matthias Patscheider
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-
-
-
-
-
 bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers the basic functionality of renaming a set of objects",
