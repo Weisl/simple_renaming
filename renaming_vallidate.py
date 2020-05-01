@@ -40,7 +40,6 @@ class VIEW3D_PT_vallidation(bpy.types.Panel):
     bl_category = "Vallidation"
 
     def draw(self, context):
-
         layout = self.layout
         scene = context.scene
 
@@ -48,6 +47,6 @@ class VIEW3D_PT_vallidation(bpy.types.Panel):
         regex = prefs.regex_Mesh
 
         row = layout.row()
-        row.label(text = prefs.regex_Mesh)
+        row.label(text=prefs.regex_Mesh)
         row = layout.row()
         row.operator("renaming.vallidate")

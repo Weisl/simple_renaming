@@ -11,21 +11,20 @@ class RENAMING_MT_variableMenu(bpy.types.Menu):
 
         wm = bpy.context.scene
 
-        layout.operator("object.renaming_inuptvariables", text = "RANDOM").nameingPreset = "RANDOM"
+        layout.operator("object.renaming_inuptvariables", text="RANDOM").nameingPreset = "RANDOM"
         layout.operator("object.renaming_inuptvariables", text="NUMBER").nameingPreset = "NUMBER"
         layout.separator()
-        layout.operator("object.renaming_inuptvariables", text = "LOW").nameingPreset = "LOW"
-        layout.operator("object.renaming_inuptvariables", text = "HIGH").nameingPreset = "HIGH"
-        layout.operator("object.renaming_inuptvariables", text = "CAGE").nameingPreset = "CAGE"
+        layout.operator("object.renaming_inuptvariables", text="LOW").nameingPreset = "LOW"
+        layout.operator("object.renaming_inuptvariables", text="HIGH").nameingPreset = "HIGH"
+        layout.operator("object.renaming_inuptvariables", text="CAGE").nameingPreset = "CAGE"
         layout.separator()
-        layout.operator("object.renaming_inuptvariables", text = 'FILE').nameingPreset = 'FILE'
-        layout.operator("object.renaming_inuptvariables", text = "TIME").nameingPreset = "TIME"
-        layout.operator("object.renaming_inuptvariables", text = "DATE").nameingPreset = "DATE"
+        layout.operator("object.renaming_inuptvariables", text='FILE').nameingPreset = 'FILE'
+        layout.operator("object.renaming_inuptvariables", text="TIME").nameingPreset = "TIME"
+        layout.operator("object.renaming_inuptvariables", text="DATE").nameingPreset = "DATE"
         layout.separator()
-        layout.operator("object.renaming_inuptvariables", text = "USER1").nameingPreset = "USER1"
-        layout.operator("object.renaming_inuptvariables", text = "USER2").nameingPreset = "USER2"
-        layout.operator("object.renaming_inuptvariables", text = "USER3").nameingPreset = "USER3"
-
+        layout.operator("object.renaming_inuptvariables", text="USER1").nameingPreset = "USER1"
+        layout.operator("object.renaming_inuptvariables", text="USER2").nameingPreset = "USER2"
+        layout.operator("object.renaming_inuptvariables", text="USER3").nameingPreset = "USER3"
 
         if wm.renaming_object_types == 'OBJECT':
             layout.separator()
@@ -33,7 +32,6 @@ class RENAMING_MT_variableMenu(bpy.types.Menu):
             layout.operator("object.renaming_inuptvariables", text="ACTIVE").nameingPreset = "ACTIVE"
             layout.operator("object.renaming_inuptvariables", text='FILE').nameingPreset = 'OBJECT'
             layout.operator("object.renaming_inuptvariables", text="TYPE").nameingPreset = "TYPE"
-
 
 
 class VIEW3D_OT_inputVariables(bpy.types.Operator):
@@ -44,16 +42,15 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
     nameingPreset: StringProperty()
 
     def execute(self, context):
-        #wm = context.scene
-        #replaceName = VariableReplacer.replaceInputString(context, wm.renaming_newName)
-
+        # wm = context.scene
+        # replaceName = VariableReplacer.replaceInputString(context, wm.renaming_newName)
 
         # The print function works fine
         nameingPreset = self.nameingPreset
-        #print (self.nameingPreset)
+        # print (self.nameingPreset)
         nameVar = ""
 
-        #print('T changed to ', nameingPreset)
+        # print('T changed to ', nameingPreset)
         if nameingPreset == 'FILE':
             nameVar = "@f"
         if nameingPreset == 'OBJECT':
@@ -63,7 +60,7 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
         if nameingPreset == "LOW":
             nameVar = "@l"
         if nameingPreset == "CAGE":
-            nameVar = "@c"
+            nameVar = "@b"
         if nameingPreset == "DATE":
             nameVar = "@d"
         if nameingPreset == "ACTIVE":
@@ -84,6 +81,8 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
             nameVar = "@n"
         if nameingPreset == "RANDOM":
             nameVar = "@r"
+        if nameingPreset == "COLLECTION":
+            nameVar = "@c"
 
         scn = bpy.context.scene
         if scn.renaming_inputContext == 'newName':
@@ -106,7 +105,7 @@ def tChange(self, context):
     :param context: current blender context
     :return: no return value
     '''
-    #The print function works fine
+    # The print function works fine
     nameingPreset = bpy.context.scene.renaming_presetNaming
     nameVar = ""
 
@@ -126,7 +125,7 @@ def tChange(self, context):
     if nameingPreset == "LOW":
         nameVar = "@l"
     if nameingPreset == "CAGE":
-        nameVar = "@c"
+        nameVar = "@b"
     if nameingPreset == "USER1":
         nameVar = "@u1"
     if nameingPreset == "USER2":
@@ -135,7 +134,6 @@ def tChange(self, context):
         nameVar = "@u3"
     if nameingPreset == "NUMERATE":
         nameVar = "@n"
-
 
     if wm.renaming_object_types == 'OBJECT':
         if nameingPreset == 'OBJECT':
@@ -146,5 +144,7 @@ def tChange(self, context):
             nameVar = "@p"
         if nameingPreset == "ACTIVE":
             nameVar = "@a"
+        if nameingPreset == "COLLECTION":
+            nameVar = "@c"
 
     bpy.context.scene.renaming_newName += str(nameVar)
