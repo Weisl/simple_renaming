@@ -1,7 +1,7 @@
 import bpy, re
 from .renaming_utilities import getRenamingList, callInfoPopup
 
-class VIEW3D_OT_Vallidate(bpy.types.Operator):
+class VIEW3D_OT_Validate(bpy.types.Operator):
     bl_idname = "renaming.vallidate"
     bl_label = "Vallidate Names"
     bl_description = "replaces parts in the object names"

@@ -1,4 +1,3 @@
-
 import bpy
 import rna_keymap_ui
 from bpy.props import (
@@ -90,6 +89,7 @@ def update_panel_category(self, context):
     bpy.utils.register_class(VIEW3D_PT_tools_renaming_panel)
     bpy.utils.register_class(VIEW3D_PT_tools_type_suffix)
 
+
 def update_panel_category_vallidation(self, context):
     is_panel = hasattr(bpy.types, 'VIEW3D_PT_vallidation')
 
@@ -101,7 +101,14 @@ def update_panel_category_vallidation(self, context):
 
     VIEW3D_PT_vallidation.bl_category = self.vallidation_category
     bpy.utils.register_class(VIEW3D_PT_vallidation)
+    return
 
+def toggle_validation_panel(self, context):
+    if self.renaming_show_validation:
+        bpy.utils.register_class(VIEW3D_PT_vallidation)
+    else:
+        bpy.utils.unregister_class(VIEW3D_PT_vallidation)
+    return
 
 # addon Preferences
 class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
@@ -110,7 +117,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     # when defining this in a submodule of a python package.
     bl_idname = __package__  ### __package__ works on multifile and __name__ not
 
-    prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps"), ('validate',"Validate (experimental)", "Validate (experimental)")), default='ui')
+    prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps"),
+                                    ('validate', "Validate (experimental)", "Validate (experimental)")), default='ui')
 
     renaming_category: StringProperty(name="Category",
                                       description="Defines in which category of the tools panel the simple renaimg panel is listed",
@@ -187,9 +195,14 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         # update = update_panel_position,
     )
 
+    renaming_show_validation: bpy.props.BoolProperty(
+        name="Use Validation Panel",
+        description="Enable or Disable Validation Panel",
+        default=False,
+        update=toggle_validation_panel)
 
 
-    vallidation_category: StringProperty(name="Vallidation Category",
+    vallidation_category: StringProperty(name="Category",
                                          description="Defines in which category of the tools panel the simple renaimg vallidation panel is listed",
                                          default='Rename',
                                          update=update_panel_category_vallidation)  # update = update_panel_position,
@@ -285,6 +298,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
         if self.prefs_tabs == 'validate':
             box = layout.box()
+            row = box.row()
+            row.prop(self, "renaming_show_validation", expand=True)
             row = box.row()
             row.prop(self, "vallidation_category", expand=True)
             row = box.row()
