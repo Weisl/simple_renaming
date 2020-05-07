@@ -110,6 +110,7 @@ def toggle_validation_panel(self, context):
         bpy.utils.unregister_class(VIEW3D_PT_vallidation)
     return
 
+
 # addon Preferences
 class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     """Contains the blender addon preferences"""

@@ -67,7 +67,7 @@ class VariableReplacer():
             inputText = re.sub(r'@o', cls.getObject(context, entity), inputText)  # object
             inputText = re.sub(r'@t', cls.getType(context, entity), inputText)  # type
             inputText = re.sub(r'@p', cls.getParent(context, entity), inputText)  # parent
-            inputText = re.sub(r'@c', cls.getCollection(context, entity))  # collection
+            inputText = re.sub(r'@c', cls.getCollection(context, entity), inputText)  # collection
 
         ###### IMAGES ###########
         if wm.renaming_object_types == 'IMAGE':
