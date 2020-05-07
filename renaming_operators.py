@@ -53,7 +53,7 @@ class VariableReplacer():
         ##### UserStrings ################
         inputText = re.sub(r'@h', cls.gethigh(), inputText)  # high
         inputText = re.sub(r'@l', cls.getlow(), inputText)  # low
-        inputText = re.sub(r'@c', cls.getcage(), inputText)  # cage
+        inputText = re.sub(r'@b', cls.getcage(), inputText)  # cage
         inputText = re.sub(r'@u1', cls.getuser1(), inputText)
         inputText = re.sub(r'@u2', cls.getuser2(), inputText)
         inputText = re.sub(r'@u3', cls.getuser3(), inputText)
@@ -174,11 +174,16 @@ class VariableReplacer():
 
     @classmethod
     def getCollection(cls, context, entity):
+        #prefs = bpy.context.preferences.addons[__package__].preferences
+        #separator = prefs.renaming_separator
+
+        collectionNames=""
         for collection in bpy.data.collections:
             collection_objects = collection.objects
             if entity.name in collection.objects and entity in collection_objects[:]:
-                return collection.name
-
+                collectionNames += collection.name
+                
+        return collectionNames
 
 # TODO Parent class that contains common functionality like setting up variables, getRenamingList and Error Handling
 

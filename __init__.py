@@ -22,8 +22,8 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers the basic functionality of renaming a set of objects",
     "author": "Matthias Patscheider",
-    "version": (1, 4, 1),
-    "blender": (2, 81, 0),
+    "version": (1, 5, 0),
+    "blender": (2, 83, 0),
     "location": "View3D > Tools ",
     "warning": "",
     "wiki_url": "https://github.com/Weisl/simple_renaming_panel",
@@ -191,9 +191,6 @@ keys = []
 
 def register():
 
-
-
-    
 
 
     IDStore = bpy.types.Scene
