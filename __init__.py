@@ -22,8 +22,8 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers the basic functionality of renaming a set of objects",
     "author": "Matthias Patscheider",
-    "version": (1, 4, 1),
-    "blender": (2, 81, 0),
+    "version": (1, 5, 0),
+    "blender": (2, 83, 0),
     "location": "View3D > Tools ",
     "warning": "",
     "wiki_url": "https://github.com/Weisl/simple_renaming_panel",
@@ -52,11 +52,20 @@ if "bpy" in locals():
     importlib.reload(renaming_sufPre_operators)
     importlib.reload(renaming_proFeatures)
     importlib.reload(renaming_preferences)
+    importlib.reload(addon_updater)
+    importlib.reload(addon_updater_ops)
+
 else:
     from . import renaming_operators
     from . import renaming_popup
+    from . import renaming_utilities
+    from . import renaming_panels
     from . import renaming_vallidate
     from . import renaming_sufPre_operators
+    from . import renaming_proFeatures
+    from . import renaming_preferences
+    from . import addon_updater
+    from . import addon_updater_ops
 
 # import standard modules
 import bpy
@@ -181,6 +190,9 @@ keys = []
 
 
 def register():
+
+
+
     IDStore = bpy.types.Scene
 
     IDStore.renaming_sufpre_type = EnumProperty(
@@ -300,11 +312,14 @@ def register():
                                                   update=tChange
                                                   )
 
+    addon_updater_ops.register(bl_info)
+
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
 
     bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
+
 
 
 def unregister():
