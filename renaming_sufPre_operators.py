@@ -1,11 +1,10 @@
-import bpy, re
-from .renaming_utilities import getRenamingList,trimString, RENAMING_MESSAGES
 
+import bpy
 from bpy.props import (
-    BoolProperty,
     StringProperty,
 )
-from.renaming_utilities import callRenamingPopup
+
+from .renaming_utilities import callRenamingPopup
 
 
 class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
@@ -25,10 +24,10 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         else:
             return bpy.data.objects
 
-    def renameSufPre(self, objList, preSuf = '', objectType = '', icon = ''):
+    def renameSufPre(self, objList, preSuf='', objectType='', icon=''):
         wm = bpy.context.scene
 
-        switchSufPre = wm.renaming_sufpre_type # either use pre of suffix
+        switchSufPre = wm.renaming_sufpre_type  # either use pre of suffix
 
         if preSuf is not '':
             for ent in objList:
@@ -51,17 +50,17 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
                         ent.name = newName
                         wm.renaming_messages.addMessage(oldName, ent.name, objectType, icon)
                 else:
-                        #wm.renaming_messages.addMessage(oldName, ent.name, objectType, 'OUTLINER_OB_EMPTY')
-                        pass
+                    # wm.renaming_messages.addMessage(oldName, ent.name, objectType, 'OUTLINER_OB_EMPTY')
+                    pass
 
     def empty(self):
         wm = bpy.context.scene
         objList = []
 
         for obj in self.getSelectionAll():
-                if obj.type == 'EMPTY':
-                    objList.append(obj)
-        self.renameSufPre(objList, preSuf = wm.renaming_sufpre_empty, objectType = 'EMPTY', icon = 'OUTLINER_OB_EMPTY')
+            if obj.type == 'EMPTY':
+                objList.append(obj)
+        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_empty, objectType='EMPTY', icon='OUTLINER_OB_EMPTY')
         return
 
     def mesh(self):
@@ -69,9 +68,9 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         objList = []
 
         for obj in self.getSelectionAll():
-                if obj.type == 'MESH':
-                    objList.append(obj)
-        self.renameSufPre(objList, preSuf = wm.renaming_sufpre_geometry, objectType = 'MESH', icon = 'OUTLINER_OB_MESH')
+            if obj.type == 'MESH':
+                objList.append(obj)
+        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_geometry, objectType='MESH', icon='OUTLINER_OB_MESH')
         return
 
     def material(self):
@@ -86,7 +85,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         else:
             objList = list(bpy.data.materials)
 
-        self.renameSufPre(objList, preSuf = wm.renaming_sufpre_material, objectType = 'MATERIAL', icon = 'MATERIAL')
+        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_material, objectType='MATERIAL', icon='MATERIAL')
         return
 
     def speakers(self):
@@ -106,7 +105,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'LIGHT_PROBE':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_lightprops, objectType='LIGHT_PROBE', icon='OUTLINER_OB_LIGHTPROBE')
+        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_lightprops, objectType='LIGHT_PROBE',
+                          icon='OUTLINER_OB_LIGHTPROBE')
         return
 
     def data(self):
@@ -123,9 +123,9 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         objList = []
 
         for obj in self.getSelectionAll():
-                if obj.type == 'CAMERA':
-                    objList.append(obj)
-        self.renameSufPre(objList, preSuf = wm.renaming_sufpre_cameras, objectType = 'CAMERA', icon = 'OUTLINER_OB_CAMERA')
+            if obj.type == 'CAMERA':
+                objList.append(obj)
+        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_cameras, objectType='CAMERA', icon='OUTLINER_OB_CAMERA')
         return
 
     def light(self):
@@ -133,9 +133,9 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         objList = []
 
         for obj in self.getSelectionAll():
-                if obj.type == 'LIGHT':
-                    objList.append(obj)
-        self.renameSufPre(objList, preSuf = wm.renaming_sufpre_lights, objectType = 'LIGHT', icon = 'LIGHT')
+            if obj.type == 'LIGHT':
+                objList.append(obj)
+        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_lights, objectType='LIGHT', icon='LIGHT')
         return
 
     def armature(self):
@@ -145,7 +145,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'ARMATURE':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_armature, objectType='ARMATURE', icon='OUTLINER_OB_ARMATURE')
+        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_armature, objectType='ARMATURE',
+                          icon='OUTLINER_OB_ARMATURE')
         return
 
     def lattice(self):
@@ -196,7 +197,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'GPENCIL':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_gpencil, objectType='GPENCIL', icon='OUTLINER_OB_GREASEPENCIL')
+        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_gpencil, objectType='GPENCIL',
+                          icon='OUTLINER_OB_GREASEPENCIL')
         return
 
     def metaball(self):
@@ -249,7 +251,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
     def errorMsg(self):
         pass
 
-    def switch_type(self,argument):
+    def switch_type(self, argument):
         selection = bpy.context.selected_objects
         all = bpy.data.objects
 
@@ -270,9 +272,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
             14: 'material',
             15: 'data',
             16: 'all',
-            #17: 'actions',
+            # 17: 'actions',
         }
-
 
         method = getattr(self, argument, lambda: "Invalid month")
         return method()
@@ -310,4 +311,3 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
         obj.name = nName
         return nName
-

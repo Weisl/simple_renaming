@@ -1,5 +1,4 @@
 import bpy
-from abc import ABCMeta, abstractmethod
 from bpy.types import PoseBone
 
 def trimString(string, size):

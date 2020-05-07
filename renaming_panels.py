@@ -5,6 +5,7 @@ from bpy.props import StringProperty
 from bpy.types import Operator, Menu
 from bl_operators.presets import AddPresetBase
 
+
 #############################################
 ############ PANELS ########################
 #############################################
@@ -95,8 +96,8 @@ def drawSimpleUi(self, context):
         row.prop(scene, "renaming_sufpre_data_02", text="")
         row.operator("renaming.dataname_from_obj", icon="MOD_DATA_TRANSFER")
 
-def drawAdvancedUI(self, context, advancedMode):
 
+def drawAdvancedUI(self, context, advancedMode):
     layout = self.layout
     scene = context.scene
 
@@ -164,7 +165,7 @@ def drawAdvancedUI(self, context, advancedMode):
         elif scene.renaming_object_types == 'OBJECT':
             row = layout.row(align=True)
             row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
-            
+
         row = layout.row(align=True)
         row.scale_y = 1.5
         row.operator("renaming.search_replace", icon="FILE_REFRESH")
@@ -212,6 +213,7 @@ def drawAdvancedUI(self, context, advancedMode):
         button = split.operator("object.renaming_set_variable", text="@").inputBox = "dataFromObj"
         layout.operator("renaming.dataname_from_obj", icon="MOD_DATA_TRANSFER")
 
+
 def panel_func(self, context):
     layout = self.layout
 
@@ -219,6 +221,7 @@ def panel_func(self, context):
     row.menu(OBJECT_MT_sufpre_presets.__name__, text=OBJECT_MT_sufpre_presets.bl_label)
     row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='ADD')
     row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='REMOVE').remove_active = True
+
 
 class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     """Creates a renaming Panel"""
@@ -228,7 +231,6 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     bl_category = "Rename"
 
     def draw(self, context):
-
 
         prefs = bpy.context.preferences.addons[__package__].preferences
         advancedMode = prefs.renamingPanel_advancedMode
@@ -240,6 +242,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
             drawAdvancedUI(self, context, advancedMode)
         else:
             drawSimpleUi(self, context)
+
 
 # addon Panel
 class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
@@ -258,7 +261,6 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
         layout.prop(scene, "renaming_sufpre_type", expand=True)
         # layout.prop(scene, "renaming_sufpre_types_specified")
 
-
         if scene.renaming_sufpre_type == "PRE":
             layout.label(text="Add Type Prefix")
         else:
@@ -268,75 +270,76 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
 
         col = split.column()
         row = col.row()
-        row.prop(scene, "renaming_sufpre_empty", text = "")
-        op = row.operator("renaming.add_sufpre_by_type", text = "Empties").option = 'empty'
+        row.prop(scene, "renaming_sufpre_empty", text="")
+        op = row.operator("renaming.add_sufpre_by_type", text="Empties").option = 'empty'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_geometry", text = "")
-        op = row.operator('renaming.add_sufpre_by_type', text = "Meshes").option = 'mesh'
+        row.prop(scene, "renaming_sufpre_geometry", text="")
+        op = row.operator('renaming.add_sufpre_by_type', text="Meshes").option = 'mesh'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_material", text = "")
-        op = row.operator('renaming.add_sufpre_by_type', text = "Materials").option = 'material'
+        row.prop(scene, "renaming_sufpre_material", text="")
+        op = row.operator('renaming.add_sufpre_by_type', text="Materials").option = 'material'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_curve", text = "")
-        op = row.operator('renaming.add_sufpre_by_type', text = "Curves").option = 'curve'
+        row.prop(scene, "renaming_sufpre_curve", text="")
+        op = row.operator('renaming.add_sufpre_by_type', text="Curves").option = 'curve'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_armature", text = "")
-        op = row.operator('renaming.add_sufpre_by_type', text = "Armatures").option = 'armature'
-
-        row= col.row()
-        row.prop(scene, "renaming_sufpre_lattice", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Lattices").option = 'lattice'
-
-        row= col.row()
-        row.prop(scene, "renaming_sufpre_data", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Data").option = 'data'
+        row.prop(scene, "renaming_sufpre_armature", text="")
+        op = row.operator('renaming.add_sufpre_by_type', text="Armatures").option = 'armature'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_surfaces", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Surfaces").option = 'surface'
+        row.prop(scene, "renaming_sufpre_lattice", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Lattices").option = 'lattice'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_cameras", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Cameras").option = 'camera'
+        row.prop(scene, "renaming_sufpre_data", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Data").option = 'data'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_lights", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Lights").option = 'light'
+        row.prop(scene, "renaming_sufpre_surfaces", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Surfaces").option = 'surface'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_collection", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Collections").option = 'collection'
+        row.prop(scene, "renaming_sufpre_cameras", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Cameras").option = 'camera'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_text", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Texts").option = 'text'
+        row.prop(scene, "renaming_sufpre_lights", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Lights").option = 'light'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_gpencil", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Grease Pencil").option = 'gpencil'
+        row.prop(scene, "renaming_sufpre_collection", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Collections").option = 'collection'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_metaball", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Metaballs").option = 'metaball'
+        row.prop(scene, "renaming_sufpre_text", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Texts").option = 'text'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_bone", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Bones").option = 'bone'
+        row.prop(scene, "renaming_sufpre_gpencil", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Grease Pencil").option = 'gpencil'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_speakers", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Speakers").option = 'speakers'
+        row.prop(scene, "renaming_sufpre_metaball", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Metaballs").option = 'metaball'
 
         row = col.row()
-        row.prop(scene, "renaming_sufpre_lightprops", text = "")
-        row.operator('renaming.add_sufpre_by_type', text = "Light Probes").option = 'lightprops'
+        row.prop(scene, "renaming_sufpre_bone", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Bones").option = 'bone'
 
         row = col.row()
-        row.operator('renaming.add_sufpre_by_type', text = "All").option = 'all'
+        row.prop(scene, "renaming_sufpre_speakers", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Speakers").option = 'speakers'
+
+        row = col.row()
+        row.prop(scene, "renaming_sufpre_lightprops", text="")
+        row.operator('renaming.add_sufpre_by_type', text="Light Probes").option = 'lightprops'
+
+        row = col.row()
+        row.operator('renaming.add_sufpre_by_type', text="All").option = 'all'
+
 
 class VIEW3D_OT_SimpleOperator(bpy.types.Operator):
     """Tooltip"""
@@ -347,16 +350,17 @@ class VIEW3D_OT_SimpleOperator(bpy.types.Operator):
 
     def execute(self, context):
         bpy.context.scene.renaming_inputContext = self.inputBox
-        bpy.ops.wm.call_menu(name = RENAMING_MT_variableMenu.bl_idname)
+        bpy.ops.wm.call_menu(name=RENAMING_MT_variableMenu.bl_idname)
         return {'FINISHED'}
+
 
 class VIEW3D_OT_RenamingPopupOperator(bpy.types.Operator):
     bl_idname = "renaming.f_popup_operator"
     bl_label = "Simple Renaming Panel"
 
-    my_float : bpy.props.FloatProperty(name="Some Floating Point")
-    my_bool : bpy.props.BoolProperty(name="Toggle Option")
-    my_string : bpy.props.StringProperty(name="String Value")
+    my_float: bpy.props.FloatProperty(name="Some Floating Point")
+    my_bool: bpy.props.BoolProperty(name="Toggle Option")
+    my_string: bpy.props.StringProperty(name="String Value")
 
     def execute(self, context):
         print("Dialog Runs")
@@ -366,6 +370,7 @@ class VIEW3D_OT_RenamingPopupOperator(bpy.types.Operator):
         wm = context.window_manager
         return wm.invoke_props_dialog(self)
 
+
 class LITTLE_RENAMING_HELPERS(bpy.types.Operator):
     """Creates a renaming Panel"""
     bl_label = "Renaming Helpers"
@@ -374,16 +379,17 @@ class LITTLE_RENAMING_HELPERS(bpy.types.Operator):
     bl_category = "Rename"
 
     def draw(self, context):
-
         layout = self.layout
         scene = context.scene
         return {'FINISHED'}
+
 
 class OBJECT_MT_sufpre_presets(Menu):
     bl_label = "Type Presets"
     preset_subdir = "scene/display"
     preset_operator = "script.execute_preset"
     draw = Menu.draw_preset
+
 
 class AddPresetRenamingPresets(AddPresetBase, Operator):
     '''Add a Object Display Preset'''
@@ -395,7 +401,6 @@ class AddPresetRenamingPresets(AddPresetBase, Operator):
     preset_defines = [
         "scene = bpy.context.scene"
     ]
-
 
     # properties to store in the preset
     preset_values = [
