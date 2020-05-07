@@ -32,6 +32,7 @@ class RENAMING_MT_variableMenu(bpy.types.Menu):
             layout.operator("object.renaming_inuptvariables", text="ACTIVE").nameingPreset = "ACTIVE"
             layout.operator("object.renaming_inuptvariables", text='FILE').nameingPreset = 'OBJECT'
             layout.operator("object.renaming_inuptvariables", text="TYPE").nameingPreset = "TYPE"
+            layout.operator("object.renaming_inuptvariables", text="COLLECTION").nameingPreset = "COLLECTION"
 
 
 class VIEW3D_OT_inputVariables(bpy.types.Operator):

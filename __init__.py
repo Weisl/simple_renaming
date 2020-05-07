@@ -48,7 +48,7 @@ if "bpy" in locals():
     importlib.reload(renaming_popup)
     importlib.reload(renaming_utilities)
     importlib.reload(renaming_panels)
-    importlib.reload(renaming_vallidate)
+    #importlib.reload(renaming_vallidate)
     importlib.reload(renaming_sufPre_operators)
     importlib.reload(renaming_proFeatures)
     importlib.reload(renaming_preferences)
@@ -60,7 +60,7 @@ else:
     from . import renaming_popup
     from . import renaming_utilities
     from . import renaming_panels
-    from . import renaming_vallidate
+    #from . import renaming_vallidate
     from . import renaming_sufPre_operators
     from . import renaming_proFeatures
     from . import renaming_preferences
@@ -106,7 +106,7 @@ classes = (
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
     renaming_proFeatures.RENAMING_MT_variableMenu,
     renaming_proFeatures.VIEW3D_OT_inputVariables,
-    renaming_vallidate.VIEW3D_OT_Validate,
+    #renaming_vallidate.VIEW3D_OT_Validate,
     #renaming_vallidate.VIEW3D_PT_vallidation,
     renaming_preferences.RENAMING_OT_add_hotkey_renaming,
     renaming_preferences.VIEW3D_OT_renaming_preferences,
@@ -355,10 +355,15 @@ def unregister():
     del IDStore.renaming_sufpre_speakers
     del IDStore.renaming_sufpre_lightprops
 
+    addon_updater_ops.unregister()
+
     from bpy.utils import unregister_class
     for cls in reversed(classes):
         unregister_class(cls)
     # from .addon_preferenecs import remove_hotkey
+
+
+
     remove_hotkey()
 
 

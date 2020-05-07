@@ -119,8 +119,10 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     # when defining this in a submodule of a python package.
     bl_idname = __package__  ### __package__ works on multifile and __name__ not
 
-    prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps"),
-                                    ('validate', "Validate (experimental)", "Validate (experimental)")), default='ui')
+    #prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps"),
+    #                                ('validate', "Validate (experimental)", "Validate (experimental)")), default='ui')
+
+    prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps")), default='ui')
 
     renaming_category: StringProperty(name="Category",
                                       description="Defines in which category of the tools panel the simple renaimg panel is listed",
