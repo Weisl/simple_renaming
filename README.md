@@ -25,37 +25,37 @@ The renaming panel is the heart of the application. It provides you with a simpl
 <img src="img/mainPanel.jpg" alt="Installation Addon " />
 
 <ul>
-	<li> Choose which kind of objects you want to rename:</li>
-	<li> Changes affect selected or all</li>
-	<li> Replace names with a new name</li>
-	<li> Search and replace </li>
-	<li> Search and select </li>
-	<li> Match case for the search and replace</li>
-	<li> Use regular expressions to improve your search</li>
-	<li> Add prefixes </li>
-	<li> Add suffixes </li>
-	<li> Numerate objects</li>
-	<li> Trim string </li>
-	<li> Data: Keeping the object data names clear and organized can be painful in blender, this button simply renames the data according to the objects and adds a specified suffix.</li>
+<li> Choose which kind of objects you want to rename:</li>
+<li> Changes affect selected or all</li>
+<li> Replace names with a new name</li>
+<li> Search and replace </li>
+<li> Search and select </li>
+<li> Match case for the search and replace</li>
+<li> Use regular expressions to improve your search</li>
+<li> Add prefixes </li>
+<li> Add suffixes </li>
+<li> Numerate objects</li>
+<li> Trim string </li>
+<li> Data: Keeping the object data names clear and organized can be painful in blender, this button simply renames the data according to the objects and adds a specified suffix.</li>
 </ul>
 
 <h1>Key Feature:</h1>
 
 <ul>
-	<li>Works for objects, materials, collections, image textures, object data and bones</li>
-	<li>Choose if all or just selected objects should be affected </li>
-	<li> Restrict renaming operation to specific object types (meshes, curves, empties, cameras, metaballs, light probes, volume objects etc.) </li>
-	<li>Search and replace </li>
-	<li>Match case option for search and replace</li>
-	<li>Regex Support</li>
-	<li>Add suffixes and prefixes</li>
-	<li>Numerate </li>
-	<li>Trim names</li>
-	<li>Rename object data after object name</li>
-	<li>Add suffixes or prefixes by specific object types </li>
-	<li>Simple and clean UI</li>
-	<li>Customizable UI position</li>
-	<li>Auto updater</li>
+<li>Works for objects, materials, collections, image textures, object data and bones</li>
+<li>Choose if all or just selected objects should be affected </li>
+<li> Restrict renaming operation to specific object types (meshes, curves, empties, cameras, metaballs, light probes, volume objects etc.) </li>
+<li>Search and replace </li>
+<li>Match case option for search and replace</li>
+<li>Regex Support</li>
+<li>Add suffixes and prefixes</li>
+<li>Numerate </li>
+<li>Trim names</li>
+<li>Rename object data after object name</li>
+<li>Add suffixes or prefixes by specific object types </li>
+<li>Simple and clean UI</li>
+<li>Customizable UI position</li>
+<li>Auto updater</li>
 </ul>
 
 <h3>Improved Basic UI</h3> 
@@ -157,6 +157,7 @@ The suffix prefix panel is collapsed as it is not used as regularly as the main 
 <li><b>[NEW]</b> Auto Updater is back! </li>
 <li><b>[NEW]</b> Changing the properties panel category from the user preferences works now properly! </li>
 <li><b>[NEW]</b> The renaming variable @c contains the object collections! </li>
+<li><b>[NEW]</b> Specify numerate digits and start in the preferences </li>
 <li>[Fix] Blender console warning for “doesn’t contain ‘PT’ with prefix & suffix” </li>
 	
 
