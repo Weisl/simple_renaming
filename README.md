@@ -3,8 +3,8 @@
 
 <h1>Introduction</h1>
 
-<p><b> Simple Renaming Panel </b> is a small, but really powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. Over the time more advanced features like a variable system were added. The tool gives a lot of power to you!  
-You decide which kind of objects will be effected by the renaming task. Rename all or just selected objects, specify the affected object types like image textures, materials, objects, object data, bones or collections. This tool can be a real everyday helper. Renaming multiple objects is often needed and keeping the naming conventions can be tedious. The tool provides you with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. </p>
+<p><b> Simple Renaming Panel </b> is a small, but powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. Over the time more advanced features like a variable system were added. The tool gives a lot of power to you!  
+You decide which kind of objects will be affected by the renaming task. Rename all or just selected objects, specify the affected object types like image textures, materials, objects, object data, bones, or collections. This tool can be a real everyday helper. Renaming multiple objects is often needed and keeping the naming conventions can be tedious. The tool provides you with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. </p>
 
 <h1>Download and Installation</h1>
 
@@ -14,6 +14,10 @@ Like any other Add-on, you can simply install it by going to <b> File &gt; User 
 
 <img src="img/install_addon.jpg" alt="Installation Addon " />
 
+Once installed, you can use the auto updater in the user preferences to get the latest version of the addon. 
+
+<img src="img/preferences_01.jpg" alt="Installation Addon " />
+
 <h1> Renaming Panel</h1>
 
 The renaming panel is the heart of the application. It provides you with a simple and an advanced UI option. It can either be found in the properties panel or by pressing the user defined hotkey. 
@@ -22,7 +26,7 @@ The renaming panel is the heart of the application. It provides you with a simpl
 
 <ul>
 	<li> Choose which kind of objects you want to rename:</li>
-	<li> Changes effect selected or all</li>
+	<li> Changes affect selected or all</li>
 	<li> Replace names with a new name</li>
 	<li> Search and replace </li>
 	<li> Search and select </li>
@@ -32,15 +36,15 @@ The renaming panel is the heart of the application. It provides you with a simpl
 	<li> Add suffixes </li>
 	<li> Numerate objects</li>
 	<li> Trim string </li>
-	<li> Data: Keeping the object data names clear and organized can be really painful in blender, this button simply renames the data according to the objects and adds a specified suffix.</li>
+	<li> Data: Keeping the object data names clear and organized can be painful in blender, this button simply renames the data according to the objects and adds a specified suffix.</li>
 </ul>
 
 <h1>Key Feature:</h1>
 
 <ul>
 	<li>Works for objects, materials, collections, image textures, object data and bones</li>
-	<li>Choose if all or just selected objects should be effected </li>
-	<li> Restrict renaming operation to specific object types (meshes, curves, empties, cameras, metaballs, lightprobes, volume objects etc.) </li>
+	<li>Choose if all or just selected objects should be affected </li>
+	<li> Restrict renaming operation to specific object types (meshes, curves, empties, cameras, metaballs, light probes, volume objects etc.) </li>
 	<li>Search and replace </li>
 	<li>Match case option for search and replace</li>
 	<li>Regex Support</li>
@@ -48,7 +52,7 @@ The renaming panel is the heart of the application. It provides you with a simpl
 	<li>Numerate </li>
 	<li>Trim names</li>
 	<li>Rename object data after object name</li>
-	<li>Add suffixes  or prefixes by specific object types </li>
+	<li>Add suffixes or prefixes by specific object types </li>
 	<li>Simple and clean UI</li>
 	<li>Customizable UI position</li>
 	<li>Auto updater</li>
@@ -97,7 +101,7 @@ Be careful by using the renaming variables in the Search input. It will only com
 
 By deactivating the Numeration and using the custom number variable @n. It is finally also possible to rename many objects at once with a increasing number in the middle of the string. 
 
-E.g., objeckt_001_high,  objeckt_002_high. objeckt_003_high. 
+E.g., objeckt_001_high, objeckt_002_high. objeckt_003_high. 
 This can be useful for baking multiple high poly object onto one low poly object within marmoset or substance. 
 
 <h2> Search and Select </h2> 
@@ -108,18 +112,18 @@ The search can now be used to select objects. This uses works with the settings 
 <ul>
 <li>Time: Ignores the current time zone and uses always Coordinated Universal Time (UTC)</li>
 <li>The selection order is still ignored </li>
-<li>Be really careful with using @p and </li>
+<li>Be careful with using the renaming variable for @p for the parent object </li>
 </ul>
 
 <h3>Future:</h3> 
 
 <ul>
 <li>Improve the operation and variable descriptions </li>
-<li>Improve the UI for selecting variables with different columns similar to the Editor Type dropdown</li>
+<li>Improve the UI for selecting variables with different columns like the Editor Type dropdown</li>
 <li>Add more user defined variable slots</li>
 <li>Add renaming ariables for other asset types like textures and actions </li>
 <li>Remove duplicate code for the simple and advanced UI </li>
-<li>Add specialized renaming operators. (Baking Pair)</li>
+<li>Add specialized renaming operators. (E.g., name baking pairs)</li>
 </ul>
 
 
@@ -130,7 +134,7 @@ The suffix prefix panel is collapsed as it is not used as regularly as the main 
 <img src="img/sufPrebyTypePanel.jpg" alt="Installation Addon " />
 <img src="img/popup.jpg" alt="Installation Addon " />
 <ul>
-<li> Choose betweeen Suffix and Prefix</li>
+<li> Choose between Suffix and Prefix</li>
 <li> Geometry: all meshes</li>
 <li >Material: all materials</li>
 <li> Empty:  all empty objects </li>
@@ -152,8 +156,8 @@ The suffix prefix panel is collapsed as it is not used as regularly as the main 
 <ul>
 <li><b>[NEW]</b> Auto Updater is back! </li>
 <li><b>[NEW]</b> Changing the properties panel category from the user preferences works now properly! </li>
-<li><b>[NEW]</b> The renamingvariable @c contains the object collections! </li>
-<li><b>[Fix]</b> </li>
+<li><b>[NEW]</b> The renaming variable @c contains the object collections! </li>
+<li>[Fix] Blender console warning for “doesn’t contain ‘PT’ with prefix & suffix” </li>
 	
 
 </ul>
@@ -166,31 +170,31 @@ The suffix prefix panel is collapsed as it is not used as regularly as the main 
 
 <h3>[1.4.0] blender 2.8x </h3>
 <ul>
-<li><b>[NEW]</b> Feature: Introduction of the powerful renaming variables </li>
-<li><b>[NEW]</b> UI: Toggle between simple and advanced UI</li>
-<li><b>[NEW]</b> Presets for rename by type</li>
-<li><b>[NEW]</b> Search and select for Object renaming </li>
+<li> [NEW] Feature: Introduction of the powerful renaming variables </li>
+<li> [NEW] UI: Toggle between simple and advanced UI</li>
+<li> [NEW] Presets for rename by type</li>
+<li> [NEW] Search and select for Object renaming </li>
 <li> [Fix] Bone renaming in Pose mode </li>
 </ul>
 
 <h3>[1.3.1] blender 2.8x </h3>
 <ul>
-<li><b>[NEW]</b> UI: User Defined Hotkeys </li>
-<li><b>[NEW]</b> UI: Add additional options to the User Preferences of the addon</li>
+<li>[NEW] UI: User Defined Hotkeys </li>
+<li>[NEW] UI: Add additional options to the User Preferences of the addon</li>
 </ul>
 
 <h3>[1.3.0b] blender 2.80 beta</h3>
 
 <ul>
-<li><b>[NEW]</b> UI: The simple renaming panel is now part of the properties panel </li>
-<li><b>[NEW]</b> UI: The panel uses for big parts the single column layout </li>
-<li><b>[NEW]</b>The codebase was updated to fit the new requironments of blender 2.80 </li>
-<li><b>[NEW]</b>The new blender 2.80 specific object types are supported (e.g., grease pencil, lightprops). Groups and Layers have been removed from the addon. </li>
-<li><b>[NEW]</b> An option to provide more control over which object type is effected by the renaming action was added. </li>
-<li><b>[NEW]</b> It is possible to rename selected bones (Thanks to  <a href="https://github.com/cube-creative">Cube Creative</a>) </li	
+<li>[NEW] UI: The simple renaming panel is now part of the properties panel </li>
+<li>[NEW] UI: The panel uses for big parts the single column layout </li>
+<li>[NEW] The codebase was updated to fit the new requironments of blender 2.80 </li>
+<li>[NEW] The new blender 2.80 specific object types are supported (e.g., grease pencil, lightprops). Groups and Layers have been removed from the addon. </li>
+<li>[NEW] An option to provide more control over which object type is effected by the renaming action was added. </li>
+<li>[NEW] It is possible to rename selected bones (Thanks to  <a href="https://github.com/cube-creative">Cube Creative</a>) </li>
 </ul>
 
-<h3>[1.3.0a] blender 2.80 alpha</h3>
+<h3> [1.3.0a] blender 2.80 alpha </h3>
 
 <ul>
 <li>[DELETED] Renaming of Collections </li>
