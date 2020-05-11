@@ -1,52 +1,3 @@
-<h3>Release Notes</h3>
-
-<h4>[1.3.0b] blender 2.80 beta</h4>
-
-<ul>
-<li><b>[NEW]</b> UI: The simple renaming panel is now part of the properties panel </li>
-<li><b>[NEW]</b> UI: The panel uses for big parts the single column layout </li>
-<li><b>[NEW]</b>The codebase was updated to fit the new requironments of blender 2.80 </li>
-<li><b>[NEW]</b>The new blender 2.80 specific object types are supported (e.g., grease pencil, lightprops). Groups and Layers have been removed from the addon. </li>
-<li><b>[NEW]</b> An option to provide more control over which object type is effected by the renaming action was added. </li>
-<li><b>[NEW]</b> It is possible to rename selected bones (Thanks to  <a href="https://github.com/cube-creative">Cube Creative</a>) </li>	
-</ul>
-
-
-
-<h4>[1.3.0a] blender 2.80 alpha</h4>
-
-<ul>
-<li>[DELETED] Renaming of Collections </li>
-<li>[DELETED] Renaming of Render Layers </li>
-<li>[DELETED] UI Popup </li>
-<li>[CHANGED] Tool panel to Properties panel </li>
-<li> [FIXED] This addon can't be installed from the zip file. </li>
-</ul>
-
-<h4>[1.2.0]</h4>
-
-<ul>
-	<li>[NEW] Renaming works now in different modes: object, material, image texture, group, data and bone </li>
-	<li>[NEW] Change the tool shelf category of the add-on in the preferences </li>
-	<li>[NEW] Added a match case checkbox has been added to search and replace</li>
-	<li>[NEW] A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
-	<li>[NEW] Not only suffixes, but also prefixes can be added by object type</li>
-	<li>[CHANGED] Suffix by type has been renamed to type suffix and prefix panel and is now part of the main panel</li>
-	<li>[NEW]Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
-	<li>[UPDATED]Auto updater 1.0.3</li>
-	<li>[FIX] A lot of minor bugs have been fixed</li>
-
-</ul>
-
-<h4>[1.0.1]</h4>
-
-<ul>
-	<li>[New] The posibility to give the objects a new name has been added</li>
-</ul>
-
-<img src="img/simplePanel_title_01.jpg" alt="Teaser Banner " />
-<img src="img/simplePanel_title_02.jpg" alt="Teaser Banner " />
-
 <h2>Introduction</h2>
 
 <p><b> Simple Renaming Panel </b> is a small, but really powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. You decide which kind of objects will be effected by the renaming task, all or just selected objects, should it affect image textures, materials, objects, object data, bones or groups. This tool can be a real everyday helper as renaming multiple objects is needed very often and keeping the naming conventions can be tedious. The tool provides you with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. </p>
@@ -64,28 +15,27 @@ Like any other Add-on, you can simply install it by going to <b> File &gt; User 
 
 <img src="img/mainPanel.jpg" alt="Installation Addon " />
 <ul>
-	<li><b>[NEW]</b> Choose which kind of objects you want to rename:</li>
+	<li> Choose which kind of objects you want to rename:</li>
 	<li> Changes effect selected or all</li>
 	<li> Replace names with a new name</li>
 	<li> Search and replace </li>
-	<li><b>[NEW]</b> Match case for the search and replace</li>
-	<li>Add prefixes </li>
-	<li>Add suffixes </li>
-	<li>Numerate objects</li>
-	<li>Trim string </li>
-	<li>Data: Keeping the object data names clear and organized can be really painful in blender, this button simply renames the data according to the objects and adds a specified suffix.</li>
+	<li> Match case for the search and replace</li>
+	<li> Add prefixes </li>
+	<li> Add suffixes </li>
+	<li> Numerate objects</li>
+	<li> Trim string </li>
+	<li> Data: Keeping the object data names clear and organized can be really painful in blender, this button simply renames the data according to the objects and adds a specified suffix.</li>
 </ul>
 
 <h4>Key Feature:</h4>
 
 <ul>
-	<li>[NEW] Support for light probes and speaker objects </li>
-	<li>[NEW] Option to specify object type when renaming objects </li>
-	<li>[NEW] Support for blender 2.80 specifc object types (e.g., lightprops, greace pencil)  </li>
 	<li>Works for objects, materials, collections, image textures, object data and bones</li>
 	<li>Choose if all or just selected objects should be effected </li>
+	<li> Restrict renaming operation to specific object types (meshes, curves, empties, cameras, metaballs, lightprobes, volume objects etc.) </li>
 	<li>Search and replace </li>
 	<li>Match case option for search and replace</li>
+	<li>Regex Support</li>
 	<li>Add suffixes and prefixes</li>
 	<li>Numerate </li>
 	<li>Trim names</li>
@@ -189,4 +139,73 @@ The presets allow you to easily save different naming conventions for different 
 
 <img src="img/popup.jpg" alt="Installation Addon " />
 
+<h3>Release Notes</h3>
 
+<h4>[1.5.0] blender 2.80 beta</h4>
+
+<h4>[1.4.1] blender 2.80 beta</h4>
+<ul>
+<li> [Fix]: Renaming only selected Bones in Object mode shows now an info that selected bones can only be renamed in object mode.</li>
+<li> [Fix]: Improved Error handling</li>
+<li> [Fix] Duplicate popup window is not shown in the tools panel anymore.</li>
+</ul>
+
+<h4>[1.4.0] blender 2.80 beta</h4>
+<ul>
+<li><b>[NEW]</b> Feature: Introduction of the powerful renaming variables </li>
+<li><b>[NEW]</b> UI: Toggle between simple and advanced UI</li>
+<li><b>[NEW]</b> Presets for rename by type</li>
+<li><b>[NEW]</b> Search and select for Object renaming </li>
+<li> [Fix] Bone renaming in Pose mode </li>
+</ul>
+
+<h4>[1.3.1] blender 2.80 beta</h4>
+<ul>
+<li><b>[NEW]</b> UI: User Defined Hotkeys </li>
+<li><b>[NEW]</b> UI: Add additional options to the User Preferences of the addon</li>
+</ul>
+
+<h4>[1.3.0b] blender 2.80 beta</h4>
+
+<ul>
+<li><b>[NEW]</b> UI: The simple renaming panel is now part of the properties panel </li>
+<li><b>[NEW]</b> UI: The panel uses for big parts the single column layout </li>
+<li><b>[NEW]</b>The codebase was updated to fit the new requironments of blender 2.80 </li>
+<li><b>[NEW]</b>The new blender 2.80 specific object types are supported (e.g., grease pencil, lightprops). Groups and Layers have been removed from the addon. </li>
+<li><b>[NEW]</b> An option to provide more control over which object type is effected by the renaming action was added. </li>
+<li><b>[NEW]</b> It is possible to rename selected bones (Thanks to  <a href="https://github.com/cube-creative">Cube Creative</a>) </li	
+</ul>
+
+<h4>[1.3.0a] blender 2.80 alpha</h4>
+
+<ul>
+<li>[DELETED] Renaming of Collections </li>
+<li>[DELETED] Renaming of Render Layers </li>
+<li>[DELETED] UI Popup </li>
+<li>[CHANGED] Tool panel to Properties panel </li>
+<li> [FIXED] This addon can't be installed from the zip file. </li>
+</ul>
+
+<h4>[1.2.0]</h4>
+
+<ul>
+	<li>[NEW] Renaming works now in different modes: object, material, image texture, group, data and bone </li>
+	<li>[NEW] Change the tool shelf category of the add-on in the preferences </li>
+	<li>[NEW] Added a match case checkbox has been added to search and replace</li>
+	<li>[NEW] A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
+	<li>[NEW] Not only suffixes, but also prefixes can be added by object type</li>
+	<li>[CHANGED] Suffix by type has been renamed to type suffix and prefix panel and is now part of the main panel</li>
+	<li>[NEW]Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
+	<li>[UPDATED]Auto updater 1.0.3</li>
+	<li>[FIX] A lot of minor bugs have been fixed</li>
+
+</ul>
+
+<h4>[1.0.1]</h4>
+
+<ul>
+	<li>[New] The posibility to give the objects a new name has been added</li>
+</ul>
+
+<img src="img/simplePanel_title_01.jpg" alt="Teaser Banner " />
+<img src="img/simplePanel_title_02.jpg" alt="Teaser Banner " />
