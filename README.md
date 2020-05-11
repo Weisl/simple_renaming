@@ -1,8 +1,12 @@
-<h2>Introduction</h2>
+<img src="img/simplePanel_title_01.jpg" alt="Teaser Banner " />
+<img src="img/simplePanel_title_02.jpg" alt="Teaser Banner " />
 
-<p><b> Simple Renaming Panel </b> is a small, but really powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. You decide which kind of objects will be effected by the renaming task, all or just selected objects, should it affect image textures, materials, objects, object data, bones or groups. This tool can be a real everyday helper as renaming multiple objects is needed very often and keeping the naming conventions can be tedious. The tool provides you with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. </p>
+<h1>Introduction</h1>
 
-<h3>Download and Installation</h3>
+<p><b> Simple Renaming Panel </b> is a small, but really powerful tool to rename more objects at once. The tool includes basic functionalities of adding suffixes, prefixes, search and replace, add suffixes depending on the object type and much more. Over the time more advanced features like a variable system were added. The tool gives a lot of power to you!  
+You decide which kind of objects will be effected by the renaming task. Rename all or just selected objects, specify the affected object types like image textures, materials, objects, object data, bones or collections. This tool can be a real everyday helper. Renaming multiple objects is often needed and keeping the naming conventions can be tedious. The tool provides you with a clear feedback of what has been renamed. This tool is kept simple to be user friendly but offers everything you need to stay organized. </p>
+
+<h1>Download and Installation</h1>
 
 You can download the Simple Renaming Panel for blender 2.79 and blender 2.80 from the releases section <a href="https://github.com/Weisl/simple_renaming_panel/releases" target="_blank">here</a>.
 Like any other Add-on, you can simply install it by going to <b> File &gt; User Preferences &gt; Add-ons </b> and click at the button <b>Install from File </b>. In the new opened window choose the .zip file of the addon and press <b>Install from file </b>.
@@ -10,16 +14,20 @@ Like any other Add-on, you can simply install it by going to <b> File &gt; User 
 
 <img src="img/install_addon.jpg" alt="Installation Addon " />
 
+<h1> Renaming Panel</h1>
 
-<h4>Simple Renaming Panel</h4>
+The renaming panel is the heart of the application. It provides you with a simple and an advanced UI option. It can either be found in the properties panel or by pressing the user defined hotkey. 
 
 <img src="img/mainPanel.jpg" alt="Installation Addon " />
+
 <ul>
 	<li> Choose which kind of objects you want to rename:</li>
 	<li> Changes effect selected or all</li>
 	<li> Replace names with a new name</li>
 	<li> Search and replace </li>
+	<li> Search and select </li>
 	<li> Match case for the search and replace</li>
+	<li> Use regular expressions to improve your search</li>
 	<li> Add prefixes </li>
 	<li> Add suffixes </li>
 	<li> Numerate objects</li>
@@ -58,7 +66,7 @@ The biggest new feature are the renaming variables. They expand the functionalit
 <li>	@f : filename</li>
 <li>	@h: high poly (user defined, default = high)</li>
 <li>	@l: low poly (user defined, default  = low)</li>
-<li>	@c: cage (user defined, default  = cage)</li>
+<li>	@b: cage (user defined, default  = cage)</li>
 <li>	@d: date </li>
 <li>	@u1: (user defined)</li>
 <li>	@u2: (user defined)</li>
@@ -74,6 +82,7 @@ Currently only supported in Object mode
 <li>	@o: object</li>
 <li>	@a: active object</li>
 <li>	@t: type </li>
+<li>	@c: collection (random order) </li>
 </ul>
 An arbitrary number of renaming variables van be used in any input field and at any position. Variables can be combined and used together with regular strings. 
 
@@ -100,41 +109,45 @@ The presets allow you to easily save different naming conventions for different 
 
 <h4>Known Issues: </h4> 
 
-•	Time: Ignores the current time zone and uses always Coordinated Universal Time (UTC)
-•	The Category Tab in the preferences does not work 
-•	The selection order is still ignored 
-•	Be really careful with using @p and 
+
+<ul>
+<li>Time: Ignores the current time zone and uses always Coordinated Universal Time (UTC)</li>
+<li>The selection order is still ignored </li>
+<li>Be really careful with using @p and </li>
+</ul>
 
 <h4>Future:</h4> 
 
-•	Test the renaming variable system further and handle more edge cases for the individual variables.
-•	Improve the operation and variable descriptions 
-•	Improve the UI for selecting variables with different columns similar to the Editor Type dropdown
-•	Add more user defined variable slots
-•	Add and special variables for other renaming modes (e.g., especially for textures and actions)
-•	Remove duplicate code for the simple and advanced UI
-•	Refactor the code for adding new renaming variables 
-•	Add a Search and Select functionality
-•	Add specialized renaming operators. (Baking Pair)
- 
+<ul>
+<li>Test the renaming variable system further and handle more edge cases for the individual variables.</li>
+<li>Improve the operation and variable descriptions </li>
+<li>Improve the UI for selecting variables with different columns similar to the Editor Type dropdown</li>
+<li>Add more user defined variable slots</li>
+<li>Add and special variables for other renaming modes (e.g., especially for textures and actions)</li>
+<li>Remove duplicate code for the simple and advanced UI </li>
+<li>Refactor the code for adding new renaming variables </li>
+<li>Add a Search and Select functionality</li>
+<li>Add specialized renaming operators. (Baking Pair)</li>
+</ul>
+
 
 <h4>Type Suffix Prefix</h4>
 
 <img src="img/sufPrebyTypePanel.jpg" alt="Installation Addon " />
 <ul>
-	<li><b>[NEW]</b> Choose betweeen Suffix and Prefix</li>
-	<li>Geometry: all meshes</li>
-	<li>Material: all materials</li>
-	<li>Empty:  all empty objects </li>
-	<li>Curve: all curves</li>
-	<li>Armature: all armatures objects (not bones)</li>
-	<li>Group: all groups</li>
-	<li>Lattice: all lattices</li>
-	<li>Data: all object data</li>
-	<li><b>[NEW]</b> Surfaces: all surface objects</li> 
-	<li><b>[NEW]</b> Cameras : all cameras </li>
-	<li><b>[NEW]</b> Lights: all lights </li>
-	<li><b>[NEW]</b> Bones: all bones </li>
+<li><b>[NEW]</b> Choose betweeen Suffix and Prefix</li>
+<li>Geometry: all meshes</li>
+<li>Material: all materials</li>
+<li>Empty:  all empty objects </li>
+<li>Curve: all curves</li>
+<li>Armature: all armatures objects (not bones)</li>
+<li>Group: all groups</li>
+<li>Lattice: all lattices</li>
+<li>Data: all object data</li>
+<li><b>[NEW]</b> Surfaces: all surface objects</li> 
+<li><b>[NEW]</b> Cameras : all cameras </li>
+<li><b>[NEW]</b> Lights: all lights </li>
+<li><b>[NEW]</b> Bones: all bones </li>
 </ul>
 
 <img src="img/popup.jpg" alt="Installation Addon " />
@@ -142,7 +155,14 @@ The presets allow you to easily save different naming conventions for different 
 <h3>Release Notes</h3>
 
 <h4>[1.5.0] blender 2.80 beta</h4>
+<ul>
+<li><b>[NEW]</b> Auto Updater is back! </li>
+<li><b>[NEW]</b> Changing the properties panel category from the user preferences works now properly! </li>
+<li><b>[NEW]</b> The renamingvariable @c contains the object collections! </li>
+<li><b>[Fix]</b> </li>
+	
 
+</ul>
 <h4>[1.4.1] blender 2.80 beta</h4>
 <ul>
 <li> [Fix]: Renaming only selected Bones in Object mode shows now an info that selected bones can only be renamed in object mode.</li>
@@ -189,23 +209,20 @@ The presets allow you to easily save different naming conventions for different 
 <h4>[1.2.0]</h4>
 
 <ul>
-	<li>[NEW] Renaming works now in different modes: object, material, image texture, group, data and bone </li>
-	<li>[NEW] Change the tool shelf category of the add-on in the preferences </li>
-	<li>[NEW] Added a match case checkbox has been added to search and replace</li>
-	<li>[NEW] A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
-	<li>[NEW] Not only suffixes, but also prefixes can be added by object type</li>
-	<li>[CHANGED] Suffix by type has been renamed to type suffix and prefix panel and is now part of the main panel</li>
-	<li>[NEW]Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
-	<li>[UPDATED]Auto updater 1.0.3</li>
-	<li>[FIX] A lot of minor bugs have been fixed</li>
-
+<li>[NEW] Renaming works now in different modes: object, material, image texture, group, data and bone </li>
+li>[NEW] Change the tool shelf category of the add-on in the preferences </li>
+li>[NEW] Added a match case checkbox has been added to search and replace</li>
+li>[NEW] A simple and well organized information panel lists which objects have been renamed and includes some additional information </li>
+li>[NEW] Not only suffixes, but also prefixes can be added by object type</li>
+li>[CHANGED] Suffix by type has been renamed to type suffix and prefix panel and is now part of the main panel</li>
+li>[NEW]Surfaces, cameras, lights and bones have been added to the type suffix and prefix panel</li>
+li>[UPDATED]Auto updater 1.0.3</li>
+li>[FIX] A lot of minor bugs have been fixed</li>
 </ul>
 
 <h4>[1.0.1]</h4>
 
 <ul>
-	<li>[New] The posibility to give the objects a new name has been added</li>
+li>[New] The posibility to give the objects a new name has been added</li>
 </ul>
 
-<img src="img/simplePanel_title_01.jpg" alt="Teaser Banner " />
-<img src="img/simplePanel_title_02.jpg" alt="Teaser Banner " />
