@@ -57,7 +57,7 @@ The renaming panel is the heart of the application. It provides you with a simpl
 <h3>Improved Basic UI</h3> 
 I have improved the UI based on the input from Bookyakuno. This makes it easier to use, while keeping the efficiency from before. 
 
-<h2> Advanced UI (Experimental) </h2> 
+<h3> Advanced UI (Experimental) </h3> 
 You can specify the number of leading zeros next to the new name input. Every # represents one 0. You can also disable the automated numeration completely. This is especially useful for the newly introduced variables. Additional Buttons allow you to easily add these variables and show you which ones are available for this renaming process. This UI is still WIP. 
 
 <h3> Renaming Variables (Experimental)</h3> 
