@@ -1,12 +1,14 @@
 import bpy
 from bpy.types import PoseBone
 
+
 def trimString(string, size):
     list1 = string
     list2 = list1[:-size]
     return ''.join(list2)
 
-def getRenamingList(self, context, overrideSelection = False):
+
+def getRenamingList(self, context, overrideSelection=False):
     wm = context.scene
     renamingList = []
     switchEditMode = False
@@ -17,7 +19,7 @@ def getRenamingList(self, context, overrideSelection = False):
 
     if wm.renaming_object_types == 'OBJECT':
         if onlySelection == True:
-            for obj in bpy.context.selected_objects:
+            for obj in context.selected_objects:
                 if obj.type in wm.renaming_object_types_specified:
                     renamingList.append(obj)
         else:
@@ -27,7 +29,7 @@ def getRenamingList(self, context, overrideSelection = False):
 
     elif wm.renaming_object_types == 'DATA':
         if onlySelection == True:
-            for obj in bpy.context.selected_objects:
+            for obj in context.selected_objects:
                 if obj.data not in renamingList:
                     renamingList.append(obj.data)
         else:
@@ -37,7 +39,7 @@ def getRenamingList(self, context, overrideSelection = False):
 
     elif wm.renaming_object_types == 'MATERIAL':
         if onlySelection == True:
-            for obj in bpy.context.selected_objects:
+            for obj in context.selected_objects:
                 for mat in obj.material_slots:
                     if mat is not None and mat.name != '':
                         renamingList.append(bpy.data.materials[mat.name])
@@ -49,7 +51,7 @@ def getRenamingList(self, context, overrideSelection = False):
 
     elif wm.renaming_object_types == 'BONE':
         if onlySelection == True:
-            modeOld = bpy.context.mode
+            modeOld = context.mode
             selectedBones = []
 
             if modeOld == 'OBJECT':
@@ -57,9 +59,9 @@ def getRenamingList(self, context, overrideSelection = False):
                 return None, None, errorMsg
 
             elif modeOld == 'POSE':
-                selectedBones = bpy.context.selected_pose_bones.copy()
+                selectedBones = context.selected_pose_bones.copy()
             else:
-                selectedBones = bpy.context.selected_bones.copy()
+                selectedBones = context.selected_bones.copy()
                 switchEditMode = True
 
             bpy.ops.object.mode_set(mode='POSE')
@@ -88,7 +90,7 @@ def getRenamingList(self, context, overrideSelection = False):
 
     # elif wm.renaming_object_types == 'VERTEXGROUP':
     #     if onlySelection == True:
-    #         for obj in bpy.context.selected_objects:
+    #         for obj in context.selected_objects:
     #             for vtx in obj.vertex_groups:
     #                 if vtx is not None and vtx.name != '':
     #                     renamingList.append(obj.vertex_groups[vtx.name])
@@ -101,8 +103,9 @@ def getRenamingList(self, context, overrideSelection = False):
     elif wm.renaming_object_types == 'ACTIONS':
         renamingList = list(bpy.data.actions)
 
-    #renamingList.sort(key=lambda x: x.name, reverse=False)
+    # renamingList.sort(key=lambda x: x.name, reverse=False)
     return renamingList, switchEditMode, None
+
 
 def callRenamingPopup(context):
     preferences = context.preferences
@@ -112,13 +115,16 @@ def callRenamingPopup(context):
         bpy.ops.wm.call_panel(name="POPUP_PT_popup")
     return
 
+
 def callInfoPopup(context):
     bpy.ops.wm.call_panel(name="POPUP_PT_info")
     return
 
+
 def callErrorPopup(context):
     bpy.ops.wm.call_panel(name="POPUP_PT_error")
     return
+
 
 windowVariables = []
 
@@ -147,6 +153,7 @@ class MESSAGE():
     def draw(cls, context):
         return
 
+
 class INFO_MESSAGES(MESSAGE):
 
     @classmethod
@@ -155,23 +162,21 @@ class INFO_MESSAGES(MESSAGE):
         cls.message.append(dict)
         return
 
+
 class WarningError_MESSAGES(MESSAGE):
 
     @classmethod
-    def addMessage(cls, message='', isError = False):
-        dict = {'message': message, 'isError' : isError}
+    def addMessage(cls, message='', isError=False):
+        dict = {'message': message, 'isError': isError}
         cls.message.append(dict)
         return
+
 
 class RENAMING_MESSAGES(MESSAGE):
     message = []
 
     @classmethod
-    def addMessage(cls, oldName, newName = None, obType=False, obIcon=False, warning=False):
+    def addMessage(cls, oldName, newName=None, obType=False, obIcon=False, warning=False):
         dict = {'oldName': oldName, 'newName': newName, 'obType': obType, 'obIcon': obIcon, 'warning': warning}
         cls.message.append(dict)
         return
-
-
-
-
