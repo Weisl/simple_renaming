@@ -144,7 +144,10 @@ class VariableReplacer():
 
     @classmethod
     def getActive(cls, context):
-        return context.object.name
+        if context.object is None:
+            return ""
+        else:
+            return context.object.name
 
     ################## OBJECTS ####################################
     @classmethod
