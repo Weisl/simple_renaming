@@ -149,7 +149,10 @@ class VariableReplacer():
 
     @classmethod
     def getActive(cls, context):
-        return context.object.name
+        if context.object is None:
+            return ""
+        else:
+            return context.object.name
 
     ################## OBJECTS ####################################
     @classmethod
@@ -182,7 +185,7 @@ class VariableReplacer():
             collection_objects = collection.objects
             if entity.name in collection.objects and entity in collection_objects[:]:
                 collectionNames += collection.name
-                
+
         return collectionNames
 
 # TODO Parent class that contains common functionality like setting up variables, getRenamingList and Error Handling
