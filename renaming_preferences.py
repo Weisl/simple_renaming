@@ -104,6 +104,7 @@ def update_panel_category_vallidation(self, context):
     bpy.utils.register_class(VIEW3D_PT_vallidation)
     return
 
+
 def toggle_validation_panel(self, context):
     if self.renaming_show_validation:
         bpy.utils.register_class(VIEW3D_PT_vallidation)
@@ -119,7 +120,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     # when defining this in a submodule of a python package.
     bl_idname = __package__  ### __package__ works on multifile and __name__ not
 
-    #prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps"),
+    # prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps"),
     #                                ('validate', "Validate (experimental)", "Validate (experimental)")), default='ui')
 
     prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps")), default='ui')
@@ -205,7 +206,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         default=False,
         update=toggle_validation_panel)
 
-
     vallidation_category: StringProperty(name="Category",
                                          description="Defines in which category of the tools panel the simple renaimg vallidation panel is listed",
                                          default='Rename',
@@ -246,27 +246,27 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         description="If enabled, auto-check for updates using an interval",
         default=False,
     )
-    updater_intrval_months : bpy.props.IntProperty(
+    updater_intrval_months: bpy.props.IntProperty(
         name='Months',
         description="Number of months between checking for updates",
         default=0,
         min=0
     )
-    updater_intrval_days : bpy.props.IntProperty(
+    updater_intrval_days: bpy.props.IntProperty(
         name='Days',
         description="Number of days between checking for updates",
         default=7,
         min=0,
         max=31
     )
-    updater_intrval_hours : bpy.props.IntProperty(
+    updater_intrval_hours: bpy.props.IntProperty(
         name='Hours',
         description="Number of hours between checking for updates",
         default=0,
         min=0,
         max=23
     )
-    updater_intrval_minutes : bpy.props.IntProperty(
+    updater_intrval_minutes: bpy.props.IntProperty(
         name='Minutes',
         description="Number of minutes between checking for updates",
         default=0,
@@ -279,7 +279,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         simple preference UI to define custom inputs and user preferences
         '''
         layout = self.layout
-        wm = bpy.context.window_manager
+        wm = context.window_manager
 
         row = layout.row(align=True)
         row.prop(self, "prefs_tabs", expand=True)
@@ -320,7 +320,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             split = box.split()
             col = split.column()
 
-            wm = bpy.context.window_manager
+            wm = context.window_manager
             kc = wm.keyconfigs.addon
             km = kc.keymaps['3D View Generic']
 

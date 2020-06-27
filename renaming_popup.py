@@ -88,7 +88,7 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
     bl_ui_units_x = 30
 
     def draw(self, context):
-        wm = bpy.context.scene
+        wm = context.scene
 
         layout = self.layout
         box = layout.box()

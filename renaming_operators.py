@@ -1,16 +1,11 @@
-import time
-
-import bpy
 import random
 import re
 import string
+import time
+
+import bpy
 
 from .renaming_utilities import getRenamingList, trimString, callRenamingPopup, callErrorPopup
-
-
-#############################################
-############ OPERATORS ########################
-#############################################
 
 def randomString(stringLength=10):
     """Generate a random string of fixed length """
@@ -42,7 +37,7 @@ class VariableReplacer():
     @classmethod
     def replaceInputString(cls, context, inputText, entity):
         wm = context.scene
-        cls.addon_prefs = bpy.context.preferences.addons[__package__].preferences
+        cls.addon_prefs = context.preferences.addons[__package__].preferences
 
         ##### System and Global Values ################
         inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
@@ -125,7 +120,7 @@ class VariableReplacer():
         scn = context.scene
 
         if bpy.data.is_saved:
-            filename = bpy.path.display_name(bpy.context.blend_data.filepath)
+            filename = bpy.path.display_name(context.blend_data.filepath)
         else:
             filename = "UNSAVED"
             # scn.renaming_messages.addMessage(oldName, entity.name)
@@ -149,7 +144,10 @@ class VariableReplacer():
 
     @classmethod
     def getActive(cls, context):
-        return context.object.name
+        if context.object is None:
+            return ""
+        else:
+            return context.object.name
 
     ################## OBJECTS ####################################
     @classmethod
@@ -174,16 +172,17 @@ class VariableReplacer():
 
     @classmethod
     def getCollection(cls, context, entity):
-        #prefs = bpy.context.preferences.addons[__package__].preferences
-        #separator = prefs.renaming_separator
+        # prefs = context.preferences.addons[__package__].preferences
+        # separator = prefs.renaming_separator
 
-        collectionNames=""
+        collectionNames = ""
         for collection in bpy.data.collections:
             collection_objects = collection.objects
             if entity.name in collection.objects and entity in collection_objects[:]:
                 collectionNames += collection.name
-                
+
         return collectionNames
+
 
 # TODO Parent class that contains common functionality like setting up variables, getRenamingList and Error Handling
 
@@ -324,7 +323,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             return {'CANCELLED'}
 
         digits = len(wm.renaming_numerate)
-        prefs = bpy.context.preferences.addons[__package__].preferences
+        prefs = context.preferences.addons[__package__].preferences
         separator = prefs.renaming_separator
 
         startNum = prefs.numerate_start_number
@@ -565,7 +564,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        prefs = bpy.context.preferences.addons[__package__].preferences
+        prefs = context.preferences.addons[__package__].preferences
         separator = prefs.renaming_separator
 
         wm = context.scene
@@ -628,7 +627,7 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         # TODO: Clean up. Should use getRenamingList instead of iterating through all objects by itself.
 
         if wm.renaming_only_selection == True:
-            for obj in bpy.context.selected_objects:
+            for obj in context.selected_objects:
 
                 objName = obj.name + suffix_data
                 # if suffix_data is not '':

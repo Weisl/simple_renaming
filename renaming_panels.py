@@ -1,15 +1,10 @@
 import bpy
-
-from .renaming_proFeatures import RENAMING_MT_variableMenu
+from bl_operators.presets import AddPresetBase
 from bpy.props import StringProperty
 from bpy.types import Operator, Menu
-from bl_operators.presets import AddPresetBase
 
+from .renaming_proFeatures import RENAMING_MT_variableMenu
 
-#############################################
-############ PANELS ########################
-#############################################
-# addon Panel
 
 def drawSimpleUi(self, context):
     layout = self.layout
@@ -56,7 +51,7 @@ def drawSimpleUi(self, context):
     layout.prop(scene, "renaming_replace")
 
     if scene.renaming_object_types == 'BONE':
-        if bpy.context.mode == 'POSE':
+        if context.mode == 'POSE':
             row = layout.row(align=True)
             row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
 
@@ -158,7 +153,7 @@ def drawAdvancedUI(self, context, advancedMode):
             button = split.operator("object.renaming_set_variable", text="@").inputBox = "replace"
 
         if scene.renaming_object_types == 'BONE':
-            if bpy.context.mode == 'POSE':
+            if context.mode == 'POSE':
                 row = layout.row(align=True)
                 row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
 
@@ -232,7 +227,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
     def draw(self, context):
 
-        prefs = bpy.context.preferences.addons[__package__].preferences
+        prefs = context.preferences.addons[__package__].preferences
         advancedMode = prefs.renamingPanel_advancedMode
 
         layout = self.layout
@@ -349,7 +344,7 @@ class VIEW3D_OT_SimpleOperator(bpy.types.Operator):
     inputBox: StringProperty()
 
     def execute(self, context):
-        bpy.context.scene.renaming_inputContext = self.inputBox
+        context.scene.renaming_inputContext = self.inputBox
         bpy.ops.wm.call_menu(name=RENAMING_MT_variableMenu.bl_idname)
         return {'FINISHED'}
 

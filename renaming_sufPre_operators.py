@@ -1,4 +1,3 @@
-
 import bpy
 from bpy.props import (
     StringProperty,
@@ -17,15 +16,18 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
     option: StringProperty()
 
     def getSelectionAll(self):
-        useSelection = bpy.context.scene.type_pre_sub_only_selection
+
+        context = self.context
+        useSelection = context.scene.type_pre_sub_only_selection
 
         if useSelection:
-            return bpy.context.selected_objects.copy()
+            return context.selected_objects.copy()
         else:
             return bpy.data.objects
 
     def renameSufPre(self, objList, preSuf='', objectType='', icon=''):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
 
         switchSufPre = wm.renaming_sufpre_type  # either use pre of suffix
 
@@ -37,12 +39,12 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
                     if switchSufPre == 'SUF':
                         if ent.name.endswith(preSuf) == False:
-                            newName = self.sufpreAdd(bpy.context, ent, preSuf)
+                            newName = self.sufpreAdd(context, ent, preSuf)
                         else:
                             nameIsNew = False
                     else:
                         if ent.name.startswith(preSuf) == False:
-                            newName = self.sufpreAdd(bpy.context, ent, preSuf)
+                            newName = self.sufpreAdd(context, ent, preSuf)
                         else:
                             nameIsNew = False
 
@@ -54,7 +56,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
                     pass
 
     def empty(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -64,7 +67,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def mesh(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -74,11 +78,12 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def material(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         if wm.type_pre_sub_only_selection:
-            for obj in bpy.context.selected_objects:
+            for obj in context.selected_objects:
                 for mat in obj.material_slots:
                     if mat is not None and mat.name != '':
                         objList.append(bpy.data.materials[mat.name])
@@ -89,7 +94,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def speakers(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -99,7 +105,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def lightprops(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -110,7 +117,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def data(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -119,7 +127,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def camera(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -129,7 +138,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def light(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -139,7 +149,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def armature(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -161,7 +172,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def curve(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -171,7 +183,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def surface(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -181,7 +194,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def text(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -191,7 +205,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def gpencil(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -202,7 +217,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def metaball(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -212,7 +228,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def collection(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for col in bpy.data.collections:
@@ -221,7 +238,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         return
 
     def bone(self):
-        wm = bpy.context.scene
+        context = self.context
+        wm = context.scene
         objList = []
 
         for obj in self.getSelectionAll():
@@ -252,7 +270,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         pass
 
     def switch_type(self, argument):
-        selection = bpy.context.selected_objects
+        context = self.context
+        selection = context.selected_objects
         all = bpy.data.objects
 
         switcher = {
@@ -282,6 +301,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         pass
 
     def execute(self, context):
+        self.context = context
+
         wm = context.scene
         self.switch_type(self.option)
 

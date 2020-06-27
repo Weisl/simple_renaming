@@ -85,17 +85,17 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
         if nameingPreset == "COLLECTION":
             nameVar = "@c"
 
-        scn = bpy.context.scene
+        scn = context.scene
         if scn.renaming_inputContext == 'newName':
-            bpy.context.scene.renaming_newName += str(nameVar)
+            context.scene.renaming_newName += str(nameVar)
         if scn.renaming_inputContext == 'prefix':
-            bpy.context.scene.renaming_prefix += str(nameVar)
+            context.scene.renaming_prefix += str(nameVar)
         if scn.renaming_inputContext == 'suffix':
-            bpy.context.scene.renaming_suffix += str(nameVar)
+            context.scene.renaming_suffix += str(nameVar)
         if scn.renaming_inputContext == 'search':
-            bpy.context.scene.renaming_search += str(nameVar)
+            context.scene.renaming_search += str(nameVar)
         if scn.renaming_inputContext == 'replace':
-            bpy.context.scene.renaming_replace += str(nameVar)
+            context.scene.renaming_replace += str(nameVar)
 
         return {'FINISHED'}
 
@@ -106,8 +106,11 @@ def tChange(self, context):
     :param context: current blender context
     :return: no return value
     '''
+
+    wm = bpy.context.scene
+
     # The print function works fine
-    nameingPreset = bpy.context.scene.renaming_presetNaming
+    nameingPreset = context.scene.renaming_presetNaming
     nameVar = ""
 
     ##### System and Global Values ################
@@ -148,4 +151,4 @@ def tChange(self, context):
         if nameingPreset == "COLLECTION":
             nameVar = "@c"
 
-    bpy.context.scene.renaming_newName += str(nameVar)
+    context.scene.renaming_newName += str(nameVar)
