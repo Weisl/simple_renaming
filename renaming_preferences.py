@@ -322,11 +322,12 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
             wm = context.window_manager
             kc = wm.keyconfigs.addon
-            km = kc.keymaps['3D View Generic']
+            km = kc.keymaps['3D View']
 
             kmis = []
             kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel'))
             kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix'))
+
             for kmi in kmis:
                 if kmi:
                     col.context_pointer_set("keymap", km)
