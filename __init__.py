@@ -86,9 +86,10 @@ def register():
 
 
     # keymap and preferences should be last
+    renaming_keymap.register()
     renaming_preferences.register()
     renaming_panels.register()
-    renaming_keymap.register()
+
 
     bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
 

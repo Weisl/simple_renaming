@@ -8,7 +8,7 @@ from bpy.props import (
 from . import addon_updater_ops
 from .renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
 from .renaming_vallidate import VIEW3D_PT_vallidation
-
+from .renaming_keymap import get_hotkey_entry_item
 
 def update_panel_category(self, context):
     is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_renaming_panel')
@@ -253,14 +253,14 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
         if self.prefs_tabs == 'keymaps':
             box = layout.box()
-            split = box.split()
-            col = split.column()
+            col = box.column()
 
             wm = context.window_manager
             kc = wm.keyconfigs.addon
             km = kc.keymaps['3D View']
 
             kmis = []
+            # Menus and Pies
             kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel'))
             kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix'))
 
@@ -268,9 +268,12 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 if kmi:
                     col.context_pointer_set("keymap", km)
                     rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
+
                 else:
                     col.label(text="No hotkey entry found")
-                    col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, text="Add hotkey entry", icon='ADD')
+                    col.operator("renaming.add_hotkey", text="Add hotkey entry", icon='ADD')
+
+
 
         if self.prefs_tabs == 'validate':
             box = layout.box()
