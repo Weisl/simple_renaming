@@ -26,7 +26,7 @@ bl_info = {
     "blender": (2, 83, 0),
     "location": "View3D > Tools ",
     "warning": "",
-    "wiki_url": "https://github.com/Weisl/simple_renaming_panel",
+    "wiki_url": "https://weisl.github.io/renaming/",
     "tracker_url": "https://github.com/Weisl/simple_renaming_panel/issues",
     "support": "COMMUNITY",
     "category": "Scene"
