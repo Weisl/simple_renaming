@@ -46,6 +46,10 @@ test/
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
+.idea/
+__pycache__/
+simple_renaming_panel_updater/
+
 Network Trash Folder
 Temporary Items
 .apdisk
