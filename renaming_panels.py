@@ -423,13 +423,13 @@ class AddPresetRenamingPresets(AddPresetBase, Operator):
 
 
 classes = (
+    OBJECT_MT_sufpre_presets,
+    AddPresetRenamingPresets,
     VIEW3D_PT_tools_renaming_panel,
     VIEW3D_PT_tools_type_suffix,
     VIEW3D_OT_SimpleOperator,
     VIEW3D_OT_RenamingPopupOperator,
-    LITTLE_RENAMING_HELPERS,
-    OBJECT_MT_sufpre_presets,
-    AddPresetRenamingPresets,
+    # LITTLE_RENAMING_HELPERS,
 )
 
 
