@@ -153,7 +153,7 @@ def drawAdvancedUI(self, context, advancedMode):
             button = split.operator("object.renaming_set_variable", text="@").inputBox = "replace"
 
         if scene.renaming_object_types == 'BONE':
-            if context.mode == 'POSE':
+            if context.mode == 'POSE' or context.mode == 'EDIT_ARMATURE':
                 row = layout.row(align=True)
                 row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
 
