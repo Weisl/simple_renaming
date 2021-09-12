@@ -72,7 +72,6 @@ def getRenamingList(self, context, overrideSelection=False):
                 if obj.type == 'ARMATURE':
                     armatures.append(obj.data)
 
-
             bpy.ops.object.mode_set(mode='POSE')
             for selected_bone in selectedBones:
                 name = selected_bone.name
