@@ -1,15 +1,9 @@
 {
-    "last_check": "2020-05-07 18:21:36.689403",
+    "last_check": "",
     "backup_date": "",
-    "update_ready": true,
+    "update_ready": false,
     "ignore": false,
     "just_restored": false,
     "just_updated": false,
-    "version_text": {
-        "link": "https://api.github.com/repos/Weisl/simple_renaming_panel/zipball/v2.8-alpha",
-        "version": [
-            2,
-            8
-        ]
-    }
+    "version_text": {}
 }
