@@ -420,3 +420,28 @@ class AddPresetRenamingPresets(AddPresetBase, Operator):
 
     # where to store the preset
     preset_subdir = "scene/display"
+
+
+classes = (
+    VIEW3D_PT_tools_renaming_panel,
+    VIEW3D_PT_tools_type_suffix,
+    VIEW3D_OT_SimpleOperator,
+    VIEW3D_OT_RenamingPopupOperator,
+    LITTLE_RENAMING_HELPERS,
+    OBJECT_MT_sufpre_presets,
+    AddPresetRenamingPresets,
+)
+
+
+def register():
+    from bpy.utils import register_class
+
+    for cls in classes:
+        register_class(cls)
+
+
+def unregister():
+    from bpy.utils import unregister_class
+
+    for cls in reversed(classes):
+        unregister_class(cls)

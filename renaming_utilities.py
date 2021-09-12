@@ -1,5 +1,5 @@
 import bpy
-from bpy.types import PoseBone, EditBone
+from bpy.types import PoseBone
 
 
 def trimString(string, size):
@@ -63,7 +63,7 @@ def getRenamingList(self, context, overrideSelection=False):
             elif modeOld == 'POSE':
                 selectedBones = context.selected_pose_bones.copy()
 
-            else: # if modeOld == 'EDIT_ARMATURE'
+            else:  # if modeOld == 'EDIT_ARMATURE'
                 selectedBones = context.selected_editable_bones.copy()
                 switchEditMode = True
 
@@ -87,7 +87,7 @@ def getRenamingList(self, context, overrideSelection=False):
                             if name == bone.name:
                                 newBone = PoseBone(arm.bones[name])
                         renamingList.append(newBone)
-                    else:# modeOld == 'EDIT':
+                    else:  # modeOld == 'EDIT':
                         for bone in arm.edit_bones:
                             if name == bone.name:
                                 newBone = arm.edit_bones[name]
@@ -204,3 +204,18 @@ class RENAMING_MESSAGES(MESSAGE):
         dict = {'oldName': oldName, 'newName': newName, 'obType': obType, 'obIcon': obIcon, 'warning': warning}
         cls.message.append(dict)
         return
+
+def register():
+    IDStore = bpy.types.Scene
+
+    IDStore.renaming_messages = RENAMING_MESSAGES()
+    IDStore.renaming_error_messages = WarningError_MESSAGES()
+    IDStore.renaming_info_messages = INFO_MESSAGES()
+
+
+def unregister():
+    IDStore = bpy.types.Scene
+    del IDStore.renaming_messages
+    del IDStore.renaming_error_messages
+    del IDStore.renaming_info_messages
+
