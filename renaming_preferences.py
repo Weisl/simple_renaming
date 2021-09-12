@@ -8,71 +8,7 @@ from bpy.props import (
 from . import addon_updater_ops
 from .renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
 from .renaming_vallidate import VIEW3D_PT_vallidation
-
-addon_keymaps = []
-
-
-class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
-    ''' Add hotkey entry '''
-    bl_idname = "renaming.add_hotkey"
-    bl_label = "Addon Preferences Example"
-    bl_options = {'REGISTER', 'INTERNAL'}
-
-    def execute(self, context):
-        add_hotkey()
-        self.report({'INFO'}, "Hotkey added in User Preferences -> Input -> Screen -> Screen (Global)")
-        return {'FINISHED'}
-
-
-def remove_hotkey():
-    ''' clears addon keymap hotkeys stored in addon_keymaps '''
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
-
-    for km, kmi in addon_keymaps:
-        if hasattr(kmi.properties, 'name'):
-            if kmi.properties.name in ['VIEW3D_PT_tools_renaming_panel', 'VIEW3D_PT_tools_type_suffix']:
-                km.keymap_items.remove(kmi)
-
-    addon_keymaps.clear()
-
-
-def add_hotkey():
-    '''
-    Adds default hotkey konfiguration
-    '''
-    prefs = bpy.context.preferences.addons[__package__].preferences
-
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    # if not kc:
-    #     return
-
-    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
-    kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl=True)
-    kmi.properties.name = 'VIEW3D_PT_tools_renaming_panel'
-    kmi.active = True
-
-    km = kc.keymaps.new(name="3D View Generic", space_type='VIEW_3D', region_type='WINDOW')
-    kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl=True, shift=True)
-    kmi.properties.name = 'VIEW3D_PT_tools_type_suffix'
-    kmi.active = True
-
-    addon_keymaps.append((km, kmi))
-
-
-def get_hotkey_entry_item(km, kmi_name, kmi_value):
-    '''
-    returns hotkey of specific type, with specific properties.name (keymap is not a dict, so referencing by keys is not enough
-    if there are multiple hotkeys!)
-    '''
-    for i, km_item in enumerate(km.keymap_items):
-        if km.keymap_items.keys()[i] == kmi_name:
-            if km.keymap_items[i].properties.name == kmi_value:
-                return km_item
-    return None
-
+from .renaming_keymap import get_hotkey_entry_item
 
 def update_panel_category(self, context):
     is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_renaming_panel')
@@ -136,7 +72,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     )
 
     renamingPanel_advancedMode: bpy.props.BoolProperty(
-        name="Advanced (Experimental)",
+        name="Advanced UI",
         description="Enable or Disable Advanced Mode",
         default=True,
     )
@@ -317,14 +253,14 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
         if self.prefs_tabs == 'keymaps':
             box = layout.box()
-            split = box.split()
-            col = split.column()
+            col = box.column()
 
             wm = context.window_manager
             kc = wm.keyconfigs.addon
             km = kc.keymaps['3D View']
 
             kmis = []
+            # Menus and Pies
             kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel'))
             kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix'))
 
@@ -332,9 +268,12 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 if kmi:
                     col.context_pointer_set("keymap", km)
                     rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
+
                 else:
                     col.label(text="No hotkey entry found")
-                    col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, text="Add hotkey entry", icon='ADD')
+                    col.operator("renaming.add_hotkey", text="Add hotkey entry", icon='ADD')
+
+
 
         if self.prefs_tabs == 'validate':
             box = layout.box()
@@ -352,3 +291,22 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row.prop(self, "genericMaterialRegex", expand=True)
 
         addon_updater_ops.update_settings_ui(self, context)
+
+
+classes = (
+    VIEW3D_OT_renaming_preferences,
+)
+
+
+def register():
+    from bpy.utils import register_class
+
+    for cls in classes:
+        register_class(cls)
+
+
+def unregister():
+    from bpy.utils import unregister_class
+
+    for cls in reversed(classes):
+        unregister_class(cls)

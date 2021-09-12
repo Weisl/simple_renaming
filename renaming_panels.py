@@ -51,7 +51,7 @@ def drawSimpleUi(self, context):
     layout.prop(scene, "renaming_replace")
 
     if scene.renaming_object_types == 'BONE':
-        if context.mode == 'POSE':
+        if context.mode == 'POSE' or context.mode == 'EDIT_ARMATURE':
             row = layout.row(align=True)
             row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
 
@@ -153,7 +153,7 @@ def drawAdvancedUI(self, context, advancedMode):
             button = split.operator("object.renaming_set_variable", text="@").inputBox = "replace"
 
         if scene.renaming_object_types == 'BONE':
-            if context.mode == 'POSE':
+            if context.mode == 'POSE' or context.mode == 'EDIT_ARMATURE':
                 row = layout.row(align=True)
                 row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
 
@@ -420,3 +420,28 @@ class AddPresetRenamingPresets(AddPresetBase, Operator):
 
     # where to store the preset
     preset_subdir = "scene/display"
+
+
+classes = (
+    OBJECT_MT_sufpre_presets,
+    AddPresetRenamingPresets,
+    VIEW3D_PT_tools_renaming_panel,
+    VIEW3D_PT_tools_type_suffix,
+    VIEW3D_OT_SimpleOperator,
+    VIEW3D_OT_RenamingPopupOperator,
+    # LITTLE_RENAMING_HELPERS,
+)
+
+
+def register():
+    from bpy.utils import register_class
+
+    for cls in classes:
+        register_class(cls)
+
+
+def unregister():
+    from bpy.utils import unregister_class
+
+    for cls in reversed(classes):
+        unregister_class(cls)
