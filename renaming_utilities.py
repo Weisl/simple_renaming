@@ -95,7 +95,7 @@ def getRenamingList(self, context, overrideSelection=False):
 
         else:
             for arm in bpy.data.armatures:
-                if modeOld == 'POSE':
+                if modeOld == 'POSE' or modeOld == 'OBJECT':
                     for bone in arm.bones:
                         # print(bone)
                         renamingList.append(bone)
