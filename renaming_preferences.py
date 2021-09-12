@@ -136,7 +136,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     )
 
     renamingPanel_advancedMode: bpy.props.BoolProperty(
-        name="Advanced (Experimental)",
+        name="Advanced UI",
         description="Enable or Disable Advanced Mode",
         default=True,
     )
