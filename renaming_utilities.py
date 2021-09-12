@@ -1,5 +1,5 @@
 import bpy
-from bpy.types import PoseBone
+from bpy.types import PoseBone, EditBone
 
 
 def trimString(string, size):
@@ -50,9 +50,9 @@ def getRenamingList(self, context, overrideSelection=False):
         renamingList = list(bpy.data.images)
 
     elif wm.renaming_object_types == 'BONE':
+        modeOld = context.mode
 
         if onlySelection == True:
-            modeOld = context.mode
             selectedBones = []
             selection = context.selected_objects
 
@@ -63,8 +63,8 @@ def getRenamingList(self, context, overrideSelection=False):
             elif modeOld == 'POSE':
                 selectedBones = context.selected_pose_bones.copy()
 
-            else:
-                selectedBones = context.selected_bones.copy()
+            else: # if modeOld == 'EDIT_ARMATURE'
+                selectedBones = context.selected_editable_bones.copy()
                 switchEditMode = True
 
             armatures = []
@@ -72,21 +72,37 @@ def getRenamingList(self, context, overrideSelection=False):
                 if obj.type == 'ARMATURE':
                     armatures.append(obj.data)
 
+            # bpy.ops.object.mode_set(mode='POSE')
+            # bpy.ops.object.mode_set(mode='EDIT')
+            # if modeOld == 'POSE':
+            #     bpy.ops.object.mode_set(mode='POSE')
+            # else:  # if modeOld == 'EDIT_ARMATURE'
+            #
 
-            bpy.ops.object.mode_set(mode='POSE')
             for selected_bone in selectedBones:
                 name = selected_bone.name
                 for arm in armatures:
-                    for bone in arm.bones:
-                        if name == bone.name:
-                            newBone = PoseBone(arm.bones[name])
-                            renamingList.append(newBone)
+                    if modeOld == 'POSE':
+                        for bone in arm.bones:
+                            if name == bone.name:
+                                newBone = PoseBone(arm.bones[name])
+                        renamingList.append(newBone)
+                    else:# modeOld == 'EDIT':
+                        for bone in arm.edit_bones:
+                            if name == bone.name:
+                                newBone = arm.edit_bones[name]
+                        renamingList.append(newBone)
 
         else:
             for arm in bpy.data.armatures:
-                for bone in arm.bones:
-                    # print(bone)
-                    renamingList.append(bone)
+                if modeOld == 'POSE' or modeOld == 'OBJECT':
+                    for bone in arm.bones:
+                        # print(bone)
+                        renamingList.append(bone)
+                else:
+                    for bone in arm.edit_bones:
+                        renamingList.append(bone)
+
 
     elif wm.renaming_object_types == 'COLLECTION':
         renamingList = list(bpy.data.collections)

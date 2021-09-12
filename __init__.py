@@ -22,7 +22,7 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers the basic functionality of renaming a set of objects",
     "author": "Matthias Patscheider",
-    "version": (1, 5, 0),
+    "version": (1, 5, 1),
     "blender": (2, 83, 0),
     "location": "View3D > Tools ",
     "warning": "",
@@ -32,14 +32,6 @@ bl_info = {
     "category": "Scene"
 }
 
-#activate hotkeys to begin with
-#disable Validation panel
-#disable suffix\prefix panel
-#use collection name
-# auto update
-#blender code formating
-#presets for vallidations
-
 # support reloading sub-modules
 if "bpy" in locals():
     import importlib
@@ -48,7 +40,7 @@ if "bpy" in locals():
     importlib.reload(renaming_popup)
     importlib.reload(renaming_utilities)
     importlib.reload(renaming_panels)
-    #importlib.reload(renaming_vallidate)
+    # importlib.reload(renaming_vallidate)
     importlib.reload(renaming_sufPre_operators)
     importlib.reload(renaming_proFeatures)
     importlib.reload(renaming_preferences)
@@ -60,7 +52,7 @@ else:
     from . import renaming_popup
     from . import renaming_utilities
     from . import renaming_panels
-    #from . import renaming_vallidate
+    # from . import renaming_vallidate
     from . import renaming_sufPre_operators
     from . import renaming_proFeatures
     from . import renaming_preferences
@@ -106,11 +98,11 @@ classes = (
     renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
     renaming_proFeatures.RENAMING_MT_variableMenu,
     renaming_proFeatures.VIEW3D_OT_inputVariables,
-    #renaming_vallidate.VIEW3D_OT_Validate,
-    #renaming_vallidate.VIEW3D_PT_vallidation,
+    # renaming_vallidate.VIEW3D_OT_Validate,
+    # renaming_vallidate.VIEW3D_PT_vallidation,
     renaming_preferences.RENAMING_OT_add_hotkey_renaming,
     renaming_preferences.VIEW3D_OT_renaming_preferences,
-# Preferences need to be after Operators for the hotkeys to work
+    # Preferences need to be after Operators for the hotkeys to work
 )
 
 
@@ -190,9 +182,6 @@ keys = []
 
 
 def register():
-
-
-
     IDStore = bpy.types.Scene
 
     IDStore.renaming_sufpre_type = EnumProperty(
@@ -321,7 +310,6 @@ def register():
     bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
 
 
-
 def unregister():
     IDStore = bpy.types.Scene
     del IDStore.renaming_search
@@ -361,8 +349,6 @@ def unregister():
     for cls in reversed(classes):
         unregister_class(cls)
     # from .addon_preferenecs import remove_hotkey
-
-
 
     remove_hotkey()
 

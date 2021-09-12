@@ -7,6 +7,7 @@ import bpy
 
 from .renaming_utilities import getRenamingList, trimString, callRenamingPopup, callErrorPopup
 
+
 def randomString(stringLength=10):
     """Generate a random string of fixed length """
     letters = string.ascii_lowercase
@@ -226,17 +227,32 @@ class VIEW3D_OT_search_and_select(bpy.types.Operator):
                         if re.search(searchReplaced, entityName, re.IGNORECASE):
                             selectionList.append(entity)
 
+
         if str(wm.renaming_object_types) == 'OBJECT':
+            #set to object mode
+            if bpy.context.mode != 'OBJECT':
+                bpy.ops.object.mode_set(mode='OBJECT')
+
             bpy.ops.object.select_all(action='DESELECT')
 
             for obj in selectionList:
                 obj.select_set(True)
 
         elif str(wm.renaming_object_types) == 'BONE':
-            bpy.ops.pose.select_all(action='DESELECT')
+            print("SELECTION LIST: " + str(selectionList))
+            if bpy.context.mode == 'POSE':
+                bpy.ops.pose.select_all(action='DESELECT')
+                for bone in selectionList:
+                    bone.select = True
 
-            for bone in selectionList:
-                bone.select = True
+            elif bpy.context.mode == 'EDIT_ARMATURE':
+                bpy.ops.armature.select_all(action='DESELECT')
+                for bone in selectionList:
+                    print("EDIT Bone: " + str(bone))
+                    bone.select = True
+                    bone.select_head = True
+                    bone.select_tail = True
+
 
         # callRenamingPopup(context)
         if switchEditMode:
@@ -274,6 +290,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
         errMsg = wm.renaming_error_messages
 
         VariableReplacer.reset()
+
         if len(renamingList) > 0:
             for entity in renamingList:  # iterate over all objects that are to be renamed
                 if entity is not None:
