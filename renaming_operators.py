@@ -239,7 +239,10 @@ class VIEW3D_OT_search_and_select(bpy.types.Operator):
                 obj.select_set(True)
 
         elif str(wm.renaming_object_types) == 'BONE':
-            bpy.ops.pose.select_all(action='DESELECT')
+            if bpy.context.mode == 'POSE':
+                bpy.ops.pose.select_all(action='DESELECT')
+            elif bpy.context.mode == 'EDIT_ARMATURE':
+                bpy.ops.armature.select_all(action='DESELECT')
 
             for bone in selectionList:
                 bone.select = True

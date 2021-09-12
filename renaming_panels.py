@@ -51,7 +51,7 @@ def drawSimpleUi(self, context):
     layout.prop(scene, "renaming_replace")
 
     if scene.renaming_object_types == 'BONE':
-        if context.mode == 'POSE':
+        if context.mode == 'POSE' or context.mode == 'EDIT_ARMATURE':
             row = layout.row(align=True)
             row.operator("renaming.search_select", icon="RESTRICT_SELECT_OFF")
 
