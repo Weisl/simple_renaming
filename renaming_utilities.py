@@ -56,6 +56,7 @@ def getRenamingList(self, context, overrideSelection=False):
             selectedBones = []
             selection = context.selected_objects
 
+
             if modeOld == 'OBJECT':
                 errorMsg = "Renaming only selected Bones is only supported for EDIT and POSE mode by now."
                 return None, None, errorMsg
@@ -79,6 +80,7 @@ def getRenamingList(self, context, overrideSelection=False):
             # else:  # if modeOld == 'EDIT_ARMATURE'
             #
 
+            #TODO: Save armature for bones
             for selected_bone in selectedBones:
                 name = selected_bone.name
                 for arm in armatures:
@@ -86,12 +88,12 @@ def getRenamingList(self, context, overrideSelection=False):
                         for bone in arm.bones:
                             if name == bone.name:
                                 newBone = PoseBone(arm.bones[name])
-                        renamingList.append(newBone)
+                                renamingList.append(newBone)
                     else:  # modeOld == 'EDIT':
                         for bone in arm.edit_bones:
                             if name == bone.name:
                                 newBone = arm.edit_bones[name]
-                        renamingList.append(newBone)
+                                renamingList.append(newBone)
 
         else:
             for arm in bpy.data.armatures:
