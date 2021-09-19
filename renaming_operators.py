@@ -360,6 +360,13 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             # for key in bpy.data.shape_keys[0].key_blocks:
             #     shapeKeyNamesList.append(key.name)
 
+        boneList = []
+
+        if wm.renaming_object_types == 'BONE':
+            for arm in bpy.data.armatures:
+                for bone in arm.bones:
+                    boneList.append(bone.name)
+
         VariableReplacer.reset()
         if len(str(replaceName)) > 0:
             if len(renamingList) > 0:
@@ -378,12 +385,6 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                         newName = replaceName
 
                         dataList = []
-                        boneList = []
-
-                        if wm.renaming_object_types == 'BONE':
-                            for arm in bpy.data.armatures:
-                                for bone in arm.bones:
-                                    boneList.append(bone.name)
 
                         if wm.renaming_object_types == 'DATA':
                             for obj in bpy.data.objects:
@@ -419,10 +420,16 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                         break
 
                                 elif wm.renaming_object_types == 'BONE':
+                                    print("Bone List: " + str(boneList) + '\n')
                                     if newName in boneList and newName != entity.name:
+                                        print(newName + '\n')
                                         i = i + 1
                                     else:
+                                        print('lollololol \n')
+                                        boneList.append(newName)
                                         break
+
+
                                 elif wm.renaming_object_types == 'COLLECTION':
                                     if newName in bpy.data.collections and newName != entity.name:
                                         i = i + 1
