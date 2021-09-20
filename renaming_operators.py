@@ -73,6 +73,17 @@ def getAllShapeKeys():
         for key in key_grp.key_blocks:
             shapeKeyNamesList.append(key.name)
 
+    return shapeKeyNamesList
+
+def getAllDataNames():
+    dataList = []
+
+    for obj in bpy.data.objects:
+        if obj.data is not None:
+            dataList.append(obj.data.name)
+
+    return dataList
+
 class VariableReplacer():
     addon_prefs = None
     entity = None
@@ -409,6 +420,10 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         if wm.renaming_object_types == 'BONE':
             boneList = getAllBones(modeOld)
 
+        if wm.renaming_object_types == 'DATA':
+            dataList = getAllDataNames()
+
+
         VariableReplacer.reset()
 
         if len(str(replaceName)) > 0: # New name is not empty
@@ -425,12 +440,10 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
                         dataList = []
 
-                        if wm.renaming_object_types == 'DATA':
-                            for obj in bpy.data.objects:
-                                if obj.data is not None:
-                                    dataList.append(obj.data.name)
+                        if wm.renaming_usenumerate == False:
+                            new_name
 
-                        if wm.renaming_usenumerate == True:
+                        else # if wm.renaming_usenumerate == True
 
                             if wm.renaming_object_types == 'OBJECT':
                                 new_name = numerate_object_name(context, replaceName, bpy.data.objects, entity.name)
@@ -442,7 +455,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 new_name = numerate_object_name(context, replaceName, bpy.data.images, entity.name)
 
                             elif wm.renaming_object_types == 'DATA':
-                                new_name = numerate_object_name(context, replaceName, dataList, entity.name)
+                                new_name, dataList = numerate_object_name(context, replaceName, dataList, entity.name, return_type_list = True)
 
                             elif wm.renaming_object_types == 'BONE':
                                 new_name, boneList = numerate_object_name(context, replaceName, boneList, entity.name, return_type_list = True)
