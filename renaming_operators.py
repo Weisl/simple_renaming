@@ -448,7 +448,6 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
                                 elif wm.renaming_object_types == 'SHAPEKEYS':
                                     if newName in shapeKeyNamesList:
-                                        shapeKeyNamesList.append(newName)
                                         i = i + 1
                                     else:
                                         shapeKeyNamesList.append(newName)
