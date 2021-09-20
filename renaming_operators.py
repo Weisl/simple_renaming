@@ -24,7 +24,7 @@ def switchToEditMode(context):
     bpy.ops.object.mode_set(mode='EDIT')
 
 
-def numerate_object_name(context, new_name, typelist, active_entity_name):
+def numerate_object_name(context, new_name, typelist, active_entity_name, return_type_list = False):
 
     wm = context.scene
     digits = len(wm.renaming_numerate)
@@ -43,6 +43,10 @@ def numerate_object_name(context, new_name, typelist, active_entity_name):
         i += 1
         newName = new_name + separator + (
             '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
+
+    if return_type_list: # Manually add new name to custom generated list like all bones and all shape keys
+        typelist.append(new_name)
+        return newName, typelist
 
     return newName
 
@@ -441,7 +445,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 new_name = numerate_object_name(context, replaceName, dataList, entity.name)
 
                             elif wm.renaming_object_types == 'BONE':
-                                new_name = numerate_object_name(context, replaceName, boneList, entity.name)
+                                new_name, boneList = numerate_object_name(context, replaceName, boneList, entity.name, return_type_list = True)
 
                             elif wm.renaming_object_types == 'COLLECTION':
                                 new_name = numerate_object_name(context, replaceName, bpy.data.collections, entity.name)
@@ -450,7 +454,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 new_name = numerate_object_name(context, replaceName, bpy.data.actions, entity.name)
 
                             elif wm.renaming_object_types == 'SHAPEKEYS':
-                                new_name = numerate_object_name(context, replaceName, shapeKeyNamesList, entity.name)
+                                new_name, shapeKeyNamesList = numerate_object_name(context, replaceName, shapeKeyNamesList, entity.name, return_type_list = True)
 
                             entity.name = new_name
                             msg.addMessage(oldName, entity.name)
