@@ -363,11 +363,16 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                     shapeKeyNamesList.append(key.name)
 
         boneList = []
+        modeOld = context.mode
 
         if wm.renaming_object_types == 'BONE':
             for arm in bpy.data.armatures:
-                for bone in arm.bones:
-                    boneList.append(bone.name)
+                if modeOld == 'POSE':
+                    for bone in arm.bones:
+                        boneList.append(bone.name)
+                else:  # modeOld == 'EDIT':
+                    for bone in arm.edit_bones:
+                        boneList.append(bone.name)
 
         VariableReplacer.reset()
 
@@ -423,7 +428,6 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
                                 elif wm.renaming_object_types == 'BONE':
                                     if newName in boneList:
-                                        print(newName)
                                         i = i + 1
                                     else:
                                         boneList.append(newName)
