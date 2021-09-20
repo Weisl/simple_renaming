@@ -93,9 +93,14 @@ def getRenamingList(self, context, overrideSelection=False):
 
         else: # if onlySelection == False
             for arm in bpy.data.armatures:
-                for bone in arm.bones:
-                    renamingList.append(bone)
-
+                if modeOld == 'EDIT':
+                    for bone in arm.edit_bones:
+                        newBone = EditBone(bone)
+                        renamingList.append(newBone)
+                else: # modeOld == 'POSE' or modeOld == 'OBJECT'
+                    for bone in arm.bones:
+                        newBone = PoseBone(bone)
+                        renamingList.append(newBone)
 
 
     elif wm.renaming_object_types == 'COLLECTION':
