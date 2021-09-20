@@ -439,7 +439,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                         newName = replaceName
 
                         dataList = []
-
+                        
                         if wm.renaming_usenumerate == False:
                             entity.name = replaceName
                             msg.addMessage(oldName, entity.name)
