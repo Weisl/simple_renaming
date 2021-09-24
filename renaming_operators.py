@@ -24,6 +24,66 @@ def switchToEditMode(context):
     bpy.ops.object.mode_set(mode='EDIT')
 
 
+def numerate_object_name(context, name, typelist, active_entity_name, return_type_list = False):
+
+    wm = context.scene
+    digits = len(wm.renaming_numerate)
+
+    prefs = context.preferences.addons[__package__].preferences
+    separator = prefs.renaming_separator
+    startNum = prefs.numerate_start_number
+    step = prefs.numerate_step
+
+    i = startNum
+
+    newName = name + separator + (
+        '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
+
+    while newName in typelist and newName != active_entity_name:
+        i += 1
+        newName = name + separator + (
+            '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
+
+    if return_type_list: # Manually add new name to custom generated list like all bones and all shape keys
+        typelist.append(newName)
+        return newName, typelist
+
+    return newName
+
+def getAllBones(mode):
+    '''Get list of all bones depending of Edit or Pose Mode'''
+
+    boneList = []
+
+    for arm in bpy.data.armatures:
+        if mode == 'POSE':
+            for bone in arm.bones:
+                boneList.append(bone.name)
+        else:  # mode == 'EDIT':
+            for bone in arm.edit_bones:
+                boneList.append(bone.name)
+
+    return boneList
+
+def getAllShapeKeys():
+    '''get list of all shape keys'''
+    shapeKeyNamesList = []
+
+    for key_grp in bpy.data.shape_keys:
+        for key in key_grp.key_blocks:
+            shapeKeyNamesList.append(key.name)
+
+    return shapeKeyNamesList
+
+def getAllDataNames():
+    dataList = []
+
+    for obj in bpy.data.objects:
+        if obj.data is not None:
+            dataList.append(obj.data.name)
+
+    return dataList
+
 class VariableReplacer():
     addon_prefs = None
     entity = None
@@ -194,7 +254,6 @@ class VariableReplacer():
 
         return collectionNames
 
-
 # TODO Parent class that contains common functionality like setting up variables, getRenamingList and Error Handling
 
 class VIEW3D_OT_search_and_select(bpy.types.Operator):
@@ -248,7 +307,7 @@ class VIEW3D_OT_search_and_select(bpy.types.Operator):
                 obj.select_set(True)
 
         elif str(wm.renaming_object_types) == 'BONE':
-            print("SELECTION LIST: " + str(selectionList))
+            # print("SELECTION LIST: " + str(selectionList))
             if bpy.context.mode == 'POSE':
                 bpy.ops.pose.select_all(action='DESELECT')
                 for bone in selectionList:
@@ -257,7 +316,7 @@ class VIEW3D_OT_search_and_select(bpy.types.Operator):
             elif bpy.context.mode == 'EDIT_ARMATURE':
                 bpy.ops.armature.select_all(action='DESELECT')
                 for bone in selectionList:
-                    print("EDIT Bone: " + str(bone))
+                    # print("EDIT Bone: " + str(bone))
                     bone.select = True
                     bone.select_head = True
                     bone.select_tail = True
@@ -343,120 +402,81 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             callErrorPopup(context)
             return {'CANCELLED'}
 
-        digits = len(wm.renaming_numerate)
+        modeOld = context.mode
+
+        # settings for numerating the new name
+
         prefs = context.preferences.addons[__package__].preferences
         separator = prefs.renaming_separator
-
         startNum = prefs.numerate_start_number
         step = prefs.numerate_step
 
         msg = wm.renaming_messages
 
-        shapeKeyNamesList = []
+        # get list of all objects of certain type
         if wm.renaming_object_types == 'SHAPEKEYS':
-            for key_grp in bpy.data.shape_keys:
-                for key in key_grp.key_blocks:
-                    shapeKeyNamesList.append(key.name)
-            # for key in bpy.data.shape_keys[0].key_blocks:
-            #     shapeKeyNamesList.append(key.name)
+            shapeKeyNamesList = getAllShapeKeys()
+
+        if wm.renaming_object_types == 'BONE':
+            boneList = getAllBones(modeOld)
+
+        if wm.renaming_object_types == 'DATA':
+            dataList = getAllDataNames()
+
 
         VariableReplacer.reset()
-        if len(str(replaceName)) > 0:
-            if len(renamingList) > 0:
+
+        if len(str(replaceName)) > 0: # New name is not empty
+            if len(renamingList) > 0: # List of objects to rename is not empty
                 for entity in renamingList:
                     if entity is not None:
 
                         replaceName = VariableReplacer.replaceInputString(context, wm.renaming_newName, entity)
-                        # print ("Entity: " + entity.name + "         " + "replaced: " + replaceName)
 
                         i = 0
-
-                        if wm.renaming_object_types == 'COLLECTION' or wm.renaming_object_types == 'IMAGE':
-                            i = 0
 
                         oldName = entity.name
                         newName = replaceName
 
                         dataList = []
-                        boneList = []
+                        
+                        if wm.renaming_usenumerate == False:
+                            entity.name = replaceName
+                            msg.addMessage(oldName, entity.name)
 
-                        if wm.renaming_object_types == 'BONE':
-                            for arm in bpy.data.armatures:
-                                for bone in arm.bones:
-                                    boneList.append(bone.name)
+                        else: # if wm.renaming_usenumerate == True
 
-                        if wm.renaming_object_types == 'DATA':
-                            for obj in bpy.data.objects:
-                                if obj.data is not None:
-                                    dataList.append(obj.data.name)
+                            if wm.renaming_object_types == 'OBJECT':
+                                new_name = numerate_object_name(context, replaceName, bpy.data.objects, entity.name)
 
-                        if wm.renaming_usenumerate == True:
+                            elif wm.renaming_object_types == 'MATERIAL':
+                                new_name = numerate_object_name(context, replaceName, bpy.data.materials, entity.name)
 
-                            while True:
-                                newName = replaceName + separator + (
-                                    '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
+                            elif wm.renaming_object_types == 'IMAGE':
+                                new_name = numerate_object_name(context, replaceName, bpy.data.images, entity.name)
 
-                                if wm.renaming_object_types == 'OBJECT':
-                                    if newName in bpy.data.objects and newName != entity.name:
-                                        i = i + 1
-                                    else:
-                                        break
-                                elif wm.renaming_object_types == 'MATERIAL':
-                                    if newName in bpy.data.materials and newName != entity.name:
-                                        i = i + 1
-                                    else:
-                                        break
+                            elif wm.renaming_object_types == 'DATA':
+                                new_name, dataList = numerate_object_name(context, replaceName, dataList, entity.name, return_type_list = True)
 
-                                elif wm.renaming_object_types == 'IMAGE':
-                                    if newName in bpy.data.images and newName != entity.name:
-                                        i = i + 1
-                                    else:
-                                        break
-                                elif wm.renaming_object_types == 'DATA':
-                                    if newName in dataList and newName != entity.name:
-                                        i = i + 1
-                                    else:
-                                        break
+                            elif wm.renaming_object_types == 'BONE':
+                                new_name, boneList = numerate_object_name(context, replaceName, boneList, entity.name, return_type_list = True)
 
-                                elif wm.renaming_object_types == 'BONE':
-                                    if newName in boneList and newName != entity.name:
-                                        i = i + 1
-                                    else:
-                                        break
-                                elif wm.renaming_object_types == 'COLLECTION':
-                                    if newName in bpy.data.collections and newName != entity.name:
-                                        i = i + 1
-                                    else:
-                                        break
+                            elif wm.renaming_object_types == 'COLLECTION':
+                                new_name = numerate_object_name(context, replaceName, bpy.data.collections, entity.name)
 
-                                elif wm.renaming_object_types == 'ACTIONS':
-                                    if newName in bpy.data.actions and newName != entity.name:
-                                        i = i + 1
-                                    else:
-                                        break
+                            elif wm.renaming_object_types == 'ACTIONS':
+                                new_name = numerate_object_name(context, replaceName, bpy.data.actions, entity.name)
 
-                                elif wm.renaming_object_types == 'SHAPEKEYS':
-                                    # print (str(i) + "  " + str(shapeKeyNamesList))
-                                    if newName in shapeKeyNamesList:
-                                        # print('1')
-                                        shapeKeyNamesList.append(newName)
-                                        i = i + 1
-                                    else:
-                                        shapeKeyNamesList.append(newName)
-                                        break
-                                else:
-                                    break
+                            elif wm.renaming_object_types == 'SHAPEKEYS':
+                                new_name, shapeKeyNamesList = numerate_object_name(context, replaceName, shapeKeyNamesList, entity.name, return_type_list = True)
 
-                            newName = replaceName + separator + (
-                                '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
-                        entity.name = newName
-                        msg.addMessage(oldName, entity.name)
-                        i = i + 1
+                            entity.name = new_name
+                            msg.addMessage(oldName, entity.name)
 
         else:  # len(str(replaceName)) <= 0
             msg.addMessage(None, None, "Insert a valid string to replace names")
 
-        i = 0
+
 
         callRenamingPopup(context)
         if switchEditMode:
@@ -683,9 +703,9 @@ enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1)
                    ('LATTICE', "", "Rename lattice objects", 'OUTLINER_OB_LATTICE', 32),
                    ('CURVE', "", "Rename curve objects", 'OUTLINER_OB_CURVE', 64),
                    ('SURFACE', "", "Rename surface objects", 'OUTLINER_OB_SURFACE', 128),
-                   ('TEXT', "", "Rename text objects", 'OUTLINER_OB_FONT', 256),
+                   ('FONT', "", "Rename font objects", 'OUTLINER_OB_FONT', 256),
                    ('GPENCIL', "", "Rename greace pencil objects", 'OUTLINER_OB_GREASEPENCIL', 512),
-                   ('METABALL', "", "Rename metaball objects", 'OUTLINER_OB_META', 1024),
+                   ('META', "", "Rename metaball objects", 'OUTLINER_OB_META', 1024),
                    ('SPEAKER', "", "Rename empty speakers", 'OUTLINER_OB_SPEAKER', 2048),
                    ('LIGHT_PROBE', "", "Rename mesh lightpropes", 'OUTLINER_OB_LIGHTPROBE', 4096),
                    ('VOLUME', "", "Rename mesh volumes", 'OUTLINER_OB_VOLUME', 8192)
@@ -747,9 +767,9 @@ def register():
                                                            items=enumObjectTypes,
                                                            description="Which kind of object to rename",
                                                            options={'ENUM_FLAG'},
-                                                           default={'CURVE', 'LATTICE', 'SURFACE', 'METABALL', 'MESH',
+                                                           default={'CURVE', 'LATTICE', 'SURFACE','MESH',
                                                                     'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY', 'GPENCIL',
-                                                                    'TEXT', 'SPEAKER', 'LIGHT_PROBE', 'VOLUME'}
+                                                                    'FONT', 'SPEAKER', 'LIGHT_PROBE', 'VOLUME'}
                                                            )
 
     IDStore.renaming_newName = StringProperty(name="New Name", default='')
