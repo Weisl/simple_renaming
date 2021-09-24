@@ -459,7 +459,6 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 new_name, dataList = numerate_object_name(context, replaceName, dataList, entity.name, return_type_list = True)
 
                             elif wm.renaming_object_types == 'BONE':
-                                print(str(boneList))
                                 new_name, boneList = numerate_object_name(context, replaceName, boneList, entity.name, return_type_list = True)
 
                             elif wm.renaming_object_types == 'COLLECTION':
