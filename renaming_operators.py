@@ -37,7 +37,7 @@ def numerate_object_name(context, name, typelist, active_entity_name, return_typ
     i = startNum
 
     newName = name + separator + (
-        '{num:{fill}{width}}'.format(num=(i * step), fill='0', width=digits))
+        '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
 
     while newName in typelist and newName != active_entity_name:
         i += 1
