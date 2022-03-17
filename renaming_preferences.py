@@ -309,8 +309,6 @@ def register():
     for cls in classes:
         register_class(cls)
 
-    update_panel_category(None, bpy.context)
-
 def unregister():
     from bpy.utils import unregister_class
 

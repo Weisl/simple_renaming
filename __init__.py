@@ -90,6 +90,8 @@ def register():
     renaming_preferences.register()
     renaming_panels.register()
 
+    from.renaming_preferences import update_panel_category
+    update_panel_category(None, bpy.context)
 
     bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
 
