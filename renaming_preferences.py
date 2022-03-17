@@ -12,19 +12,24 @@ from .renaming_keymap import get_hotkey_entry_item
 
 def update_panel_category(self, context):
     is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_renaming_panel')
-    is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_type_suffix')
-
     if is_panel:
         try:
             bpy.utils.unregister_class(VIEW3D_PT_tools_renaming_panel)
-            bpy.utils.unregister_class(VIEW3D_PT_tools_type_suffix)
         except:
             pass
 
-    VIEW3D_PT_tools_renaming_panel.bl_category = self.renaming_category
-    VIEW3D_PT_tools_type_suffix.bl_category = self.renaming_category
+    is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_type_suffix')
+    VIEW3D_PT_tools_renaming_panel.bl_category = context.preferences.addons[__package__].preferences.renaming_category
     bpy.utils.register_class(VIEW3D_PT_tools_renaming_panel)
+
+    if is_panel:
+        try:
+            bpy.utils.unregister_class(VIEW3D_PT_tools_type_suffix)
+        except:
+            pass
+    VIEW3D_PT_tools_type_suffix.bl_category = context.preferences.addons[__package__].preferences.renaming_category
     bpy.utils.register_class(VIEW3D_PT_tools_type_suffix)
+    return
 
 
 def update_panel_category_vallidation(self, context):
@@ -36,7 +41,7 @@ def update_panel_category_vallidation(self, context):
         except:
             pass
 
-    VIEW3D_PT_vallidation.bl_category = self.vallidation_category
+    VIEW3D_PT_vallidation.bl_category = context.preferences.addons[__package__].preferences.vallidation_category
     bpy.utils.register_class(VIEW3D_PT_vallidation)
     return
 
@@ -63,7 +68,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     renaming_category: StringProperty(name="Category",
                                       description="Defines in which category of the tools panel the simple renaimg panel is listed",
-                                      default='Rename', update=update_panel_category)  # update = update_panel_position,
+                                      default='Rename', update=update_panel_category)
 
     renaming_separator: StringProperty(
         name="Separator",
@@ -304,6 +309,7 @@ def register():
     for cls in classes:
         register_class(cls)
 
+    update_panel_category(None, bpy.context)
 
 def unregister():
     from bpy.utils import unregister_class
