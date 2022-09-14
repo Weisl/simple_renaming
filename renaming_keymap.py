@@ -2,6 +2,7 @@ import bpy
 
 addon_keymaps = []
 
+
 def remove_hotkey():
     ''' clears addon keymap hotkeys stored in addon_keymaps '''
 
@@ -12,6 +13,7 @@ def remove_hotkey():
                 km.keymap_items.remove(kmi)
 
     addon_keymaps.clear()
+
 
 def add_hotkey(context=None):
     '''Add default hotkey konfiguration'''
@@ -52,6 +54,7 @@ def get_hotkey_entry_item(km, kmi_name, kmi_value=None):
 
     return None
 
+
 class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
     ''' Add hotkey entry '''
     bl_idname = "renaming.add_hotkey"
@@ -61,6 +64,7 @@ class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
     def execute(self, context):
         add_hotkey(context)
         return {'FINISHED'}
+
 
 classes = (
     RENAMING_OT_add_hotkey_renaming,
