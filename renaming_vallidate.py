@@ -18,7 +18,7 @@ class VIEW3D_OT_Validate(bpy.types.Operator):
         regex = prefs.regex_Mesh
 
         renamingList = []
-        renamingList, switchEditMode, errMsg = getRenamingList(self, context)
+        renamingList, switchEditMode, errMsg = getRenamingList(context)
 
         if len(renamingList) > 0:
             for entity in renamingList:

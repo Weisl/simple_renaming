@@ -8,26 +8,26 @@ def trimString(string, size):
     return ''.join(list2)
 
 
-def getRenamingList(self, context, overrideSelection=False):
-    wm = context.scene
+def getRenamingList(context, overrideSelection=False):
+    scene = context.scene
     renamingList = []
     switchEditMode = False
 
-    onlySelection = wm.renaming_only_selection
+    onlySelection = scene.renaming_only_selection
     if overrideSelection == True:
         onlySelection = False
 
-    if wm.renaming_object_types == 'OBJECT':
+    if scene.renaming_object_types == 'OBJECT':
         if onlySelection == True:
             for obj in context.selected_objects:
-                if obj.type in wm.renaming_object_types_specified:
+                if obj.type in scene.renaming_object_types_specified:
                     renamingList.append(obj)
         else:
             for obj in bpy.data.objects:
-                if obj.type in wm.renaming_object_types_specified:
+                if obj.type in scene.renaming_object_types_specified:
                     renamingList.append(obj)
 
-    elif wm.renaming_object_types == 'DATA':
+    elif scene.renaming_object_types == 'DATA':
         if onlySelection == True:
             for obj in context.selected_objects:
                 if obj.data not in renamingList:
@@ -37,7 +37,7 @@ def getRenamingList(self, context, overrideSelection=False):
                 if obj.data not in renamingList:
                     renamingList.append(obj.data)
 
-    elif wm.renaming_object_types == 'MATERIAL':
+    elif scene.renaming_object_types == 'MATERIAL':
         if onlySelection == True:
             for obj in context.selected_objects:
                 for mat in obj.material_slots:
@@ -46,10 +46,10 @@ def getRenamingList(self, context, overrideSelection=False):
         else:
             renamingList = list(bpy.data.materials)
 
-    elif wm.renaming_object_types == 'IMAGE':
+    elif scene.renaming_object_types == 'IMAGE':
         renamingList = list(bpy.data.images)
 
-    elif wm.renaming_object_types == 'BONE':
+    elif scene.renaming_object_types == 'BONE':
         modeOld = context.mode
 
         if onlySelection == True:
@@ -76,7 +76,7 @@ def getRenamingList(self, context, overrideSelection=False):
                 if obj.type == 'ARMATURE':
                     armatures.append(obj.data)
 
-            #TODO: Save armature for bones
+            # TODO: Save armature for bones
             for selected_bone in selectedBones:
                 for arm in armatures:
                     if modeOld == 'POSE':
@@ -91,39 +91,47 @@ def getRenamingList(self, context, overrideSelection=False):
                                 newBone = EditBone(selected_bone)
                                 renamingList.append(newBone)
 
-        else: # if onlySelection == False
+        else:  # if onlySelection == False
             for arm in bpy.data.armatures:
                 if modeOld == 'EDIT_ARMATURE':
                     for bone in arm.edit_bones:
                         newBone = EditBone(bone)
                         renamingList.append(newBone)
-                else: # modeOld == 'POSE' or modeOld == 'OBJECT'
+                else:  # modeOld == 'POSE' or modeOld == 'OBJECT'
                     for bone in arm.bones:
                         newBone = PoseBone(bone)
                         renamingList.append(newBone)
 
-    elif wm.renaming_object_types == 'COLLECTION':
+    elif scene.renaming_object_types == 'COLLECTION':
         renamingList = list(bpy.data.collections)
 
-    elif wm.renaming_object_types == 'SHAPEKEYS':
-        for key_grp in bpy.data.shape_keys:
-            for key in key_grp.key_blocks:
-                renamingList.append(key)
+    elif scene.renaming_object_types == 'SHAPEKEYS':
+        if onlySelection == True:
+            for obj in context.selected_objects:
+                for shape in obj.data.shape_keys.key_blocks:
+                    renamingList.append(shape)
+        else:  # onlySelection == False:
+            for key_grp in bpy.data.shape_keys:
+                for key in key_grp.key_blocks:
+                    renamingList.append(key)
 
-    # elif wm.renaming_object_types == 'VERTEXGROUP':
-    #     if onlySelection == True:
-    #         for obj in context.selected_objects:
-    #             for vtx in obj.vertex_groups:
-    #                 if vtx is not None and vtx.name != '':
-    #                     renamingList.append(obj.vertex_groups[vtx.name])
-    #     else:
-    #         for obj in bpy.data.objects:
-    #             for vtx in obj.vertex_groups:
-    #                 if vtx is not None and vtx.name != '':
-    #                     renamingList.append(obj.vertex_groups[vtx.name])
+    elif context.scene.renaming_object_types == 'VERTEXGROUPS':
+        print('ENTERED: VERTEXGROUP')
 
-    elif wm.renaming_object_types == 'ACTIONS':
+        if onlySelection == True:
+            for obj in context.selected_objects:
+                for vtx in obj.vertex_groups:
+                    renamingList.append(vtx)
+        else:
+            for obj in bpy.data.objects:
+                for vtx in obj.vertex_groups:
+                    renamingList.append(vtx)
+
+    elif scene.renaming_object_types == 'ACTIONS':
         renamingList = list(bpy.data.actions)
+
+    else:
+        print('ENTERED: ELSE')
 
     # renamingList.sort(key=lambda x: x.name, reverse=False)
     return renamingList, switchEditMode, None
@@ -146,74 +154,3 @@ def callInfoPopup(context):
 def callErrorPopup(context):
     bpy.ops.wm.call_panel(name="POPUP_PT_error")
     return
-
-
-windowVariables = []
-
-
-class MESSAGE():
-    message = []
-
-    @classmethod
-    def addMessage(cls):
-        return
-
-    @classmethod
-    def getMessages(cls):
-        return cls.message
-
-    @classmethod
-    def printAll(cls):
-        print("Print All " + str(list(cls.message)))
-        return
-
-    @classmethod
-    def clear(cls):
-        cls.message = []
-
-    @classmethod
-    def draw(cls, context):
-        return
-
-
-class INFO_MESSAGES(MESSAGE):
-
-    @classmethod
-    def addMessage(cls, assetName, message='', obType=False, obIcon=False):
-        dict = {'assetName': assetName, 'message': message, 'obType': obType, 'obIcon': obIcon}
-        cls.message.append(dict)
-        return
-
-
-class WarningError_MESSAGES(MESSAGE):
-
-    @classmethod
-    def addMessage(cls, message='', isError=False):
-        dict = {'message': message, 'isError': isError}
-        cls.message.append(dict)
-        return
-
-
-class RENAMING_MESSAGES(MESSAGE):
-    message = []
-
-    @classmethod
-    def addMessage(cls, oldName, newName=None, obType=False, obIcon=False, warning=False):
-        dict = {'oldName': oldName, 'newName': newName, 'obType': obType, 'obIcon': obIcon, 'warning': warning}
-        cls.message.append(dict)
-        return
-
-def register():
-    IDStore = bpy.types.Scene
-
-    IDStore.renaming_messages = RENAMING_MESSAGES()
-    IDStore.renaming_error_messages = WarningError_MESSAGES()
-    IDStore.renaming_info_messages = INFO_MESSAGES()
-
-
-def unregister():
-    IDStore = bpy.types.Scene
-    del IDStore.renaming_messages
-    del IDStore.renaming_error_messages
-    del IDStore.renaming_info_messages
-

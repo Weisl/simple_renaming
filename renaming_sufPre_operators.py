@@ -8,6 +8,7 @@ from bpy.props import (
 from .renaming_utilities import callRenamingPopup
 from .renaming_proFeatures import tChange
 
+
 class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
     """Add Type Suffix"""
     bl_idname = "renaming.add_sufpre_by_type"
