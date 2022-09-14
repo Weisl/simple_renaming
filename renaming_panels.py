@@ -5,25 +5,23 @@ from bpy.types import Operator, Menu
 
 from .renaming_proFeatures import RENAMING_MT_variableMenu
 
+types_of_selected = ('MATERIAL', 'DATA', 'VERTEXGROUPS', 'SHAPEKEYS')
+types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
 
-def drawAdvancedUI(self, context):
-    layout = self.layout
+
+def drawAdvancedUI(layout, context):
     scene = context.scene
 
     split = layout.split(align=True, factor=0.3)
     split.label(text="Target")
     split.prop(scene, "renaming_object_types", text="")
 
+    #### SELECTED ############
     if str(scene.renaming_object_types) == 'OBJECT':
         layout.prop(scene, "renaming_object_types_specified", expand=True)
-    # elif str(scene.renaming_object_types) == 'ADDOBJECTS':
-    #    layout.prop(scene, "renaming_object_addtypes_specified", expand=True)
-
-    # layout.use_property_split = True  # Activate single-column layout
-
-    if str(scene.renaming_object_types) in ('MATERIAL', 'DATA'):
+    if str(scene.renaming_object_types) in types_of_selected:
         layout.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
-    elif str(scene.renaming_object_types) in ('OBJECT', 'ADDOBJECTS', 'BONE'):
+    elif str(scene.renaming_object_types) in types_selected:
         layout.prop(scene, "renaming_only_selection", text="Only Selected")
 
     layout.label(text="Rename")
@@ -46,12 +44,16 @@ def drawAdvancedUI(self, context):
     layout.separator()
     layout.label(text="Search and Replace")
 
-    if scene.renaming_useRegex == False:
-        row = layout.row(align=True)
-        row.prop(scene, "renaming_useRegex")
-        row.prop(scene, "renaming_matchcase")
-    else:
-        layout.prop(scene, "renaming_useRegex")
+    split = layout.split(factor=0.5, align=True)
+    col_a = split.column(align=True)
+    col_b = split.column(align=True)
+
+    row = col_a.row(align=True)
+    row.prop(scene, "renaming_useRegex")
+
+    row = col_b.row(align=True)
+    row.enabled = not scene.renaming_useRegex
+    row.prop(scene, "renaming_matchcase")
 
     col = layout.column(align=True)
     split = col.split(factor=0.9, align=True)
@@ -77,6 +79,7 @@ def drawAdvancedUI(self, context):
     ###############################################
     layout.separator()
     layout.label(text="Add Prefix and Suffix")
+
     #### REFIX SUFFIX
     col = layout.column(align=True)
     split = col.split(factor=0.9, align=True)
@@ -128,7 +131,8 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     bl_category = "Rename"
 
     def draw(self, context):
-        drawAdvancedUI(self, context)
+        layout = self.layout
+        drawAdvancedUI(layout, context)
 
 
 # addon Panel
@@ -228,7 +232,7 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
         row.operator('renaming.add_sufpre_by_type', text="All").option = 'all'
 
 
-class VIEW3D_OT_SimpleOperator(bpy.types.Operator):
+class VIEW3D_OT_SetVariable(bpy.types.Operator):
     """Tooltip"""
     bl_idname = "object.renaming_set_variable"
     bl_label = "Simple Object Operator"
@@ -319,9 +323,8 @@ classes = (
     AddPresetRenamingPresets,
     VIEW3D_PT_tools_renaming_panel,
     VIEW3D_PT_tools_type_suffix,
-    VIEW3D_OT_SimpleOperator,
+    VIEW3D_OT_SetVariable,
     VIEW3D_OT_RenamingPopupOperator,
-    # LITTLE_RENAMING_HELPERS,
 )
 
 
@@ -331,6 +334,7 @@ def register():
     for cls in classes:
         register_class(cls)
 
+    bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
 
 def unregister():
     from bpy.utils import unregister_class
