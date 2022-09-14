@@ -72,6 +72,7 @@ from .renaming_utilities import RENAMING_MESSAGES, WarningError_MESSAGES, INFO_M
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
 
+
 def register():
     addon_updater_ops.register(bl_info)
 
@@ -83,14 +84,12 @@ def register():
     renaming_utilities.register()
     # renaming_vallidate.register()
 
-
-
     # keymap and preferences should be last
     renaming_keymap.register()
     renaming_preferences.register()
     renaming_panels.register()
 
-    from.renaming_preferences import update_panel_category
+    from .renaming_preferences import update_panel_category
     update_panel_category(None, bpy.context)
 
     bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
@@ -110,6 +109,7 @@ def unregister():
     renaming_proFeatures.unregister()
     renaming_popup.unregister()
     renaming_operators.unregister()
+
 
 if __name__ == "__main__":
     register()

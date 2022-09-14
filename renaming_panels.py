@@ -5,6 +5,7 @@ from bpy.types import Operator, Menu
 
 from .renaming_proFeatures import RENAMING_MT_variableMenu
 
+
 def drawAdvancedUI(self, context):
     layout = self.layout
     scene = context.scene
@@ -24,7 +25,6 @@ def drawAdvancedUI(self, context):
         layout.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
     elif str(scene.renaming_object_types) in ('OBJECT', 'ADDOBJECTS', 'BONE'):
         layout.prop(scene, "renaming_only_selection", text="Only Selected")
-
 
     layout.label(text="Rename")
 
@@ -102,7 +102,6 @@ def drawAdvancedUI(self, context):
     row.prop(scene, "renaming_cut_size", text="")
 
     if str(scene.renaming_object_types) in ('DATA', 'OBJECT', 'ADDOBJECTS'):
-
         layout.label(text="Data Name")
 
         col = layout.column(align=True)
@@ -130,7 +129,6 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
     def draw(self, context):
         drawAdvancedUI(self, context)
-
 
 
 # addon Panel

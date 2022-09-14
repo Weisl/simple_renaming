@@ -10,6 +10,7 @@ from .renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_typ
 from .renaming_vallidate import VIEW3D_PT_vallidation
 from .renaming_keymap import get_hotkey_entry_item
 
+
 def update_panel_category(self, context):
     is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_renaming_panel')
     if is_panel:
@@ -278,8 +279,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                     col.label(text="No hotkey entry found")
                     col.operator("renaming.add_hotkey", text="Add hotkey entry", icon='ADD')
 
-
-
         if self.prefs_tabs == 'validate':
             box = layout.box()
             row = box.row()
@@ -308,6 +307,7 @@ def register():
 
     for cls in classes:
         register_class(cls)
+
 
 def unregister():
     from bpy.utils import unregister_class
