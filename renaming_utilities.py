@@ -1,4 +1,5 @@
 import bpy
+from bpy.app.handlers import persistent
 from bpy.types import PoseBone, EditBone
 
 
@@ -19,7 +20,9 @@ def getRenamingList(context, overrideSelection=False):
 
     if scene.renaming_object_types == 'OBJECT':
         if onlySelection == True:
-            for obj in context.selected_objects:
+            ordered_selection = get_ordered_selection_objects()
+            print('Ordered objects: ' + str(ordered_selection))
+            for obj in ordered_selection:
                 if obj.type in scene.renaming_object_types_specified:
                     renamingList.append(obj)
         else:
@@ -154,3 +157,58 @@ def callInfoPopup(context):
 def callErrorPopup(context):
     bpy.ops.wm.call_panel(name="POPUP_PT_error")
     return
+
+
+def get_ordered_selection_objects():
+    tagged_objects = []
+    for o in bpy.data.objects:
+        order_index = o.get("selection_order", -1)
+        if order_index >= 0:
+            tagged_objects.append((order_index, o))
+    tagged_objects = sorted(tagged_objects, key=lambda item: item[0])
+    return [o for i, o in tagged_objects]
+
+def clear_order_flag(obj):
+    try:
+        del obj["selection_order"]
+    except KeyError:
+        pass
+
+def update_selection_order():
+    if not bpy.context.selected_objects:
+        for o in bpy.data.objects:
+            clear_order_flag(o)
+        return
+    selection_order = get_ordered_selection_objects()
+    idx = 0
+    for o in selection_order:
+        if not o.select_get():
+            selection_order.remove(o)
+            clear_order_flag(o)
+        else:
+            o["selection_order"] = idx
+            idx += 1
+    for o in bpy.context.selected_objects:
+        if o not in selection_order:
+            o["selection_order"] = len(selection_order)
+            selection_order.append(o)
+
+# persistent is needed for handler to work in addons https://docs.blender.org/api/current/bpy.app.handlers.html
+@persistent
+def PostChange(scene):
+    if bpy.context.mode != "OBJECT":
+        return
+    is_selection_update = any(
+        not u.is_updated_geometry
+        and not u.is_updated_transform
+        and not u.is_updated_shading
+        for u in bpy.context.view_layer.depsgraph.updates
+    )
+    if is_selection_update:
+        update_selection_order()
+
+def register():
+    bpy.app.handlers.depsgraph_update_post.append(PostChange)
+
+def unregister():
+    bpy.app.handlers.depsgraph_update_post.remove(PostChange)

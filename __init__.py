@@ -85,6 +85,7 @@ def register():
     renaming_sufPre_operators.register()
     renaming_vallidate.register()
     info_messages.register()
+    renaming_utilities.register()
 
     # keymap and preferences should be last
     renaming_keymap.register()
@@ -103,6 +104,7 @@ def unregister():
     renaming_panels.unregister()
     renaming_keymap.unregister()
 
+    renaming_utilities.unregister()
     info_messages.unregister()
     renaming_vallidate.unregister()
     renaming_sufPre_operators.unregister()
