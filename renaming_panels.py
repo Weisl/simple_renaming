@@ -5,8 +5,11 @@ from bpy.types import Operator, Menu
 
 from .renaming_proFeatures import RENAMING_MT_variableMenu
 
-types_of_selected = ('MATERIAL', 'DATA', 'VERTEXGROUPS', 'SHAPEKEYS')
+# Selected objects are renamed direclty
 types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
+
+# Components of the selected objects are renamed
+types_of_selected = ('MATERIAL', 'DATA', 'VERTEXGROUPS', 'SHAPEKEYS', 'FACEMAPS', 'UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES')
 
 
 def drawAdvancedUI(layout, context):
@@ -335,6 +338,7 @@ def register():
         register_class(cls)
 
     bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
+
 
 def unregister():
     from bpy.utils import unregister_class
