@@ -70,7 +70,6 @@ from .renaming_proFeatures import tChange
 from .info_messages import RENAMING_MESSAGES, WarningError_MESSAGES, INFO_MESSAGES
 
 
-
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
 

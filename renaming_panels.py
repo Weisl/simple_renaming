@@ -9,7 +9,8 @@ from .renaming_proFeatures import RENAMING_MT_variableMenu
 types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
 
 # Components of the selected objects are renamed
-types_of_selected = ('MATERIAL', 'DATA', 'VERTEXGROUPS', 'SHAPEKEYS', 'FACEMAPS', 'UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES')
+types_of_selected = (
+'MATERIAL', 'DATA', 'VERTEXGROUPS', 'SHAPEKEYS', 'FACEMAPS', 'UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES')
 
 
 def drawAdvancedUI(layout, context):
@@ -137,7 +138,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     def draw_header(self, context):
         layout = self.layout
         row = layout.row(align=True)
-        row.operator("wm.url_open", text="",icon='HELP').url = "https://weisl.github.io/renaming/"
+        row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/renaming/"
 
     def draw(self, context):
         layout = self.layout

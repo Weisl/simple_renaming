@@ -202,11 +202,13 @@ def get_ordered_selection_objects():
     tagged_objects = sorted(tagged_objects, key=lambda item: item[0])
     return [o for i, o in tagged_objects]
 
+
 def clear_order_flag(obj):
     try:
         del obj["selection_order"]
     except KeyError:
         pass
+
 
 def update_selection_order():
     if not bpy.context.selected_objects:
@@ -227,6 +229,7 @@ def update_selection_order():
             o["selection_order"] = len(selection_order)
             selection_order.append(o)
 
+
 # persistent is needed for handler to work in addons https://docs.blender.org/api/current/bpy.app.handlers.html
 @persistent
 def PostChange(scene):
@@ -241,8 +244,10 @@ def PostChange(scene):
     if is_selection_update:
         update_selection_order()
 
+
 def register():
     bpy.app.handlers.depsgraph_update_post.append(PostChange)
+
 
 def unregister():
     bpy.app.handlers.depsgraph_update_post.remove(PostChange)
