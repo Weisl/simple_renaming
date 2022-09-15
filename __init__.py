@@ -75,7 +75,7 @@ def menu_add_suffix(self, context):
 
 
 def register():
-    addon_updater_ops.register(bl_info)
+
 
     # call the register function of the sub modules
     renaming_operators.register()
@@ -91,11 +91,17 @@ def register():
     renaming_preferences.register()
     renaming_panels.register()
 
+    # Addon updater code and configurations.
+    # In case of a broken version, try to register the updater first so that
+    # users can revert back to a working version.
+    addon_updater_ops.register(bl_info)
+
     from .renaming_preferences import update_panel_category
     update_panel_category(None, bpy.context)
 
 
 def unregister():
+    # Addon updater unregister.
     addon_updater_ops.unregister()
 
     # keymap and preferences should be last
