@@ -10,6 +10,7 @@ from .renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_typ
 from .renaming_vallidate import VIEW3D_PT_vallidation
 from .renaming_keymap import get_hotkey_entry_item
 
+
 def update_panel_category(self, context):
     is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_renaming_panel')
     if is_panel:
@@ -61,10 +62,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     # when defining this in a submodule of a python package.
     bl_idname = __package__  ### __package__ works on multifile and __name__ not
 
-    # prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps"),
-    #                                ('validate', "Validate (experimental)", "Validate (experimental)")), default='ui')
-
-    prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps")), default='ui')
+    prefs_tabs: EnumProperty(items=(('ui', "General", "General Settings"),
+                                    ('keymaps', "Keymaps", "Keymaps"),
+                                    # ('validate', "Validate", "Validate (experimental)")
+                                    ),
+                             default='ui')
 
     renaming_category: StringProperty(name="Category",
                                       description="Defines in which category of the tools panel the simple renaimg panel is listed",
@@ -74,12 +76,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         name="Separator",
         description="Defines the separator between different operations",
         default='_',
-    )
-
-    renamingPanel_advancedMode: bpy.props.BoolProperty(
-        name="Advanced UI",
-        description="Enable or Disable Advanced Mode",
-        default=True,
     )
 
     renamingPanel_showPopup: bpy.props.BoolProperty(
@@ -181,39 +177,59 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     )
 
     # addon updater preferences
-
     auto_check_update: bpy.props.BoolProperty(
         name="Auto-check for Update",
         description="If enabled, auto-check for updates using an interval",
-        default=False,
-    )
-    updater_intrval_months: bpy.props.IntProperty(
+        default=False)
+
+    updater_interval_months: bpy.props.IntProperty(
         name='Months',
         description="Number of months between checking for updates",
         default=0,
-        min=0
-    )
-    updater_intrval_days: bpy.props.IntProperty(
+        min=0)
+
+    updater_interval_days: bpy.props.IntProperty(
         name='Days',
         description="Number of days between checking for updates",
         default=7,
         min=0,
-        max=31
-    )
-    updater_intrval_hours: bpy.props.IntProperty(
+        max=31)
+
+    updater_interval_hours: bpy.props.IntProperty(
         name='Hours',
         description="Number of hours between checking for updates",
         default=0,
         min=0,
-        max=23
-    )
-    updater_intrval_minutes: bpy.props.IntProperty(
+        max=23)
+
+    updater_interval_minutes: bpy.props.IntProperty(
         name='Minutes',
         description="Number of minutes between checking for updates",
         default=0,
         min=0,
-        max=59
-    )
+        max=59)
+
+    props_general = [
+        "renaming_category",
+        "renamingPanel_showPopup",
+    ]
+    props_naming = [
+        "renaming_separator",
+        "numerate_digits",
+    ]
+    props_numerate = [
+        "numerate_start_number",
+        "numerate_step",
+    ]
+
+    props_user_variables = [
+        "renaming_stringLow",
+        "renaming_stringHigh",
+        "renaming_stringCage",
+        "renaming_user1",
+        "renaming_user2",
+        "renaming_user3"
+    ]
 
     def draw(self, context):
         '''
@@ -226,35 +242,36 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         row.prop(self, "prefs_tabs", expand=True)
 
         if self.prefs_tabs == 'ui':
-            row = layout.row()
-            row.prop(self, "renaming_category", expand=True)
-            row = layout.row()
-            row.prop(self, "renamingPanel_showPopup")
-            row = layout.row()
-            row.prop(self, "renamingPanel_advancedMode")
-
-            row = layout.row()
-            row.prop(self, "renaming_separator")
-            row = layout.row()
-            row.prop(self, "numerate_start_number")
-            row = layout.row()
-            row.prop(self, "numerate_digits")
-            row = layout.row()
-            row.prop(self, "numerate_step")
+            for propName in self.props_general:
+                row = layout.row()
+                row.prop(self, propName)
 
             box = layout.box()
             row = box.row()
-            row.prop(self, "renaming_stringLow")
+            row.label(text='Naming')
+            for propName in self.props_naming:
+                row = box.row()
+                row.prop(self, propName)
+
+            box = layout.box()
             row = box.row()
-            row.prop(self, "renaming_stringHigh")
+            row.label(text='Numerate')
+            for propName in self.props_numerate:
+                row = box.row()
+                row.prop(self, propName)
+
+            box = layout.box()
             row = box.row()
-            row.prop(self, "renaming_stringCage")
-            row = box.row()
-            row.prop(self, "renaming_user1")
-            row = box.row()
-            row.prop(self, "renaming_user2")
-            row = box.row()
-            row.prop(self, "renaming_user3")
+            row.label(text='User Variables')
+            for propName in self.props_user_variables:
+                row = box.row()
+                row.prop(self, propName)
+
+            # Works best if a column, or even just self.layout.
+            mainrow = layout.row()
+            col = mainrow.column()
+            # Updater draw function, could also pass in col as third arg.
+            addon_updater_ops.update_settings_ui(self, context)
 
         if self.prefs_tabs == 'keymaps':
             box = layout.box()
@@ -278,8 +295,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                     col.label(text="No hotkey entry found")
                     col.operator("renaming.add_hotkey", text="Add hotkey entry", icon='ADD')
 
-
-
         if self.prefs_tabs == 'validate':
             box = layout.box()
             row = box.row()
@@ -295,8 +310,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = box.row()
             row.prop(self, "genericMaterialRegex", expand=True)
 
-        addon_updater_ops.update_settings_ui(self, context)
-
 
 classes = (
     VIEW3D_OT_renaming_preferences,
@@ -308,6 +321,7 @@ def register():
 
     for cls in classes:
         register_class(cls)
+
 
 def unregister():
     from bpy.utils import unregister_class
