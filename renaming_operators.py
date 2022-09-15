@@ -641,10 +641,10 @@ prefixSuffixItems = [('PRE', "Prefix", "prefix"),
                      ]
 
 renamingEntitiesItems = [('OBJECT', "Object", "Scene Objects"),
-                         ('MATERIAL', "Material", "Materials"),
-                         ('IMAGE', "Image Textures", "Image Textures"),
                          ('DATA', "Data", "Object Data"),
+                         ('MATERIAL', "Material", "Materials"),
                          ('BONE', "Bone", "Bones"),
+                         ('IMAGE', "Image Textures", "Image Textures"),
                          ('COLLECTION', "Collection", "Rename collections"),
                          ('ACTIONS', "Actions", "Rename Actions"),
                          ('SHAPEKEYS', "Shape Keys", "Rename shape keys"),

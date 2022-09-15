@@ -15,9 +15,10 @@ types_of_selected = ('MATERIAL', 'DATA', 'VERTEXGROUPS', 'SHAPEKEYS', 'FACEMAPS'
 def drawAdvancedUI(layout, context):
     scene = context.scene
 
-    split = layout.split(align=True, factor=0.3)
-    split.label(text="Target")
-    split.prop(scene, "renaming_object_types", text="")
+    row = layout.row(align=True)
+    row.label(text="Target")
+    row = layout.row(align=True)
+    row.prop(scene, "renaming_object_types", text="")
 
     #### SELECTED ############
     if str(scene.renaming_object_types) == 'OBJECT':
