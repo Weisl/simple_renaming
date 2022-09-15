@@ -52,6 +52,8 @@ def tChange(self, context):
             nameVar = "@a"
         if nameingPreset == "COLLECTION":
             nameVar = "@c"
+        if nameingPreset == "DATA":
+            nameVar = "@m"
 
     context.scene.renaming_newName += str(nameVar)
 
@@ -83,6 +85,7 @@ class RENAMING_MT_variableMenu(bpy.types.Menu):
         if wm.renaming_object_types == 'OBJECT':
             layout.separator()
             layout.operator("object.renaming_inuptvariables", text="PARENT").nameingPreset = "PARENT"
+            layout.operator("object.renaming_inuptvariables", text="DATA").nameingPreset = "DATA"
             layout.operator("object.renaming_inuptvariables", text="ACTIVE").nameingPreset = "ACTIVE"
             layout.operator("object.renaming_inuptvariables", text='FILE').nameingPreset = 'OBJECT'
             layout.operator("object.renaming_inuptvariables", text="TYPE").nameingPreset = "TYPE"
@@ -132,6 +135,8 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
             nameVar = "@t"
         if nameingPreset == "PARENT":
             nameVar = "@p"
+        if nameingPreset == "DATA":
+            nameVar = "@m"
         if nameingPreset == "NUMBER":
             nameVar = "@n"
         if nameingPreset == "RANDOM":

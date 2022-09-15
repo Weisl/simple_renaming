@@ -128,10 +128,15 @@ def panel_func(self, context):
 
 class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     """Creates a renaming Panel"""
-    bl_label = "Simple Renaming Panel"
+    bl_label = "Simple Rename"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Rename"
+
+    def draw_header(self, context):
+        layout = self.layout
+        row = layout.row(align=True)
+        row.operator("wm.url_open", text="",icon='HELP').url = "https://weisl.github.io/renaming/"
 
     def draw(self, context):
         layout = self.layout

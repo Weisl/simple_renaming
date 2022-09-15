@@ -355,6 +355,7 @@ enumPresetItems = [('FILE', "File", "", '', 1),
                    ('USER2', "User2", "", '', 256),
                    ('USER3', "User3", "", '', 512),
                    ('NUMBER', "Number", "", '', 1024),
+                   ('DATA', "Data", "", '', 2048),
                    ]
 
 enumObjectTypesExt = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1),
