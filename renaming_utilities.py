@@ -116,8 +116,6 @@ def getRenamingList(context, overrideSelection=False):
                     renamingList.append(key)
 
     elif context.scene.renaming_object_types == 'VERTEXGROUPS':
-        print('ENTERED: VERTEXGROUP')
-
         if onlySelection == True:
             for obj in context.selected_objects:
                 for vtx in obj.vertex_groups:
@@ -126,6 +124,42 @@ def getRenamingList(context, overrideSelection=False):
             for obj in bpy.data.objects:
                 for vtx in obj.vertex_groups:
                     renamingList.append(vtx)
+
+    elif context.scene.renaming_object_types == 'UVMAPS':
+        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
+
+        for obj in obj_list:
+            if obj.type != 'MESH':
+                continue
+            for uv in obj.data.uv_layers:
+                renamingList.append(uv)
+
+    elif context.scene.renaming_object_types == 'FACEMAPS':
+        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
+
+        for obj in obj_list:
+            if obj.type != 'MESH':
+                continue
+            for face_map in obj.face_maps:
+                renamingList.append(face_map)
+
+    elif context.scene.renaming_object_types == 'COLORATTRIBUTES':
+        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
+
+        for obj in obj_list:
+            if obj.type != 'MESH':
+                continue
+            for color_attribute in obj.data.color_attributes:
+                renamingList.append(color_attribute)
+
+    elif context.scene.renaming_object_types == 'ATTRIBUTES':
+        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
+
+        for obj in obj_list:
+            if obj.type != 'MESH':
+                continue
+            for attribute in obj.data.attributes:
+                renamingList.append(attribute)
 
     elif scene.renaming_object_types == 'ACTIONS':
         renamingList = list(bpy.data.actions)

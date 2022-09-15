@@ -82,6 +82,50 @@ def getAllVertexGroups():
     return vtrxGrpNamesList
 
 
+def getAllUvMaps():
+    uvNamesList = []
+    for obj in bpy.data.objects:
+        if obj.type != 'MESH':
+            continue
+        for uv in obj.data.uv_layers:
+            uvNamesList.append(uv)
+    return uvNamesList
+
+
+def getAllFacemaps():
+    facemapNamesList = []
+    for obj in bpy.data.objects:
+        if obj.type != 'MESH':
+            continue
+        for face_map in obj.face_maps:
+            facemapNamesList.append(face_map)
+    return facemapNamesList
+
+
+def getAllColorAttributes():
+    colorAttributesList = []
+
+    for obj in bpy.data.objects:
+        if obj.type != 'MESH':
+            continue
+        for color_attribute in obj.data.color_attributes:
+            colorAttributesList.append(color_attribute)
+
+    return colorAttributesList
+
+
+def getAllAttributes():
+    attributesList = []
+
+    for obj in bpy.data.objects:
+        if obj.type != 'MESH':
+            continue
+        for color_attribute in obj.data.color_attributes:
+            attributesList.append(color_attribute)
+
+    return attributesList
+
+
 def getAllDataNames():
     '''get list of all data'''
     dataList = []
@@ -101,6 +145,7 @@ class VIEW3D_OT_naming(bpy.types.Operator):
 
     def execute(self, context):
         VariableReplacer.reset()
+
 
 class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
     bl_idname = "renaming.search_select"
@@ -261,14 +306,18 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
         if context.scene.renaming_object_types == 'VERTEXGROUPS':
             vertexGroupNameList = getAllVertexGroups()
-
-        # get list of all objects of certain type
+        if context.scene.renaming_object_types == 'FACEMAPS':
+            facemapsList = getAllFacemaps()
+        if context.scene.renaming_object_types == 'UVMAPS':
+            uvmapsList = getAllUvMaps()
+        if context.scene.renaming_object_types == 'COLORATTRIBUTES':
+            colorAttributeList = getAllColorAttributes()
+        if context.scene.renaming_object_types == 'ATTRIBUTES':
+            attributeList = getAllAttributes()
         if scene.renaming_object_types == 'SHAPEKEYS':
             shapeKeyNamesList = getAllShapeKeys()
-
         if scene.renaming_object_types == 'BONE':
             boneList = getAllBones(modeOld)
-
         if scene.renaming_object_types == 'DATA':
             dataList = getAllDataNames()
 
@@ -326,6 +375,25 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                                                                      vertexGroupNameList, entity.name,
                                                                                      return_type_list=True)
 
+
+                            elif context.scene.renaming_object_types == 'FACEMAPS':
+                                new_name, facemapsList = numerate_entity_name(context, replaceName,
+                                                                              facemapsList, entity.name,
+                                                                              return_type_list=True)
+
+                            elif context.scene.renaming_object_types == 'UVMAPS':
+                                new_name, uvmapsList = numerate_entity_name(context, replaceName,
+                                                                            uvmapsList, entity.name,
+                                                                            return_type_list=True)
+
+                            elif context.scene.renaming_object_types == 'ATTRIBUTES':
+                                new_name, attributeList = numerate_entity_name(context, replaceName,
+                                                                               attributeList, entity.name,
+                                                                               return_type_list=True)
+                            elif context.scene.renaming_object_types == 'COLORATTRIBUTES':
+                                new_name, colorAttributeList = numerate_entity_name(context, replaceName,
+                                                                                    colorAttributeList, entity.name,
+                                                                                    return_type_list=True)
                             entity.name = new_name
                             msg.addMessage(oldName, entity.name)
 
@@ -581,10 +649,10 @@ renamingEntitiesItems = [('OBJECT', "Object", "Scene Objects"),
                          ('ACTIONS', "Actions", "Rename Actions"),
                          ('SHAPEKEYS', "Shape Keys", "Rename shape keys"),
                          ('VERTEXGROUPS', "Vertex Groups", "Rename vertex groups"),
-                         # ('ADDOBJECTS', "Objects (additional)","Scene Objects"),
-                         # ('UVMaps')
-                         # ('FACEMAPS')
-                         # ('PARTICLESYSTEM')
+                         ('UVMAPS', "UV Maps", "Rename vertex groups"),
+                         ('FACEMAPS', "Facemaps", "Rename vertex groups"),
+                         ('COLORATTRIBUTES', "Color Attributes", "Rename color attributes"),
+                         ('ATTRIBUTES', "Attributes", "Rename attributes"),
                          ]
 
 classes = (
