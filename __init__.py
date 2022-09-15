@@ -75,6 +75,8 @@ def menu_add_suffix(self, context):
 
 
 def register():
+
+
     # call the register function of the sub modules
     renaming_operators.register()
     renaming_popup.register()

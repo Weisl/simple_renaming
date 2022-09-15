@@ -37,7 +37,6 @@ except Exception as e:
     print(str(e))
     traceback.print_exc()
 
-
     class SingletonUpdaterNone(object):
         """Fake, bare minimum fields and functions for the updater object."""
 
@@ -65,7 +64,6 @@ except Exception as e:
         def check_for_update(self, now):
             pass
 
-
     updater = SingletonUpdaterNone()
     updater.error = "Error initializing updater module"
     updater.error_msg = str(e)
@@ -74,7 +72,7 @@ except Exception as e:
 # not match and have errors. Must be all lowercase and no spaces! Should also
 # be unique among any other addons that could exist (using this updater code),
 # to avoid clashes in operator registration.
-updater.addon = "rename_addon_updater_1"
+updater.addon = "simple_renaming_panel_updater"
 
 
 # -----------------------------------------------------------------------------
@@ -256,11 +254,12 @@ class AddonUpdaterCheckNow(bpy.types.Operator):
                     __package__))
             return {'CANCELLED'}
 
-        updater.set_check_interval(enabled=settings.auto_check_update,
-                                   months=settings.updater_interval_months,
-                                   days=settings.updater_interval_days,
-                                   hours=settings.updater_interval_hours,
-                                   minutes=settings.updater_interval_minutes)
+        updater.set_check_interval(
+            enabled=settings.auto_check_update,
+            months=settings.updater_interval_months,
+            days=settings.updater_interval_days,
+            hours=settings.updater_interval_hours,
+            minutes=settings.updater_interval_minutes)
 
         # Input is an optional callback function. This function should take a
         # bool input. If true: update ready, if false: no update ready.
@@ -1460,7 +1459,8 @@ def register(bl_info):
     # Populate if using "include_branches" option above.
     # Note: updater.include_branch_list defaults to ['master'] branch if set to
     # none. Example targeting another multiple branches allowed to pull from:
-    updater.include_branch_list = ['master', 'develop']  # None is the equivalent = ['master']
+    updater.include_branch_list = ['master', 'develop']
+    # updater.include_branch_list = None  # None is the equivalent = ['master']
 
     # Only allow manual install, thus prompting the user to open
     # the addon's web page to download, specifically: updater.website
