@@ -62,10 +62,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     # when defining this in a submodule of a python package.
     bl_idname = __package__  ### __package__ works on multifile and __name__ not
 
-    # prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps"),
-    #                                ('validate', "Validate (experimental)", "Validate (experimental)")), default='ui')
-
-    prefs_tabs: EnumProperty(items=(('ui', "UI", "UI"), ('keymaps', "Keymaps", "Keymaps")), default='ui')
+    prefs_tabs: EnumProperty(items=(('ui', "General", "General Settings"),
+                                    ('keymaps', "Keymaps", "Keymaps"),
+                                    # ('validate', "Validate", "Validate (experimental)")
+                                    ),
+                             default='ui')
 
     renaming_category: StringProperty(name="Category",
                                       description="Defines in which category of the tools panel the simple renaimg panel is listed",
@@ -75,12 +76,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         name="Separator",
         description="Defines the separator between different operations",
         default='_',
-    )
-
-    renamingPanel_advancedMode: bpy.props.BoolProperty(
-        name="Advanced UI",
-        description="Enable or Disable Advanced Mode",
-        default=True,
     )
 
     renamingPanel_showPopup: bpy.props.BoolProperty(
@@ -216,6 +211,28 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         max=59
     )
 
+    props_general = [
+        "renaming_category",
+        "renamingPanel_showPopup",
+    ]
+    props_naming = [
+        "renaming_separator",
+        "numerate_digits",
+    ]
+    props_numerate = [
+        "numerate_start_number",
+        "numerate_step",
+    ]
+
+    props_user_variables = [
+        "renaming_stringLow",
+        "renaming_stringHigh",
+        "renaming_stringCage",
+        "renaming_user1",
+        "renaming_user2",
+        "renaming_user3"
+    ]
+
     def draw(self, context):
         '''
         simple preference UI to define custom inputs and user preferences
@@ -227,35 +244,32 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         row.prop(self, "prefs_tabs", expand=True)
 
         if self.prefs_tabs == 'ui':
-            row = layout.row()
-            row.prop(self, "renaming_category", expand=True)
-            row = layout.row()
-            row.prop(self, "renamingPanel_showPopup")
-            row = layout.row()
-            row.prop(self, "renamingPanel_advancedMode")
-
-            row = layout.row()
-            row.prop(self, "renaming_separator")
-            row = layout.row()
-            row.prop(self, "numerate_start_number")
-            row = layout.row()
-            row.prop(self, "numerate_digits")
-            row = layout.row()
-            row.prop(self, "numerate_step")
+            for propName in self.props_general:
+                row = layout.row()
+                row.prop(self, propName)
 
             box = layout.box()
             row = box.row()
-            row.prop(self, "renaming_stringLow")
+            row.label(text='Naming')
+            for propName in self.props_naming:
+                row = box.row()
+                row.prop(self, propName)
+
+            box = layout.box()
             row = box.row()
-            row.prop(self, "renaming_stringHigh")
+            row.label(text='Numerate')
+            for propName in self.props_numerate:
+                row = box.row()
+                row.prop(self, propName)
+
+            box = layout.box()
             row = box.row()
-            row.prop(self, "renaming_stringCage")
-            row = box.row()
-            row.prop(self, "renaming_user1")
-            row = box.row()
-            row.prop(self, "renaming_user2")
-            row = box.row()
-            row.prop(self, "renaming_user3")
+            row.label(text='User Variables')
+            for propName in self.props_user_variables:
+                row = box.row()
+                row.prop(self, propName)
+
+            addon_updater_ops.update_settings_ui(self, context)
 
         if self.prefs_tabs == 'keymaps':
             box = layout.box()
@@ -293,8 +307,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row.prop(self, "materialRegex", expand=True)
             row = box.row()
             row.prop(self, "genericMaterialRegex", expand=True)
-
-        addon_updater_ops.update_settings_ui(self, context)
 
 
 classes = (

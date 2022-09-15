@@ -64,6 +64,7 @@ class VariableReplacer():
             inputText = re.sub(r'@o', cls.getObject(context, entity), inputText)  # object
             inputText = re.sub(r'@t', cls.getType(context, entity), inputText)  # type
             inputText = re.sub(r'@p', cls.getParent(context, entity), inputText)  # parent
+            inputText = re.sub(r'@m', cls.getData(context, entity), inputText)  # data
             inputText = re.sub(r'@c', cls.getCollection(context, entity), inputText)  # collection
 
         ###### IMAGES ###########
@@ -174,7 +175,14 @@ class VariableReplacer():
             return str(entity.parent.name)
         else:
             return entity.name
-        # return "Parent"
+
+    @classmethod
+    def getData(cls, context, entity):
+        # TODO: Error Case
+        if entity.data is not None:
+            return str(entity.data.name)
+        else:
+            return entity.name
 
     @classmethod
     def getCollection(cls, context, entity):

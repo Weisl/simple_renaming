@@ -699,9 +699,6 @@ def register():
 
     IDStore.renaming_only_selection = BoolProperty(name="Selected Objects", description="Rename Selected Objects",
                                                    default=True)
-    IDStore.renamingPanel_advancedMode = BoolProperty(name="Advanced Renaming",
-                                                      description="Enable additional feautres for renaming",
-                                                      default=False)
 
     IDStore.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
     IDStore.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
