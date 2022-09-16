@@ -10,7 +10,7 @@ types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
 
 # Components of the selected objects are renamed
 types_of_selected = (
-'MATERIAL', 'DATA', 'VERTEXGROUPS', 'SHAPEKEYS', 'FACEMAPS', 'UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES')
+    'MATERIAL', 'DATA', 'VERTEXGROUPS', 'SHAPEKEYS', 'FACEMAPS', 'UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES')
 
 
 def drawAdvancedUI(layout, context):
