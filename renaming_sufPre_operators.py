@@ -34,7 +34,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
         switchSufPre = wm.renaming_sufpre_type  # either use pre of suffix
 
-        if preSuf is not '':
+        if preSuf != '':
             for ent in objList:
                 if hasattr(ent, 'name'):
                     oldName = ent.name
@@ -88,7 +88,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         if wm.type_pre_sub_only_selection:
             for obj in context.selected_objects:
                 for mat in obj.material_slots:
-                    if mat is not None and mat.name != '':
+                    if mat != None and mat.name != '':
                         objList.append(bpy.data.materials[mat.name])
         else:
             objList = list(bpy.data.materials)

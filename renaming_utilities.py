@@ -21,7 +21,6 @@ def getRenamingList(context, overrideSelection=False):
     if scene.renaming_object_types == 'OBJECT':
         if onlySelection == True:
             ordered_selection = get_ordered_selection_objects()
-            print('Ordered objects: ' + str(ordered_selection))
             for obj in ordered_selection:
                 if obj.type in scene.renaming_object_types_specified:
                     renamingList.append(obj)
@@ -110,7 +109,6 @@ def getRenamingList(context, overrideSelection=False):
             selected_collections = [c for c in context.selected_ids if c.bl_rna.identifier == "Collection"]
             for col in selected_collections:
                 renamingList.append(col)
-                print(col.name)
         else:
             renamingList = list(bpy.data.collections)
 
@@ -172,9 +170,6 @@ def getRenamingList(context, overrideSelection=False):
 
     elif scene.renaming_object_types == 'ACTIONS':
         renamingList = list(bpy.data.actions)
-
-    else:
-        print('ENTERED: ELSE')
 
     # renamingList.sort(key=lambda x: x.name, reverse=False)
     return renamingList, switchEditMode, None

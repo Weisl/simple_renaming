@@ -22,8 +22,8 @@ class VIEW3D_OT_Validate(bpy.types.Operator):
 
         if len(renamingList) > 0:
             for entity in renamingList:
-                if entity is not None:
-                    if regex is not '':
+                if entity != None:
+                    if regex != '':
                         match = bool(re.compile(regex).match(entity.name))
 
                         if match:

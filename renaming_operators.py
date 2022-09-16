@@ -131,7 +131,7 @@ def getAllDataNames():
     dataList = []
 
     for obj in bpy.data.objects:
-        if obj.data is not None:
+        if obj.data != None:
             dataList.append(obj.data.name)
 
     return dataList
@@ -145,6 +145,7 @@ class VIEW3D_OT_naming(bpy.types.Operator):
 
     def execute(self, context):
         VariableReplacer.reset()
+        return
 
 
 class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
@@ -154,7 +155,7 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
     bl_options = {'REGISTER', 'UNDO'}
 
     def invoke(self, context, event):
-        super().invoke(context, event)
+        return super().invoke(context, event)
 
     def execute(self, context):
         super().execute(context)
@@ -166,7 +167,7 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
         # renamingList, switchEditMode = getRenamingList(context, overrideSelection = True)
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg is not None:
+        if errMsg != None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -177,7 +178,7 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
 
         if len(renamingList) > 0:
             for entity in renamingList:  # iterate over all objects that are to be renamed
-                if entity is not None and searchName is not '':
+                if entity != None and searchName != '':
                     entityName = entity.name
                     searchReplaced = VariableReplacer.replaceInputString(context, searchName, entity)
 
@@ -232,7 +233,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
         # get list of objects to be renamed
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg is not None:
+        if errMsg != None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -248,8 +249,8 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
 
         if len(renamingList) > 0:
             for entity in renamingList:  # iterate over all objects that are to be renamed
-                if entity is not None:
-                    if searchName is not '':
+                if entity != None:
+                    if searchName != '':
                         oldName = entity.name
                         searchReplaced = VariableReplacer.replaceInputString(context, wm.renaming_search, entity)
                         replaceReplaced = VariableReplacer.replaceInputString(context, wm.renaming_replace, entity)
@@ -288,7 +289,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         replaceName = scene.renaming_newName
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg is not None:
+        if errMsg != None:
             errorMsg = scene.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -323,10 +324,10 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
         VariableReplacer.reset()
 
-        if len(str(replaceName)) > 0:  # New name is not empty
-            if len(renamingList) > 0:  # List of objects to rename is not empty
+        if len(str(replaceName)) > 0:  # New name != empty
+            if len(renamingList) > 0:  # List of objects to rename != empty
                 for entity in renamingList:
-                    if entity is not None:
+                    if entity != None:
 
                         replaceName = VariableReplacer.replaceInputString(context, scene.renaming_newName, entity)
 
@@ -417,7 +418,7 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
         renamingList = []
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg is not None:
+        if errMsg != None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -427,7 +428,7 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
 
         if len(renamingList) > 0:
             for entity in renamingList:
-                if entity is not None:
+                if entity != None:
                     oldName = entity.name
                     newName = trimString(entity.name, wm.renaming_cut_size)
                     entity.name = newName
@@ -454,7 +455,7 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         renamingList = []
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg is not None:
+        if errMsg != None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -465,9 +466,9 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         VariableReplacer.reset()
         if len(renamingList) > 0:
             for entity in renamingList:
-                if entity is not None:
+                if entity != None:
                     suffix = VariableReplacer.replaceInputString(context, wm.renaming_suffix, entity)
-                    if entity.name.endswith(suffix) is not True:
+                    if entity.name.endswith(suffix) != True:
                         oldName = entity.name
                         newName = entity.name + suffix
                         entity.name = newName
@@ -495,7 +496,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
         renamingList = []
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg is not None:
+        if errMsg != None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -505,9 +506,9 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
 
         if len(renamingList) > 0:
             for entity in renamingList:
-                if entity is not None:
+                if entity != None:
                     pre = VariableReplacer.replaceInputString(context, wm.renaming_prefix, entity)
-                    if entity.name.startswith(pre) is not True:
+                    if entity.name.startswith(pre) != True:
                         oldName = entity.name
                         newName = pre + entity.name
                         entity.name = newName
@@ -543,7 +544,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         renamingList = []
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg is not None:
+        if errMsg != None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -552,7 +553,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         if len(renamingList) > 0:
             i = 0
             for entity in renamingList:
-                if entity is not None:
+                if entity != None:
                     oldName = entity.name
                     newName = entity.name + separator + (
                         '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
@@ -581,7 +582,7 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
 
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg is not None:
+        if errMsg != None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -593,8 +594,8 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
             for obj in context.selected_objects:
 
                 objName = obj.name + suffix_data
-                # if suffix_data is not '':
-                if hasattr(obj, 'data') and obj.data is not None:
+                # if suffix_data != '':
+                if hasattr(obj, 'data') and obj.data != None:
                     oldName = obj.data.name
                     newName = objName
                     obj.data.name = newName
@@ -602,9 +603,9 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         else:
             for obj in bpy.data.objects:
                 objName = obj.name + suffix_data
-                # if suffix_data is not '':
+                # if suffix_data != '':
                 # if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
-                if hasattr(obj, 'data') and obj.data is not None:
+                if hasattr(obj, 'data') and obj.data != None:
                     oldName = obj.data.name
                     newName = objName
                     obj.data.name = newName
