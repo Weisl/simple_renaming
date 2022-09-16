@@ -106,7 +106,13 @@ def getRenamingList(context, overrideSelection=False):
                         renamingList.append(newBone)
 
     elif scene.renaming_object_types == 'COLLECTION':
-        renamingList = list(bpy.data.collections)
+        if bpy.context.space_data.type == 'OUTLINER' and onlySelection == True:
+            selected_collections = [c for c in context.selected_ids if c.bl_rna.identifier == "Collection"]
+            for col in selected_collections:
+                renamingList.append(col)
+                print(col.name)
+        else:
+            renamingList = list(bpy.data.collections)
 
     elif scene.renaming_object_types == 'SHAPEKEYS':
         if onlySelection == True:

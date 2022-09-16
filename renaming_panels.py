@@ -28,6 +28,14 @@ def drawAdvancedUI(layout, context):
         layout.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
     elif str(scene.renaming_object_types) in types_selected:
         layout.prop(scene, "renaming_only_selection", text="Only Selected")
+    elif str(scene.renaming_object_types) == 'COLLECTION':
+        if bpy.context.space_data.type == 'OUTLINER':
+            row = layout.row(align=True)
+            row.prop(scene, "renaming_only_selection", text="Only Selected")
+        else:
+            row = layout.row(align=True)
+            row.enabled = False
+            row.prop(scene, "renaming_only_selection", text="Only Selected")
 
     layout.label(text="Rename")
 

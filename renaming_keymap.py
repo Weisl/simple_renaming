@@ -36,6 +36,11 @@ def add_hotkey(context=None):
         kmi.active = True
         addon_keymaps.append((km, kmi))
 
+        km = wm.keyconfigs.addon.keymaps.new(name='Outliner', space_type='OUTLINER')
+        kmi = km.keymap_items.new(idname='wm.call_panel', type='F2', value='PRESS', ctrl=True)
+        kmi.properties.name = 'VIEW3D_PT_tools_renaming_panel'
+        kmi.active = True
+        addon_keymaps.append((km, kmi))
 
 def get_hotkey_entry_item(km, kmi_name, kmi_value=None):
     ''' returns hotkey of specific type, with specific properties.name (keymap is not a dict, so referencing by keys is not enough
