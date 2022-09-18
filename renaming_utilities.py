@@ -169,7 +169,19 @@ def getRenamingList(context, overrideSelection=False):
                 renamingList.append(attribute)
 
     elif scene.renaming_object_types == 'ACTIONS':
-        renamingList = list(bpy.data.actions)
+        if onlySelection == True:
+            obj_list = context.selected_objects.copy()
+            for obj in obj_list:
+                ad = obj.animation_data
+                if ad:
+                    if ad.action:
+                        renamingList.append(obj.animation_data.action)
+                        for t in ad.nla_tracks:
+                            for s in t.strips:
+                                renamingList.append(s.action)
+
+        else:
+            renamingList = list(bpy.data.actions)
 
     # renamingList.sort(key=lambda x: x.name, reverse=False)
     return renamingList, switchEditMode, None
