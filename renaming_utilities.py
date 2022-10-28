@@ -132,6 +132,16 @@ def getRenamingList(context, overrideSelection=False):
                 for vtx in obj.vertex_groups:
                     renamingList.append(vtx)
 
+    elif context.scene.renaming_object_types == 'PARTICLES':
+        if onlySelection == True:
+            for obj in context.selected_objects:
+                for particles in obj.particle_systems:
+                    renamingList.append(particles)
+        else:
+            for obj in bpy.data.objects:
+                for particles in obj.particle_systems:
+                    renamingList.append(particles)
+
     elif context.scene.renaming_object_types == 'UVMAPS':
         obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 

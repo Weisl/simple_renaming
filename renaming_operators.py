@@ -82,6 +82,16 @@ def getAllVertexGroups():
     return vtrxGrpNamesList
 
 
+def getAllParticleNames():
+    '''get list of all particle systems'''
+    particlesNamesList = []
+
+    for obj in bpy.data.objects:
+        for particle_system in obj.particle_systems:
+            particlesNamesList.append(particle_system.name)
+    return particlesNamesList
+
+
 def getAllUvMaps():
     uvNamesList = []
     for obj in bpy.data.objects:
@@ -307,6 +317,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
         if context.scene.renaming_object_types == 'VERTEXGROUPS':
             vertexGroupNameList = getAllVertexGroups()
+        if scene.renaming_object_types == 'PARTICLES':
+            particleList = getAllParticleNames()
         if context.scene.renaming_object_types == 'FACEMAPS':
             facemapsList = getAllFacemaps()
         if context.scene.renaming_object_types == 'UVMAPS':
@@ -376,6 +388,10 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                                                                      vertexGroupNameList, entity.name,
                                                                                      return_type_list=True)
 
+                            elif context.scene.renaming_object_types == 'PARTICLES':
+                                new_name, particleList = numerate_entity_name(context, replaceName,
+                                                                                     particleList, entity.name,
+                                                                                     return_type_list=True)
 
                             elif context.scene.renaming_object_types == 'FACEMAPS':
                                 new_name, facemapsList = numerate_entity_name(context, replaceName,
@@ -650,6 +666,7 @@ renamingEntitiesItems = [('OBJECT', "Object", "Scene Objects"),
                          ('ACTIONS', "Actions", "Rename Actions"),
                          ('SHAPEKEYS', "Shape Keys", "Rename shape keys"),
                          ('VERTEXGROUPS', "Vertex Groups", "Rename vertex groups"),
+                         ('PARTICLES', "Particle Systems", "Rename particle systems"),
                          ('UVMAPS', "UV Maps", "Rename vertex groups"),
                          ('FACEMAPS', "Facemaps", "Rename vertex groups"),
                          ('COLORATTRIBUTES', "Color Attributes", "Rename color attributes"),
