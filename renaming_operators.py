@@ -60,6 +60,17 @@ def getAllBones(mode):
     return boneList
 
 
+def getAllModifiers():
+    '''get list of all modifiers'''
+    modifierList = []
+
+    for obj in bpy.data.objects:
+        for mod in obj.modifiers:
+            modifierList.append(mod.name)
+
+    return modifierList
+
+
 def getAllShapeKeys():
     '''get list of all shape keys'''
     shapeKeyNamesList = []
@@ -91,6 +102,13 @@ def getAllParticleNames():
             particlesNamesList.append(particle_system.name)
     return particlesNamesList
 
+def getAllParticleSettingsNames():
+    '''get list of all particle settings'''
+    particlesNamesList = []
+    for par in bpy.data.particles:
+        particlesNamesList.append(par.name)
+        
+    return particlesNamesList
 
 def getAllUvMaps():
     uvNamesList = []
@@ -317,8 +335,10 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
         if context.scene.renaming_object_types == 'VERTEXGROUPS':
             vertexGroupNameList = getAllVertexGroups()
-        if scene.renaming_object_types == 'PARTICLES':
+        if scene.renaming_object_types == 'PARTICLESYSTEM':
             particleList = getAllParticleNames()
+        if scene.renaming_object_types == 'PARTICLESETTINGS':
+            particleSettingsList = getAllParticleSettingsNames()
         if context.scene.renaming_object_types == 'FACEMAPS':
             facemapsList = getAllFacemaps()
         if context.scene.renaming_object_types == 'UVMAPS':
@@ -329,6 +349,9 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             attributeList = getAllAttributes()
         if scene.renaming_object_types == 'SHAPEKEYS':
             shapeKeyNamesList = getAllShapeKeys()
+        if scene.renaming_object_types == 'MODIFIERS':
+            modifierNamesList = getAllModifiers()
+
         if scene.renaming_object_types == 'BONE':
             boneList = getAllBones(modeOld)
         if scene.renaming_object_types == 'DATA':
@@ -383,15 +406,25 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 new_name, shapeKeyNamesList = numerate_entity_name(context, replaceName,
                                                                                    shapeKeyNamesList, entity.name,
                                                                                    return_type_list=True)
+                            elif scene.renaming_object_types == 'MODIFIERS':
+                                new_name, modifierNamesList = numerate_entity_name(context, replaceName,
+                                                                                   modifierNamesList, entity.name,
+                                                                                   return_type_list=True)
                             elif context.scene.renaming_object_types == 'VERTEXGROUPS':
                                 new_name, vertexGroupNameList = numerate_entity_name(context, replaceName,
                                                                                      vertexGroupNameList, entity.name,
                                                                                      return_type_list=True)
 
-                            elif context.scene.renaming_object_types == 'PARTICLES':
+                            elif context.scene.renaming_object_types == 'PARTICLESYSTEM':
                                 new_name, particleList = numerate_entity_name(context, replaceName,
-                                                                                     particleList, entity.name,
-                                                                                     return_type_list=True)
+                                                                              particleList, entity.name,
+                                                                              return_type_list=True)
+
+                            elif context.scene.renaming_object_types == 'PARTICLESETTINGS':
+                                new_name, particleSettingsList = numerate_entity_name(context, replaceName,
+                                                                              particleSettingsList, entity.name,
+                                                                              return_type_list=True)
+
 
                             elif context.scene.renaming_object_types == 'FACEMAPS':
                                 new_name, facemapsList = numerate_entity_name(context, replaceName,
@@ -664,9 +697,11 @@ renamingEntitiesItems = [('OBJECT', "Object", "Scene Objects"),
                          ('IMAGE', "Image Textures", "Image Textures"),
                          ('COLLECTION', "Collection", "Rename collections"),
                          ('ACTIONS', "Actions", "Rename Actions"),
+                         ('MODIFIERS', "Modifiers", "Rename Modifiers"),
                          ('SHAPEKEYS', "Shape Keys", "Rename shape keys"),
                          ('VERTEXGROUPS', "Vertex Groups", "Rename vertex groups"),
-                         ('PARTICLES', "Particle Systems", "Rename particle systems"),
+                         ('PARTICLESYSTEM', "Particle Systems", "Rename particle systems"),
+                         ('PARTICLESETTINGS', "Particle Settings", "Rename particle settings"),
                          ('UVMAPS', "UV Maps", "Rename vertex groups"),
                          ('FACEMAPS', "Facemaps", "Rename vertex groups"),
                          ('COLORATTRIBUTES', "Color Attributes", "Rename color attributes"),
