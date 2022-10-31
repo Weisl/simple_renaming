@@ -104,7 +104,11 @@ def getAllParticleNames():
 
 def getAllParticleSettingsNames():
     '''get list of all particle settings'''
-    return bpy.data.particles
+    particlesNamesList = []
+    for par in bpy.data.particles:
+        particlesNamesList.append(par.name)
+        
+    return particlesNamesList
 
 def getAllUvMaps():
     uvNamesList = []
