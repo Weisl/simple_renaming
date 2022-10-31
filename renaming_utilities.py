@@ -122,6 +122,16 @@ def getRenamingList(context, overrideSelection=False):
                 for key in key_grp.key_blocks:
                     renamingList.append(key)
 
+    elif scene.renaming_object_types == 'MODIFIERS':
+        if onlySelection == True:
+            for obj in context.selected_objects:
+                for mod in obj.modifiers:
+                    renamingList.append(mod)
+        else:  # onlySelection == False:
+            for obj in bpy.data.objects:
+                for mod in obj.modifiers:
+                    renamingList.append(mod)
+
     elif context.scene.renaming_object_types == 'VERTEXGROUPS':
         if onlySelection == True:
             for obj in context.selected_objects:
@@ -132,7 +142,7 @@ def getRenamingList(context, overrideSelection=False):
                 for vtx in obj.vertex_groups:
                     renamingList.append(vtx)
 
-    elif context.scene.renaming_object_types == 'PARTICLES':
+    elif context.scene.renaming_object_types == 'PARTICLESYSTEM':
         if onlySelection == True:
             for obj in context.selected_objects:
                 for particles in obj.particle_systems:
