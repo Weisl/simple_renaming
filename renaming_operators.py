@@ -102,6 +102,9 @@ def getAllParticleNames():
             particlesNamesList.append(particle_system.name)
     return particlesNamesList
 
+def getAllParticleSettingsNames():
+    '''get list of all particle settings'''
+    return bpy.data.particles
 
 def getAllUvMaps():
     uvNamesList = []
@@ -330,6 +333,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             vertexGroupNameList = getAllVertexGroups()
         if scene.renaming_object_types == 'PARTICLESYSTEM':
             particleList = getAllParticleNames()
+        if scene.renaming_object_types == 'PARTICLESETTINGS':
+            particleSettingsList = getAllParticleSettingsNames()
         if context.scene.renaming_object_types == 'FACEMAPS':
             facemapsList = getAllFacemaps()
         if context.scene.renaming_object_types == 'UVMAPS':
@@ -410,6 +415,12 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 new_name, particleList = numerate_entity_name(context, replaceName,
                                                                               particleList, entity.name,
                                                                               return_type_list=True)
+
+                            elif context.scene.renaming_object_types == 'PARTICLESETTINGS':
+                                new_name, particleSettingsList = numerate_entity_name(context, replaceName,
+                                                                              particleSettingsList, entity.name,
+                                                                              return_type_list=True)
+
 
                             elif context.scene.renaming_object_types == 'FACEMAPS':
                                 new_name, facemapsList = numerate_entity_name(context, replaceName,
@@ -686,7 +697,7 @@ renamingEntitiesItems = [('OBJECT', "Object", "Scene Objects"),
                          ('SHAPEKEYS', "Shape Keys", "Rename shape keys"),
                          ('VERTEXGROUPS', "Vertex Groups", "Rename vertex groups"),
                          ('PARTICLESYSTEM', "Particle Systems", "Rename particle systems"),
-                         # ('PARTICLESETTINGS', "Particle Settings", "Rename particle settings"),
+                         ('PARTICLESETTINGS', "Particle Settings", "Rename particle settings"),
                          ('UVMAPS', "UV Maps", "Rename vertex groups"),
                          ('FACEMAPS', "Facemaps", "Rename vertex groups"),
                          ('COLORATTRIBUTES', "Color Attributes", "Rename color attributes"),

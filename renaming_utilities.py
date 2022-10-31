@@ -152,6 +152,10 @@ def getRenamingList(context, overrideSelection=False):
                 for particles in obj.particle_systems:
                     renamingList.append(particles)
 
+    elif context.scene.renaming_object_types == 'PARTICLESETTINGS':
+        for particles in bpy.data.particles:
+            renamingList.append(particles)
+
     elif context.scene.renaming_object_types == 'UVMAPS':
         obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 
