@@ -20,7 +20,7 @@ def add_hotkey(context=None):
     if not context:
         context = bpy.context
 
-    wm = bpy.context.window_manager
+    wm = context.window_manager
     kc = wm.keyconfigs.addon
 
     if kc:
