@@ -1,5 +1,4 @@
 import bpy
-import rna_keymap_ui
 from bpy.props import (
     EnumProperty,
     StringProperty,
@@ -274,8 +273,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             addon_updater_ops.update_settings_ui(self, context)
 
         if self.prefs_tabs == 'keymaps':
-            
-            wm = bpy.context.window_manager
             draw_keymap_items(wm, layout)
 
         if self.prefs_tabs == 'validate':
