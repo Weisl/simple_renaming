@@ -49,7 +49,7 @@ def get_hotkey_entry_item(kc, km, kmi_name, kmi_value, col):
                 return
 
         col.label(text = "No hotkey entry found for {}".format(kmi_value))
-        col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, icon='ZOOMIN')
+        col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, icon='ADD')
 
     # for operators
     else:
@@ -59,7 +59,7 @@ def get_hotkey_entry_item(kc, km, kmi_name, kmi_value, col):
                     [], kc, km, km.keymap_items[kmi_name], col, 0)
         else:
             col.label(text = "No hotkey entry found for {}".format(kmi_name))
-            col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, icon='ZOOMIN')
+            col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, icon='ADD')
 
 
 def remove_hotkey():
