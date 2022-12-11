@@ -2,29 +2,27 @@ import bpy
 import rna_keymap_ui
 
 # kmi_name, kmi_value, km_name, space_type, region_type
-# eventType, eventValue, ctrl, shift, alt 
-keymaps_items_dict = {"Renaming Popup":['wm.call_panel', 'VIEW3D_PT_tools_renaming_panel', '3D View '
-                                      'Generic', 'VIEW_3D', 'WINDOW',
-                                      'F2', 'PRESS', True, False, False
-                                      ],
+# eventType, eventValue, ctrl, shift, alt
+keymaps_items_dict = {"Renaming Popup": ['wm.call_panel', 'VIEW3D_PT_tools_renaming_panel', '3D View Generic', 'VIEW_3D', 'WINDOW',
+                                         'F2', 'PRESS', True, False, False
+                                         ],
 
-                      "Suffix/Prefix Popup":['wm.call_panel', 'VIEW3D_PT_tools_type_suffix', '3D View '
-                                      'Generic', 'VIEW_3D', 'WINDOW',
-                                      'F2', 'PRESS', True, True, False
-                                      ],
+                      "Suffix/Prefix Popup": ['wm.call_panel', 'VIEW3D_PT_tools_type_suffix', '3D View Generic', 'VIEW_3D', 'WINDOW',
+                                              'F2', 'PRESS', True, True, False
+                                              ],
 
-                     "Renaming Popup Outliner":['wm.call_panel', 'VIEW3D_PT_tools_renaming_panel',
-                                      'Outliner', 'OUTLINER', 'WINDOW',
-                                       'F2', 'PRESS', True, False, False
-                                      ]
-                     }
-
+                      "Renaming Popup Outliner": ['wm.call_panel', 'VIEW3D_PT_tools_renaming_panel',
+                                                  'Outliner', 'OUTLINER', 'WINDOW',
+                                                  'F2', 'PRESS', True, False, False
+                                                  ]
+                      }
 
 
 # -----------------------------------------------------------------------------
 #    Keymap
 # -----------------------------------------------------------------------------
 addon_keymaps = []
+
 
 def draw_keymap_items(wm, layout):
     kc = wm.keyconfigs.user
@@ -48,7 +46,7 @@ def get_hotkey_entry_item(kc, km, kmi_name, kmi_value, col):
                 rna_keymap_ui.draw_kmi([], kc, km, km_item, col, 0)
                 return
 
-        col.label(text = "No hotkey entry found for {}".format(kmi_value))
+        col.label(text="No hotkey entry found for {}".format(kmi_value))
         col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, icon='ADD')
 
     # for operators
@@ -56,9 +54,9 @@ def get_hotkey_entry_item(kc, km, kmi_name, kmi_value, col):
         if km.keymap_items.get(kmi_name):
             col.context_pointer_set('keymap', km)
             rna_keymap_ui.draw_kmi(
-                    [], kc, km, km.keymap_items[kmi_name], col, 0)
+                [], kc, km, km.keymap_items[kmi_name], col, 0)
         else:
-            col.label(text = "No hotkey entry found for {}".format(kmi_name))
+            col.label(text="No hotkey entry found for {}".format(kmi_name))
             col.operator(RENAMING_OT_add_hotkey_renaming.bl_idname, icon='ADD')
 
 
@@ -68,10 +66,11 @@ def remove_hotkey():
     # only works for menues and pie menus
     for km, kmi in addon_keymaps:
         if hasattr(kmi.properties, 'name'):
-            if kmi.properties.name in ['VIEW3D_PT_tools_renaming_panel', 'VIEW3D_PT_tools_type_suffix','VIEW3D_PT_tools_renaming_panel']:
+            if kmi.properties.name in ['VIEW3D_PT_tools_renaming_panel', 'VIEW3D_PT_tools_type_suffix', 'VIEW3D_PT_tools_renaming_panel']:
                 km.keymap_items.remove(kmi)
 
     addon_keymaps.clear()
+
 
 def add_hotkey(context=None):
     '''Add default hotkey konfiguration'''
@@ -79,19 +78,19 @@ def add_hotkey(context=None):
         context = bpy.context
 
     kc = context.window_manager.keyconfigs.addon
-    
+
     if not kc:
         return
-    
+
     for items in keymaps_items_dict.values():
         kmi_name, kmi_value, km_name, space_type, region_type = items[:5]
         eventType, eventValue, ctrl, shift, alt = items[5:]
-        km = kc.keymaps.new(name = km_name, space_type = space_type,
+        km = kc.keymaps.new(name=km_name, space_type=space_type,
                             region_type=region_type)
 
         kmi = km.keymap_items.new(kmi_name, eventType,
-                                  eventValue, ctrl = ctrl, shift = shift,
-                                  alt = alt
+                                  eventValue, ctrl=ctrl, shift=shift,
+                                  alt=alt
 
                                   )
         if kmi_value:
@@ -110,17 +109,17 @@ class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
 
     def execute(self, context):
         add_hotkey(context)
-        
+
         self.report({'INFO'},
-            "Hotkey added in User Preferences -> Input -> Screen -> Screen (Global)")
-        
+                    "Hotkey added in User Preferences -> Input -> Screen -> Screen (Global)")
+
         return {'FINISHED'}
 
 
 classes = (
     RENAMING_OT_add_hotkey_renaming,
 )
-  
+
 
 def register():
     from bpy.utils import register_class
