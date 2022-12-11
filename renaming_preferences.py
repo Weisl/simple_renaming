@@ -277,29 +277,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             
             wm = bpy.context.window_manager
             draw_keymap_items(wm, layout)
-            # box = layout.box()
-            # col = box.column()
-
-            # wm = context.window_manager
-            # kc = wm.keyconfigs.addon
-            # km = kc.keymaps['3D View']
-
-            # kmis = []
-            # # Menus and Pies
-            # kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel'))
-            # kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_type_suffix'))
-
-            # km = kc.keymaps['Outliner']
-            # kmis.append(get_hotkey_entry_item(km, 'wm.call_panel', 'VIEW3D_PT_tools_renaming_panel'))
-
-            # for kmi in kmis:
-            #     if kmi:
-            #         col.context_pointer_set("keymap", km)
-            #         rna_keymap_ui.draw_kmi([], kc, km, kmi, col, 0)
-
-            #     else:
-            #         col.label(text="No hotkey entry found")
-            #         col.operator("renaming.add_hotkey", text="Add hotkey entry", icon='ADD')
 
         if self.prefs_tabs == 'validate':
             box = layout.box()
