@@ -28,11 +28,12 @@ def numerate_entity_name(context, basename, typelist, active_entity_name, return
     startNum = prefs.numerate_start_number
     step = prefs.numerate_step
 
-    i = startNum
 
+    i = 0
     newName = basename + separator + (
-        '{num:{fill}{width}}'.format(num=(i * step), fill='0', width=digits))
+        '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
 
+    i = 1
     while newName in typelist and newName != active_entity_name:
         newName = basename + separator + (
             '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
