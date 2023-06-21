@@ -1,8 +1,5 @@
 import bpy
 
-# keys = []
-
-
 def add_keymap():
     km = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name="Window")
     prefs = bpy.context.preferences.addons[__package__.split('.')[
@@ -46,15 +43,6 @@ def remove_keymap():
 
     for kmi in km.keymap_items:
         if hasattr(kmi.properties, 'name') and kmi.properties.name in ['COLLISION_MT_pie_menu', 'VIEW3D_PT_collision_visibility_panel', 'VIEW3D_PT_collision_material_panel']:
-            km.keymap_items.remove(kmi)
-
-
-def remove_key(context, idname, properties_name):
-    wm = bpy.context.window_manager
-    km = wm.keyconfigs.addon.keymaps["Window"]
-
-    for kmi in km.keymap_items:
-        if kmi.idname == idname and kmi.properties.name == properties_name:
             km.keymap_items.remove(kmi)
 
 
