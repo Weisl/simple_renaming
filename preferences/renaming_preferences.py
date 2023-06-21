@@ -4,9 +4,8 @@ from bpy.props import (
     StringProperty,
 )
 
-from . import addon_updater_ops
-from .renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
-from .renaming_vallidate import VIEW3D_PT_vallidation
+from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
+from ..vallidation.renaming_vallidate import VIEW3D_PT_vallidation
 from .renaming_keymap import draw_keymap_items
 
 
@@ -175,39 +174,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         default="SOCKET_",
     )
 
-    # addon updater preferences
-    auto_check_update: bpy.props.BoolProperty(
-        name="Auto-check for Update",
-        description="If enabled, auto-check for updates using an interval",
-        default=False)
-
-    updater_interval_months: bpy.props.IntProperty(
-        name='Months',
-        description="Number of months between checking for updates",
-        default=0,
-        min=0)
-
-    updater_interval_days: bpy.props.IntProperty(
-        name='Days',
-        description="Number of days between checking for updates",
-        default=7,
-        min=0,
-        max=31)
-
-    updater_interval_hours: bpy.props.IntProperty(
-        name='Hours',
-        description="Number of hours between checking for updates",
-        default=0,
-        min=0,
-        max=23)
-
-    updater_interval_minutes: bpy.props.IntProperty(
-        name='Minutes',
-        description="Number of minutes between checking for updates",
-        default=0,
-        min=0,
-        max=59)
-
     props_general = [
         "renaming_category",
         "renamingPanel_showPopup",
@@ -266,12 +232,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 row = box.row()
                 row.prop(self, propName)
 
-            # Works best if a column, or even just self.layout.
-            mainrow = layout.row()
-            col = mainrow.column()
-            # Updater draw function, could also pass in col as third arg.
-            addon_updater_ops.update_settings_ui(self, context)
-
         if self.prefs_tabs == 'keymaps':
             draw_keymap_items(wm, layout)
 
@@ -291,20 +251,3 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row.prop(self, "genericMaterialRegex", expand=True)
 
 
-classes = (
-    VIEW3D_OT_renaming_preferences,
-)
-
-
-def register():
-    from bpy.utils import register_class
-
-    for cls in classes:
-        register_class(cls)
-
-
-def unregister():
-    from bpy.utils import unregister_class
-
-    for cls in reversed(classes):
-        unregister_class(cls)

@@ -3,7 +3,7 @@ from bl_operators.presets import AddPresetBase
 from bpy.props import StringProperty
 from bpy.types import Operator, Menu
 
-from .renaming_proFeatures import RENAMING_MT_variableMenu
+from ..ui.renaming_proFeatures import RENAMING_MT_variableMenu
 
 # Selected objects are renamed direclty
 types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
@@ -337,27 +337,4 @@ class AddPresetRenamingPresets(AddPresetBase, Operator):
     preset_subdir = "scene/display"
 
 
-classes = (
-    OBJECT_MT_sufpre_presets,
-    AddPresetRenamingPresets,
-    VIEW3D_PT_tools_renaming_panel,
-    VIEW3D_PT_tools_type_suffix,
-    VIEW3D_OT_SetVariable,
-    VIEW3D_OT_RenamingPopupOperator,
-)
 
-
-def register():
-    from bpy.utils import register_class
-
-    for cls in classes:
-        register_class(cls)
-
-    bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
-
-
-def unregister():
-    from bpy.utils import unregister_class
-
-    for cls in reversed(classes):
-        unregister_class(cls)

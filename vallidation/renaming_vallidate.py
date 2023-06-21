@@ -2,7 +2,7 @@ import re
 
 import bpy
 
-from .renaming_utilities import getRenamingList, callInfoPopup
+from ..operators.renaming_utilities import getRenamingList, callInfoPopup
 
 
 class VIEW3D_OT_Validate(bpy.types.Operator):
@@ -56,21 +56,3 @@ class VIEW3D_PT_vallidation(bpy.types.Panel):
         row.operator("renaming.vallidate")
 
 
-classes = (
-    VIEW3D_OT_Validate,
-    VIEW3D_PT_vallidation,
-)
-
-
-def register():
-    from bpy.utils import register_class
-
-    for cls in classes:
-        register_class(cls)
-
-
-def unregister():
-    from bpy.utils import unregister_class
-
-    for cls in reversed(classes):
-        unregister_class(cls)

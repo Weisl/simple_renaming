@@ -3,19 +3,7 @@ import rna_keymap_ui
 
 # kmi_name, kmi_value, km_name, space_type, region_type
 # eventType, eventValue, ctrl, shift, alt
-keymaps_items_dict = {"Renaming Popup": ['wm.call_panel', 'VIEW3D_PT_tools_renaming_panel', '3D View Generic', 'VIEW_3D', 'WINDOW',
-                                         'F2', 'PRESS', True, False, False
-                                         ],
 
-                      "Suffix/Prefix Popup": ['wm.call_panel', 'VIEW3D_PT_tools_type_suffix', '3D View Generic', 'VIEW_3D', 'WINDOW',
-                                              'F2', 'PRESS', True, True, False
-                                              ],
-
-                      "Renaming Popup Outliner": ['wm.call_panel', 'VIEW3D_PT_tools_renaming_panel',
-                                                  'Outliner', 'OUTLINER', 'WINDOW',
-                                                  'F2', 'PRESS', True, False, False
-                                                  ]
-                      }
 
 
 # -----------------------------------------------------------------------------
@@ -116,22 +104,3 @@ class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
         return {'FINISHED'}
 
 
-classes = (
-    RENAMING_OT_add_hotkey_renaming,
-)
-
-
-def register():
-    from bpy.utils import register_class
-    for cls in classes:
-        register_class(cls)
-
-    add_hotkey()
-
-
-def unregister():
-    remove_hotkey()
-
-    from bpy.utils import unregister_class
-    for cls in reversed(classes):
-        unregister_class(cls)
