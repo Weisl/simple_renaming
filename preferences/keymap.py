@@ -1,22 +1,23 @@
 import bpy
 
+
+keymaps_items_dict = {"Renaming Popup": {"idname":'wm.call_panel', "type":'VIEW3D_PT_tools_renaming_panel', "type": 'F2', "value":'PRESS', "ctrl":True, "shift":False,"alt": False},
+
+                      "Suffix/Prefix Popup": {"idname":'wm.call_panel', "type":'VIEW3D_PT_tools_type_suffix', "type": 'F2', "value":'PRESS', "ctrl":True, "shift":False,"alt": False},
+
+                      "Renaming Popup Outliner": {"idname":'wm.call_panel', "type":'VIEW3D_PT_tools_renaming_panel', "type": 'F2', "value":'PRESS', "ctrl":True, "shift":False,"alt": False},}
+
 def add_keymap():
     km = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name="Window")
     prefs = bpy.context.preferences.addons[__package__.split('.')[
         0]].preferences
 
-    # type, ctrl, shift, alt parameters are stored and retrived from the preferences.
-    kmi = km.keymap_items.new(idname='wm.call_menu_pie', type=prefs.collision_pie_type, value='PRESS',
-                              ctrl=prefs.collision_pie_ctrl, shift=prefs.collision_pie_shift, alt=prefs.collision_pie_alt)
+    for key, value in keymaps_items_dict.items():
 
-    # The active parameter is part of the keymap and not keymapitem.
-    add_key_to_keymap("COLLISION_MT_pie_menu", kmi, km, active=prefs.collision_pie_active)
-    kmi = km.keymap_items.new(idname='wm.call_panel', type=prefs.collision_visibility_type, value='PRESS',
-                              ctrl=prefs.collision_visibility_ctrl, shift=prefs.collision_visibility_shift, alt=prefs.collision_visibility_alt)
-    add_key_to_keymap('VIEW3D_PT_collision_visibility_panel', kmi, km, active=prefs.collision_visibility_active)
-    kmi = km.keymap_items.new(idname='wm.call_panel', type=prefs.collision_material_type, value='PRESS',
-                              ctrl=prefs.collision_material_ctrl, shift=prefs.collision_material_shift, alt=prefs.collision_material_alt)
-    add_key_to_keymap('VIEW3D_PT_collision_material_panel', kmi, km, active=prefs.collision_material_active)
+        # type, ctrl, shift, alt parameters are stored and retrived from the preferences.
+        kmi = km.keymap_items.new(idname='wm.call_menu_pie', type=prefs.collision_pie_type, value='PRESS',
+                                  ctrl=prefs.collision_pie_ctrl, shift=prefs.collision_pie_shift, alt=prefs.collision_pie_alt)
+
 
 
 def add_key_to_keymap(idname, kmi, km, active=True):
