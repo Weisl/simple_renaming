@@ -39,7 +39,7 @@ class VariableReplacer():
     def replaceInputString(cls, context, inputText, entity):
         '''Replace custom variables with the according string'''
         wm = context.scene
-        cls.addon_prefs = context.preferences.addons[__package__].preferences
+        cls.addon_prefs = context.preferences.addons[simple_renaming_panel].preferences
 
         ##### System and Global Values ################
         inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
@@ -186,7 +186,7 @@ class VariableReplacer():
 
     @classmethod
     def getCollection(cls, context, entity):
-        # prefs = context.preferences.addons[__package__].preferences
+        # prefs = context.preferences.addons[simple_renaming_panel].preferences
         # separator = prefs.renaming_separator
 
         collectionNames = ""

@@ -9,7 +9,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        prefs = context.preferences.addons[__package__].preferences
+        prefs = context.preferences.addons[simple_renaming_panel].preferences
         separator = prefs.renaming_separator
 
         wm = context.scene
