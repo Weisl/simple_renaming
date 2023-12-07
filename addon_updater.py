@@ -138,7 +138,7 @@ class SingletonUpdater:
         """Print out a verbose logging message if verbose is true."""
         if not self._verbose:
             return
-        print("{} addon: ".format(self.addon) + msg)
+        # print("{} addon: ".format(self.addon) + msg)
 
     # -------------------------------------------------------------------------
     # Getters and setters
@@ -471,7 +471,7 @@ class SingletonUpdater:
     def verbose(self, value):
         try:
             self._verbose = bool(value)
-            self.print_verbose("Verbose is enabled")
+            # self.print_verbose("Verbose is enabled")
         except:
             raise ValueError("Verbose must be a boolean value")
 
@@ -1506,7 +1506,7 @@ class SingletonUpdater:
         if os.path.isfile(jpath):
             with open(jpath) as data_file:
                 self._json = json.load(data_file)
-                self.print_verbose("Read in JSON settings from file")
+                # self.print_verbose("Read in JSON settings from file")
         else:
             self._json = {
                 "last_check": "",
