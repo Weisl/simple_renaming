@@ -61,7 +61,7 @@ def menu_add_suffix(self, context):
     update_panel_category(None, bpy.context)
 def register():
 
-    #add_suffix_panel.register()
+    add_suffix_panel.register()
     operators.register()
     ui.register()
     #vallidation.register()
@@ -76,11 +76,11 @@ def unregister():
     # keymap and preferences should be last
     preferences.unregister()
 
-    variable_replacer.unregister()
+    #variable_replacer.unregister()
     #vallidation.unregister()
     ui.unregister()
     operators.unregister()
-    #add_suffix_panel.unregister()
+    add_suffix_panel.unregister()
 
 
 
