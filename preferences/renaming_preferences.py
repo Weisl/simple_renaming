@@ -6,7 +6,64 @@ from bpy.props import (
 
 from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
 from ..vallidation.renaming_vallidate import VIEW3D_PT_vallidation
-from .renaming_keymap import draw_keymap_items
+from .renaming_keymap import remove_key
+def add_key(self, km, idname, properties_name, collision_pie_type, collision_pie_ctrl, collision_pie_shift, collision_pie_alt, collision_pie_active):
+    kmi = km.keymap_items.new(idname=idname, type=collision_pie_type, value='PRESS',
+                              ctrl=collision_pie_ctrl, shift=collision_pie_shift, alt=collision_pie_alt)
+    kmi.properties.name = properties_name
+    kmi.active = collision_pie_active
+
+
+
+def update_renaming_key(self, context):
+    update_key(context, 'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
+def update_suf_pre_key(self, context):
+    update_key(context, 'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
+
+def update_key(context, operation, operator_name, property_prefix):
+    # This functions gets called when the hotkey assignment is updated in the preferences
+    wm = context.window_manager
+    km = wm.keyconfigs.addon.keymaps["Window"]
+    type = type.upper()
+
+    # Remove previous key assignment
+    remove_key(context, operation, operator_name)
+    add_key(self, km, operation, operator_name, f'{property_prefix}_type',
+            f'{property_prefix}_ctrl', f'{property_prefix}_shift', f'{property_prefix}_alt', f'{property_prefix}_active')
+
+
+def keymap_ui(self, layout, title, property_prefix, id_name, properties_name):
+    box = layout.box()
+    split = box.split(align=True, factor=0.5)
+    col = split.column()
+
+    # Is hotkey active checkbox
+    row = col.row(align=True)
+    row.prop(self, f'{property_prefix}_active', text="")
+    row.label(text=title)
+
+    # Button to assign the key assignments
+    col = split.column()
+    row = col.row(align=True)
+    key_type = getattr(self, f'{property_prefix}_type')
+    text = (
+        bpy.types.Event.bl_rna.properties['type'].enum_items[key_type].name
+        if key_type != 'NONE'
+        else 'Press a key'
+    )
+
+    op = row.operator("collider.key_selection_button", text=text)
+    op.menu_id = property_prefix
+    # row.prop(self, f'{property_prefix}_type', text="")
+    op = row.operator("collision.remove_hotkey", text="", icon="X")
+    op.idname = id_name
+    op.properties_name = properties_name
+    op.property_prefix = property_prefix
+
+    row = col.row(align=True)
+    row.prop(self, f'{property_prefix}_ctrl')
+    row.prop(self, f'{property_prefix}_shift')
+    row.prop(self, f'{property_prefix}_alt')
 
 
 def update_panel_category(self, context):
@@ -51,6 +108,20 @@ def toggle_validation_panel(self, context):
     else:
         bpy.utils.unregister_class(VIEW3D_PT_vallidation)
     return
+
+def update_key(self, context):
+    # This functions gets called when the hotkey assignment is updated in the preferences
+    wm = bpy.context.window_manager
+    km = wm.keyconfigs.addon.keymaps["Window"]
+    collision_pie_type = self.collision_pie_type.upper()
+
+    # Remove previous key assignment
+    remove_key(context, 'wm.call_menu_pie', "COLLISION_MT_pie_menu")
+    add_key(self, km, 'wm.call_menu_pie', "COLLISION_MT_pie_menu", collision_pie_type,
+            self.collision_pie_ctrl, self.collision_pie_shift, self.collision_pie_alt, self.collision_pie_active)
+    self.collision_pie_type = collision_pie_type
+
+
 
 
 # addon Preferences
@@ -196,6 +267,66 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         "renaming_user3"
     ]
 
+
+    renaming_panel_type: bpy.props.StringProperty(
+        name="Renaming Popup",
+        default="F2",
+        update=update_renaming_key
+    )
+
+    renaming_panel_ctrl: bpy.props.BoolProperty(
+        name="Ctrl",
+        default=True,
+        update=update_renaming_key
+    )
+
+    renaming_panel_shift: bpy.props.BoolProperty(
+        name="Shift",
+        default=False,
+        update=update_renaming_key
+    )
+    renaming_panel_alt: bpy.props.BoolProperty(
+        name="Alt",
+        default=False,
+        update=update_renaming_key
+    )
+
+    renaming_panel_active: bpy.props.BoolProperty(
+        name="Active",
+        default=True,
+        update=update_renaming_key
+    )
+
+    renaming_suf_pre_type: bpy.props.StringProperty(
+        name="Renaming Popup",
+        default="F2",
+        update=update_suf_pre_key
+    )
+
+    renaming_suf_pre_ctrl: bpy.props.BoolProperty(
+        name="Ctrl",
+        default=True,
+        update=update_suf_pre_key
+    )
+
+    renaming_suf_pre_shift: bpy.props.BoolProperty(
+        name="Shift",
+        default=False,
+        update=update_suf_pre_key
+    )
+    renaming_suf_pre_alt: bpy.props.BoolProperty(
+        name="Alt",
+        default=False,
+        update=update_suf_pre_key
+    )
+
+    renaming_suf_pre_active: bpy.props.BoolProperty(
+        name="Active",
+        default=True,
+        update=update_suf_pre_key
+    )
+
+
     def draw(self, context):
         '''
         simple preference UI to define custom inputs and user preferences
@@ -233,7 +364,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 row.prop(self, propName)
 
         if self.prefs_tabs == 'keymaps':
-            draw_keymap_items(wm, layout)
+            self.keymap_ui(layout, 'Renaming Panel', 'collision_pie',
+                           'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
+            self.keymap_ui(layout, 'Renaming Sub/Prefix', 'collision_visibility',
+                           'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
+
 
         if self.prefs_tabs == 'validate':
             box = layout.box()
