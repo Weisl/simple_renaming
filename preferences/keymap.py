@@ -1,12 +1,19 @@
 import bpy
 
 
-keymaps_items_dict = {"Renaming Popup": {"idname":'wm.call_panel', "type":'VIEW3D_PT_tools_renaming_panel', "type": 'F2', "value":'PRESS', "ctrl":True, "shift":False,"alt": False},
+keymaps_items_dict = {"Renaming Popup": ['wm.call_panel', 'VIEW3D_PT_tools_renaming_panel', '3D View Generic', 'VIEW_3D', 'WINDOW',
+                                         'F2', 'PRESS', True, False, False
+                                         ],
 
-                      "Suffix/Prefix Popup": {"idname":'wm.call_panel', "type":'VIEW3D_PT_tools_type_suffix', "type": 'F2', "value":'PRESS', "ctrl":True, "shift":False,"alt": False},
+                      "Suffix/Prefix Popup": ['wm.call_panel', 'VIEW3D_PT_tools_type_suffix', '3D View Generic', 'VIEW_3D', 'WINDOW',
+                                              'F2', 'PRESS', True, True, False
+                                              ],
 
-                      "Renaming Popup Outliner": {"idname":'wm.call_panel', "type":'VIEW3D_PT_tools_renaming_panel', "type": 'F2', "value":'PRESS', "ctrl":True, "shift":False,"alt": False},}
-
+                      "Renaming Popup Outliner": ['wm.call_panel', 'VIEW3D_PT_tools_renaming_panel',
+                                                  'Outliner', 'OUTLINER', 'WINDOW',
+                                                  'F2', 'PRESS', True, False, False
+                                                  ]
+                      }
 def add_keymap():
     km = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name="Window")
     prefs = bpy.context.preferences.addons[__package__.split('.')[
