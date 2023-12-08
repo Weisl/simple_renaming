@@ -35,38 +35,6 @@ def update_key(context, operation, operator_name, property_prefix):
             f'{property_prefix}_ctrl', f'{property_prefix}_shift', f'{property_prefix}_alt', f'{property_prefix}_active')
 
 
-def keymap_ui(self, layout, title, property_prefix, id_name, properties_name):
-    box = layout.box()
-    split = box.split(align=True, factor=0.5)
-    col = split.column()
-
-    # Is hotkey active checkbox
-    row = col.row(align=True)
-    row.prop(self, f'{property_prefix}_active', text="")
-    row.label(text=title)
-
-    # Button to assign the key assignments
-    col = split.column()
-    row = col.row(align=True)
-    key_type = getattr(self, f'{property_prefix}_type')
-    text = (
-        bpy.types.Event.bl_rna.properties['type'].enum_items[key_type].name
-        if key_type != 'NONE'
-        else 'Press a key'
-    )
-
-    op = row.operator("collider.key_selection_button", text=text)
-    op.menu_id = property_prefix
-    # row.prop(self, f'{property_prefix}_type', text="")
-    op = row.operator("collision.remove_hotkey", text="", icon="X")
-    op.idname = id_name
-    op.properties_name = properties_name
-    op.property_prefix = property_prefix
-
-    row = col.row(align=True)
-    row.prop(self, f'{property_prefix}_ctrl')
-    row.prop(self, f'{property_prefix}_shift')
-    row.prop(self, f'{property_prefix}_alt')
 
 
 def update_panel_category(self, context):
@@ -330,6 +298,38 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         update=update_suf_pre_key
     )
 
+    def keymap_ui(self, layout, title, property_prefix, id_name, properties_name):
+        box = layout.box()
+        split = box.split(align=True, factor=0.5)
+        col = split.column()
+
+        # Is hotkey active checkbox
+        row = col.row(align=True)
+        row.prop(self, f'{property_prefix}_active', text="")
+        row.label(text=title)
+
+        # Button to assign the key assignments
+        col = split.column()
+        row = col.row(align=True)
+        key_type = getattr(self, f'{property_prefix}_type')
+        text = (
+            bpy.types.Event.bl_rna.properties['type'].enum_items[key_type].name
+            if key_type != 'NONE'
+            else 'Press a key'
+        )
+
+        op = row.operator("collider.key_selection_button", text=text)
+        op.menu_id = property_prefix
+        # row.prop(self, f'{property_prefix}_type', text="")
+        op = row.operator("collision.remove_hotkey", text="", icon="X")
+        op.idname = id_name
+        op.properties_name = properties_name
+        op.property_prefix = property_prefix
+
+        row = col.row(align=True)
+        row.prop(self, f'{property_prefix}_ctrl')
+        row.prop(self, f'{property_prefix}_shift')
+        row.prop(self, f'{property_prefix}_alt')
 
     def draw(self, context):
         '''
@@ -368,9 +368,9 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 row.prop(self, propName)
 
         if self.prefs_tabs == 'keymaps':
-            self.keymap_ui(layout, 'Renaming Panel', 'collision_pie',
+            self.keymap_ui(layout, 'Renaming Panel', 'renaming_panel',
                            'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
-            self.keymap_ui(layout, 'Renaming Sub/Prefix', 'collision_visibility',
+            self.keymap_ui(layout, 'Renaming Sub/Prefix', 'renaming_suf_pre',
                            'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
 
 
