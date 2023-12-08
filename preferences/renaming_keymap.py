@@ -16,8 +16,7 @@ keymaps_items_dict = {"Renaming Popup": ['wm.call_panel', 'VIEW3D_PT_tools_renam
                       }
 def add_keymap():
     km = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name="Window")
-    prefs = bpy.context.preferences.addons[__package__.split('.')[
-        0]].preferences
+    prefs = bpy.context.preferences.addons[__package__.split('.')[0]].preferences
 
     print("PREFS = " + str(prefs))
 
@@ -74,8 +73,7 @@ class REMOVE_OT_hotkey(bpy.types.Operator):
     def execute(self, context):
         remove_key(context, self.idname, self.properties_name)
 
-        prefs = context.preferences.addons[__package__.split('.')[
-            0]].preferences
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
         setattr(prefs, f'{self.property_prefix}_type', "NONE")
         setattr(prefs, f'{self.property_prefix}_ctrl', False)
         setattr(prefs, f'{self.property_prefix}_shift', False)

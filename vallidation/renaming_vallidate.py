@@ -13,8 +13,8 @@ class VIEW3D_OT_Validate(bpy.types.Operator):
 
     def execute(self, context):
         wm = context.scene
-
-        prefs = context.preferences.addons[simple_renaming_panel].preferences
+        package = __package__.split('.')[0]
+        prefs = context.preferences.addons[f'{package}'].preferences
         regex = prefs.regex_Mesh
 
         renamingList = []
@@ -47,7 +47,7 @@ class VIEW3D_PT_vallidation(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
-        prefs = context.preferences.addons[simple_renaming_panel].preferences
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
         regex = prefs.regex_Mesh
 
         row = layout.row()

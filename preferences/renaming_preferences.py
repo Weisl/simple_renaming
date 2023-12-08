@@ -17,8 +17,11 @@ def add_key(self, km, idname, properties_name, collision_pie_type, collision_pie
 
 def update_renaming_key(self, context):
     update_key(context, 'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
+
+
 def update_suf_pre_key(self, context):
     update_key(context, 'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
+
 
 def update_key(context, operation, operator_name, property_prefix):
     # This functions gets called when the hotkey assignment is updated in the preferences
@@ -129,7 +132,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     """Contains the blender addon preferences"""
     # this must match the addon name, use '__package__'
     # when defining this in a submodule of a python package.
-    bl_idname = __package__  ### __package__ works on multifile and __name__ not
+    bl_idname = __package__.split('.')[0]
+    bl_options = {'REGISTER'}
 
     prefs_tabs: EnumProperty(items=(('ui', "General", "General Settings"),
                                     ('keymaps', "Keymaps", "Keymaps"),

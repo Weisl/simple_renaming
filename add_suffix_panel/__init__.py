@@ -66,7 +66,7 @@ def tChange(self, context):
     return
 
 classes = (
-    renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
+   renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
 )
 
 enumPresetItems = [('FILE', "File", "", '', 1),

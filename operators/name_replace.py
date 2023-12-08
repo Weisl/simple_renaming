@@ -26,7 +26,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         modeOld = context.mode
 
         # settings for numerating the new name
-        prefs = context.preferences.addons[simple_renaming_panel].preferences
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
         separator = prefs.renaming_separator
         startNum = prefs.numerate_start_number
         step = prefs.numerate_step

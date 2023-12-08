@@ -24,7 +24,7 @@ class VariableReplacer():
     @classmethod
     def reset(cls):
         '''reset all values to initial state'''
-        prefs = bpy.context.preferences.addons[__package__].preferences
+        prefs = bpy.context.preferences.addons[__package__.split('.')[0]].preferences
         startNum = prefs.numerate_start_number
         numerate_step = prefs.numerate_step
         numerate_digits = prefs.numerate_digits
@@ -39,7 +39,7 @@ class VariableReplacer():
     def replaceInputString(cls, context, inputText, entity):
         '''Replace custom variables with the according string'''
         wm = context.scene
-        cls.addon_prefs = context.preferences.addons[simple_renaming_panel].preferences
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
 
         ##### System and Global Values ################
         inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
@@ -186,7 +186,7 @@ class VariableReplacer():
 
     @classmethod
     def getCollection(cls, context, entity):
-        # prefs = context.preferences.addons[simple_renaming_panel].preferences
+        # prefs = context.preferences.addons[__package__.split('.')[0]].preferences
         # separator = prefs.renaming_separator
 
         collectionNames = ""

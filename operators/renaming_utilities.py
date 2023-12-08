@@ -213,9 +213,9 @@ def getRenamingList(context, overrideSelection=False):
 
 def callRenamingPopup(context):
     preferences = context.preferences
-    addon_prefs = preferences.addons[__package__].preferences
+    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
 
-    if addon_prefs.renamingPanel_showPopup == True:
+    if prefs.renamingPanel_showPopup == True:
         bpy.ops.wm.call_panel(name="POPUP_PT_popup")
     return
 

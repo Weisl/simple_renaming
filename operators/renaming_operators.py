@@ -13,7 +13,7 @@ def numerate_entity_name(context, basename, typelist, active_entity_name, return
     digits = len(wm.renaming_numerate)
 
     # Preferences
-    prefs = context.preferences.addons[simple_renaming_panel].preferences
+    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
     separator = prefs.renaming_separator
     startNum = prefs.numerate_start_number
     step = prefs.numerate_step
