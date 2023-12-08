@@ -37,9 +37,10 @@ class VariableReplacer():
 
     @classmethod
     def replaceInputString(cls, context, inputText, entity):
+
         '''Replace custom variables with the according string'''
         wm = context.scene
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        cls.addon_prefs = context.preferences.addons[__package__.split('.')[0]].preferences
 
         ##### System and Global Values ################
         inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
