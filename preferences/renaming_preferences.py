@@ -105,7 +105,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     prefs_tabs: EnumProperty(items=(('ui', "General", "General Settings"),
                                     ('keymaps', "Keymaps", "Keymaps"),
-                                    # ('validate', "Validate", "Validate (experimental)")
+                                    ('validate', "Validate", "Validate (experimental)")
                                     ),
                              default='ui')
 
@@ -186,7 +186,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     )
 
     renaming_show_validation: bpy.props.BoolProperty(
-        name="Use Validation Panel",
+        name="Use Name Validation",
         description="Enable or Disable Validation Panel",
         default=False,
         update=toggle_validation_panel)
@@ -391,10 +391,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = box.row()
             row.prop(self, "regex_Mesh", expand=True)
             row = box.row()
-            row.prop(self, "assetRegex", expand=True)
-            row = box.row()
             row.prop(self, "materialRegex", expand=True)
-            row = box.row()
-            row.prop(self, "genericMaterialRegex", expand=True)
 
 

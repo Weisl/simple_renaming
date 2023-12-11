@@ -22,7 +22,7 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers the basic functionality of renaming a set of objects",
     "author": "Matthias Patscheider",
-    "version": (1, 6, 3),
+    "version": (2, 0, 0),
     "blender": (3, 0, 0),
     "location": "View3D > Tools ",
     "warning": "",
@@ -64,8 +64,7 @@ def register():
     add_suffix_panel.register()
     operators.register()
     ui.register()
-    #vallidation.register()
-    #variable_replacer.register()
+    vallidation.register()
 
     # keymap and preferences should be last
     preferences.register()
@@ -76,8 +75,7 @@ def unregister():
     # keymap and preferences should be last
     preferences.unregister()
 
-    #variable_replacer.unregister()
-    #vallidation.unregister()
+    vallidation.unregister()
     ui.unregister()
     operators.unregister()
     add_suffix_panel.unregister()
