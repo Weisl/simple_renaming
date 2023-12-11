@@ -124,6 +124,13 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         description="Enable or Disable Popup",
         default=True,
     )
+
+    renamingPanel_useObjectOrder: bpy.props.BoolProperty(
+        name="Use Selection Order",
+        description="Use the order of selection when renaming objects",
+        default=True,
+    )
+
     numerate_start_number: bpy.props.IntProperty(
         name="Numerate Start",
         description="Defines the first number for iterating objects. E.g., 1 means that the first object will be named [objectname]001",
@@ -220,6 +227,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     props_general = [
         "renaming_category",
         "renamingPanel_showPopup",
+        "renamingPanel_useObjectOrder",
     ]
     props_naming = [
         "renaming_separator",

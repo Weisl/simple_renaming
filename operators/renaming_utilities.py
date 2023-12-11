@@ -11,19 +11,28 @@ def trimString(string, size):
 
 def getRenamingList(context, overrideSelection=False):
     scene = context.scene
+    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+
     renamingList = []
     switchEditMode = False
 
     onlySelection = scene.renaming_only_selection
+    useObjectOrder = prefs.renamingPanel_useObjectOrder
+
     if overrideSelection == True:
         onlySelection = False
 
     if scene.renaming_object_types == 'OBJECT':
         if onlySelection == True:
-            ordered_selection = get_ordered_selection_objects()
-            for obj in ordered_selection:
-                if obj.type in scene.renaming_object_types_specified:
-                    renamingList.append(obj)
+            if useObjectOrder:
+                ordered_selection = get_ordered_selection_objects()
+                for obj in ordered_selection:
+                    if obj.type in scene.renaming_object_types_specified:
+                        renamingList.append(obj)
+            else:
+                for obj in context.selected_objects:
+                    if obj.type in scene.renaming_object_types_specified:
+                        renamingList.append(obj)
         else:
             for obj in bpy.data.objects:
                 if obj.type in scene.renaming_object_types_specified:
