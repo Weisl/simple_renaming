@@ -148,10 +148,22 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         layout = self.layout
         row = layout.row(align=True)
         row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/renaming/"
+        addon_name = get_addon_name()
+
+        # row.label(text='Auto Convex')
+        op = row.operator("preferences.addon_search", text="", icon='PREFERENCES')
+        op.addon_name = addon_name
+        op.prefs_tabs = 'UI'
 
     def draw(self, context):
         layout = self.layout
         drawAdvancedUI(layout, context)
+
+#needed for adding direct link to settings
+def get_addon_name():
+    # Get Addon Name
+    from .. import bl_info
+    return bl_info["name"]
 
 
 # addon Panel
@@ -166,6 +178,8 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
     def draw(self, context):
         scene = context.scene
         layout = self.layout
+
+
 
         layout.prop(scene, "type_pre_sub_only_selection", text="Only Selected Objects")
         layout.prop(scene, "renaming_sufpre_type", expand=True)
