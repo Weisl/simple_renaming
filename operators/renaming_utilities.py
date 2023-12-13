@@ -174,15 +174,6 @@ def getRenamingList(context, overrideSelection=False):
             for uv in obj.data.uv_layers:
                 renamingList.append(uv)
 
-    elif context.scene.renaming_object_types == 'FACEMAPS':
-        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
-
-        for obj in obj_list:
-            if obj.type != 'MESH':
-                continue
-            for face_map in obj.face_maps:
-                renamingList.append(face_map)
-
     elif context.scene.renaming_object_types == 'COLORATTRIBUTES':
         obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 

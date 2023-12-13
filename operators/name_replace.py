@@ -3,7 +3,7 @@ from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, c
 from ..variable_replacer.variable_replacer import VariableReplacer
 
 from .renaming_operators import switchToEditMode, numerate_entity_name
-from .renaming_operators import getAllVertexGroups, getAllAttributes, getAllBones, getAllModifiers, getAllFacemaps, getAllUvMaps, getAllColorAttributes, getAllParticleNames, getAllParticleSettingsNames, getAllDataNames, getAllShapeKeys
+from .renaming_operators import getAllVertexGroups, getAllAttributes, getAllBones, getAllModifiers, getAllUvMaps, getAllColorAttributes, getAllParticleNames, getAllParticleSettingsNames, getAllDataNames, getAllShapeKeys
 class VIEW3D_OT_replace_name(bpy.types.Operator):
     bl_idname = "renaming.name_replace"
     bl_label = "Replace Names"
@@ -39,8 +39,6 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             particleList = getAllParticleNames()
         if scene.renaming_object_types == 'PARTICLESETTINGS':
             particleSettingsList = getAllParticleSettingsNames()
-        if context.scene.renaming_object_types == 'FACEMAPS':
-            facemapsList = getAllFacemaps()
         if context.scene.renaming_object_types == 'UVMAPS':
             uvmapsList = getAllUvMaps()
         if context.scene.renaming_object_types == 'COLORATTRIBUTES':
@@ -126,10 +124,6 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                                                               return_type_list=True)
 
 
-                            elif context.scene.renaming_object_types == 'FACEMAPS':
-                                new_name, facemapsList = numerate_entity_name(context, replaceName,
-                                                                              facemapsList, entity.name,
-                                                                              return_type_list=True)
 
                             elif context.scene.renaming_object_types == 'UVMAPS':
                                 new_name, uvmapsList = numerate_entity_name(context, replaceName,

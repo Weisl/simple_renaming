@@ -10,7 +10,7 @@ types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
 
 # Components of the selected objects are renamed
 types_of_selected = (
-    'MATERIAL', 'DATA', 'VERTEXGROUPS', 'PARTICLESYSTEM', 'SHAPEKEYS', 'MODIFIERS', 'FACEMAPS', 'UVMAPS',
+    'MATERIAL', 'DATA', 'VERTEXGROUPS', 'PARTICLESYSTEM', 'SHAPEKEYS', 'MODIFIERS', 'UVMAPS',
     'COLORATTRIBUTES', 'ATTRIBUTES', 'ACTIONS')
 
 

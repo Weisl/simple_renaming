@@ -111,16 +111,6 @@ def getAllUvMaps():
     return uvNamesList
 
 
-def getAllFacemaps():
-    facemapNamesList = []
-    for obj in bpy.data.objects:
-        if obj.type != 'MESH':
-            continue
-        for face_map in obj.face_maps:
-            facemapNamesList.append(face_map)
-    return facemapNamesList
-
-
 def getAllColorAttributes():
     colorAttributesList = []
 
