@@ -138,8 +138,13 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 new_name, colorAttributeList = numerate_entity_name(context, replaceName,
                                                                                     colorAttributeList, entity.name,
                                                                                     return_type_list=True)
-                            entity.name = new_name
-                            msg.addMessage(oldName, entity.name)
+
+                            try:
+                                entity.name = new_name
+                                msg.addMessage(oldName, entity.name)
+                            except AttributeError:
+                                print("Attribute {} is read only".format(new_name))
+
 
         else:  # len(str(replaceName)) <= 0
             msg.addMessage(None, None, "Insert a valid string to replace names")
