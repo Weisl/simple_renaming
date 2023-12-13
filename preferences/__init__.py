@@ -12,10 +12,11 @@ def register():
     for cls in classes:
         register_class(cls)
 
-    #renaming_keymap.add_keymap()
+    renaming_keymap.add_keymap()
 
 
 def unregister():
+
     renaming_keymap.remove_keymap()
 
     from bpy.utils import unregister_class

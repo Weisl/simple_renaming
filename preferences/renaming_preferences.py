@@ -7,32 +7,33 @@ from bpy.props import (
 from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
 from ..vallidation.renaming_vallidate import VIEW3D_PT_vallidation
 from .renaming_keymap import remove_key
-def add_key(self, km, idname, properties_name, collision_pie_type, collision_pie_ctrl, collision_pie_shift, collision_pie_alt, collision_pie_active):
+
+def add_key(km, idname, properties_name, collision_pie_type, collision_pie_ctrl, collision_pie_shift, collision_pie_alt, collision_pie_active):
     kmi = km.keymap_items.new(idname=idname, type=collision_pie_type, value='PRESS',
                               ctrl=collision_pie_ctrl, shift=collision_pie_shift, alt=collision_pie_alt)
     kmi.properties.name = properties_name
     kmi.active = collision_pie_active
 
 
-
-def update_renaming_key(self, context):
-    update_key(context, 'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
-
-
-def update_suf_pre_key(self, context):
-    update_key(context, 'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
-
-
 def update_key(context, operation, operator_name, property_prefix):
     # This functions gets called when the hotkey assignment is updated in the preferences
     wm = context.window_manager
     km = wm.keyconfigs.addon.keymaps["Window"]
-    type = type.upper()
 
     # Remove previous key assignment
     remove_key(context, operation, operator_name)
-    add_key(self, km, operation, operator_name, f'{property_prefix}_type',
+    add_key(km, operation, operator_name, f'{property_prefix}_type',
             f'{property_prefix}_ctrl', f'{property_prefix}_shift', f'{property_prefix}_alt', f'{property_prefix}_active')
+
+
+def update_renaming_key(self, context):
+    update_key(context, 'wm.call_panel', "VIEW3D_PT_tools_renaming_panel", "renaming_panel")
+
+
+def update_suf_pre_key(self, context):
+    update_key(context, 'wm.call_panel', "VIEW3D_PT_tools_type_suffix", "renaming_suf_pre")
+
+
 
 
 
@@ -79,20 +80,6 @@ def toggle_validation_panel(self, context):
     else:
         bpy.utils.unregister_class(VIEW3D_PT_vallidation)
     return
-
-def update_key(self, context):
-    # This functions gets called when the hotkey assignment is updated in the preferences
-    wm = bpy.context.window_manager
-    km = wm.keyconfigs.addon.keymaps["Window"]
-    collision_pie_type = self.collision_pie_type.upper()
-
-    # Remove previous key assignment
-    remove_key(context, 'wm.call_menu_pie', "COLLISION_MT_pie_menu")
-    add_key(self, km, 'wm.call_menu_pie', "COLLISION_MT_pie_menu", collision_pie_type,
-            self.collision_pie_ctrl, self.collision_pie_shift, self.collision_pie_alt, self.collision_pie_active)
-    self.collision_pie_type = collision_pie_type
-
-
 
 
 # addon Preferences
@@ -262,7 +249,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     renaming_panel_shift: bpy.props.BoolProperty(
         name="Shift",
-        default=False,
+        default=True,
         update=update_renaming_key
     )
     renaming_panel_alt: bpy.props.BoolProperty(
@@ -296,7 +283,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     )
     renaming_suf_pre_alt: bpy.props.BoolProperty(
         name="Alt",
-        default=False,
+        default=True,
         update=update_suf_pre_key
     )
 
