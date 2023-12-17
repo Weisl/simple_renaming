@@ -49,9 +49,9 @@ class VIEW3D_PT_vallidation(bpy.types.Panel):
         row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/renaming/"
         addon_name = get_addon_name()
 
-        op = row.operator("preferences.addon_search", text="", icon='PREFERENCES')
+        op = row.operator("preferences.rename_addon_search", text="", icon='PREFERENCES')
         op.addon_name = addon_name
-        op.prefs_tabs = 'UI'
+        op.prefs_tabs = 'VALIDATE'
 
     def draw(self, context):
         layout = self.layout

@@ -2,7 +2,7 @@ import bpy
 
 class PREFERENCES_OT_open_addon(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "preferences.addon_search"
+    bl_idname = "preferences.rename_addon_search"
     bl_label = "Open Addon preferences"
 
     addon_name: bpy.props.StringProperty()
