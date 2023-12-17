@@ -90,11 +90,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     bl_idname = __package__.split('.')[0]
     bl_options = {'REGISTER'}
 
-    prefs_tabs: EnumProperty(items=(('ui', "General", "General Settings"),
-                                    ('keymaps', "Keymaps", "Keymaps"),
-                                    ('validate', "Validate", "Validate (experimental)")
+    prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
+                                    ('KEYMAPS', "Keymaps", "Keymaps"),
+                                    ('VALIDATE', "Validate", "Validate (experimental)")
                                     ),
-                             default='ui')
+                             default='UI')
 
     renaming_category: StringProperty(name="Category",
                                       description="Defines in which category of the tools panel the simple renaimg panel is listed",
@@ -336,7 +336,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         row = layout.row(align=True)
         row.prop(self, "prefs_tabs", expand=True)
 
-        if self.prefs_tabs == 'ui':
+        if self.prefs_tabs == 'UI':
             for propName in self.props_general:
                 row = layout.row()
                 row.prop(self, propName)
@@ -362,14 +362,14 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 row = box.row()
                 row.prop(self, propName)
 
-        if self.prefs_tabs == 'keymaps':
+        if self.prefs_tabs == 'KEYMAPS':
             self.keymap_ui(layout, 'Renaming Panel', 'renaming_panel',
                            'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
             self.keymap_ui(layout, 'Renaming Sub/Prefix', 'renaming_suf_pre',
                            'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
 
 
-        if self.prefs_tabs == 'validate':
+        if self.prefs_tabs == 'VALIDATE':
 
             row = layout.row()
             row.prop(self, "renaming_show_validation", expand=True)

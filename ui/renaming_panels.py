@@ -150,7 +150,6 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/renaming/"
         addon_name = get_addon_name()
 
-        # row.label(text='Auto Convex')
         op = row.operator("preferences.addon_search", text="", icon='PREFERENCES')
         op.addon_name = addon_name
         op.prefs_tabs = 'UI'
