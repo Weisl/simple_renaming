@@ -1,4 +1,5 @@
 import bpy
+import textwrap
 from bpy.props import (
     EnumProperty,
     StringProperty,
@@ -7,6 +8,13 @@ from bpy.props import (
 from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
 from ..vallidation.renaming_vallidate import VIEW3D_PT_vallidation
 from .renaming_keymap import remove_key
+
+def label_multiline(context, text, parent):
+    chars = int(context.region.width / 7)  # 7 pix on 1 character
+    wrapper = textwrap.TextWrapper(width=chars)
+    text_lines = wrapper.wrap(text=text)
+    for text_line in text_lines:
+        parent.label(text=text_line)
 
 def add_key(km, idname, properties_name, collision_pie_type, collision_pie_ctrl, collision_pie_shift, collision_pie_alt, collision_pie_active):
     kmi = km.keymap_items.new(idname=idname, type=collision_pie_type, value='PRESS',
@@ -92,7 +100,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     prefs_tabs: EnumProperty(items=(('ui', "General", "General Settings"),
                                     ('keymaps', "Keymaps", "Keymaps"),
-                                    ('validate', "Validate", "Validate (experimental)")
+                                    ('validate', "Validate", "Validate (experimental)"),
+                                    ('SUPPORT', "Support", "Support"),
                                     ),
                              default='ui')
 
@@ -362,14 +371,14 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 row = box.row()
                 row.prop(self, propName)
 
-        if self.prefs_tabs == 'keymaps':
+        elif self.prefs_tabs == 'keymaps':
             self.keymap_ui(layout, 'Renaming Panel', 'renaming_panel',
                            'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
             self.keymap_ui(layout, 'Renaming Sub/Prefix', 'renaming_suf_pre',
                            'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
 
 
-        if self.prefs_tabs == 'validate':
+        elif self.prefs_tabs == 'validate':
             box = layout.box()
             row = box.row()
             row.prop(self, "renaming_show_validation", expand=True)
@@ -381,3 +390,19 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row.prop(self, "materialRegex", expand=True)
 
 
+        elif self.prefs_tabs == 'SUPPORT':
+            box = layout.box()
+            text = "Please support me by donating for this addon .
+            label_multiline(
+                context=context,
+                text=text,
+                parent=box
+            )
+            row = box.row()
+
+            row.operator("wm.url_open", text="Gumroad").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
+            row.operator("wm.url_open", text="Blender Market (TODO)").url = "https://blendermarket.com/products/collider-tools"
+
+
+
+            row.operator("wm.url_open", text="Collider Tools").url = "https://blendermarket.com/products/collider-tools"
