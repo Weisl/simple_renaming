@@ -3,14 +3,14 @@ from bl_operators.presets import AddPresetBase
 from bpy.props import StringProperty
 from bpy.types import Operator, Menu
 
-from .renaming_proFeatures import RENAMING_MT_variableMenu
+from ..ui.renaming_proFeatures import RENAMING_MT_variableMenu
 
 # Selected objects are renamed direclty
 types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
 
 # Components of the selected objects are renamed
 types_of_selected = (
-    'MATERIAL', 'DATA', 'VERTEXGROUPS', 'PARTICLESYSTEM', 'SHAPEKEYS', 'MODIFIERS', 'FACEMAPS', 'UVMAPS',
+    'MATERIAL', 'DATA', 'VERTEXGROUPS', 'PARTICLESYSTEM', 'SHAPEKEYS', 'MODIFIERS', 'UVMAPS',
     'COLORATTRIBUTES', 'ATTRIBUTES', 'ACTIONS')
 
 
@@ -148,10 +148,21 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
         layout = self.layout
         row = layout.row(align=True)
         row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/renaming/"
+        addon_name = get_addon_name()
+
+        op = row.operator("preferences.rename_addon_search", text="", icon='PREFERENCES')
+        op.addon_name = addon_name
+        op.prefs_tabs = 'UI'
 
     def draw(self, context):
         layout = self.layout
         drawAdvancedUI(layout, context)
+
+#needed for adding direct link to settings
+def get_addon_name():
+    # Get Addon Name
+    from .. import bl_info
+    return bl_info["name"]
 
 
 # addon Panel
@@ -166,6 +177,8 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
     def draw(self, context):
         scene = context.scene
         layout = self.layout
+
+
 
         layout.prop(scene, "type_pre_sub_only_selection", text="Only Selected Objects")
         layout.prop(scene, "renaming_sufpre_type", expand=True)
@@ -337,27 +350,4 @@ class AddPresetRenamingPresets(AddPresetBase, Operator):
     preset_subdir = "scene/display"
 
 
-classes = (
-    OBJECT_MT_sufpre_presets,
-    AddPresetRenamingPresets,
-    VIEW3D_PT_tools_renaming_panel,
-    VIEW3D_PT_tools_type_suffix,
-    VIEW3D_OT_SetVariable,
-    VIEW3D_OT_RenamingPopupOperator,
-)
 
-
-def register():
-    from bpy.utils import register_class
-
-    for cls in classes:
-        register_class(cls)
-
-    bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
-
-
-def unregister():
-    from bpy.utils import unregister_class
-
-    for cls in reversed(classes):
-        unregister_class(cls)

@@ -22,7 +22,7 @@ bl_info = {
     "name": "Simple Renaming Panel",
     "description": "This Addon offers the basic functionality of renaming a set of objects",
     "author": "Matthias Patscheider",
-    "version": (1, 6, 3),
+    "version": (2, 0, 0),
     "blender": (3, 0, 0),
     "location": "View3D > Tools ",
     "warning": "",
@@ -36,86 +36,50 @@ bl_info = {
 if "bpy" in locals():
     import importlib
 
-    importlib.reload(renaming_operators)
-    importlib.reload(renaming_popup)
-    importlib.reload(renaming_utilities)
-    importlib.reload(renaming_panels)
-    importlib.reload(renaming_sufPre_operators)
-    importlib.reload(renaming_proFeatures)
-    importlib.reload(renaming_keymap)
-    importlib.reload(renaming_preferences)
-    importlib.reload(info_messages)
-    importlib.reload(addon_updater)
-    importlib.reload(addon_updater_ops)
-    importlib.reload(renaming_vallidate)
+    importlib.reload(add_suffix_panel)
+    importlib.reload(operators)
+    importlib.reload(preferences)
+    importlib.reload(ui)
+    importlib.reload(vallidation)
+    importlib.reload(variable_replacer)
 
 else:
-    from . import renaming_operators
-    from . import renaming_popup
-    from . import renaming_utilities
-    from . import renaming_panels
-    from . import renaming_sufPre_operators
-    from . import renaming_proFeatures
-    from . import renaming_keymap
-    from . import renaming_preferences
-    from . import info_messages
-    from . import addon_updater
-    from . import addon_updater_ops
-    from . import renaming_vallidate
+    from . import add_suffix_panel
+    from . import operators
+    from . import preferences
+    from . import ui
+    from . import vallidation
+    from . import variable_replacer
 
 # import standard modules
 import bpy
 
-from .renaming_proFeatures import tChange
-from .info_messages import RENAMING_MESSAGES, WarningError_MESSAGES, INFO_MESSAGES
-
-
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
 
-
+    from ..preferences.renaming_preferences import update_panel_category
+    update_panel_category(None, bpy.context)
 def register():
 
-
-    # call the register function of the sub modules
-    renaming_operators.register()
-    renaming_popup.register()
-    renaming_proFeatures.register()
-    renaming_sufPre_operators.register()
-    info_messages.register()
-    # renaming_vallidate.register()
-    renaming_utilities.register()
+    add_suffix_panel.register()
+    operators.register()
+    ui.register()
+    vallidation.register()
 
     # keymap and preferences should be last
-    renaming_keymap.register()
-    renaming_preferences.register()
-    renaming_panels.register()
-
-    # Addon updater code and configurations.
-    # In case of a broken version, try to register the updater first so that
-    # users can revert back to a working version.
-    addon_updater_ops.register(bl_info)
-
-    from .renaming_preferences import update_panel_category
-    update_panel_category(None, bpy.context)
+    preferences.register()
 
 
 def unregister():
-    # Addon updater unregister.
-    addon_updater_ops.unregister()
 
     # keymap and preferences should be last
-    renaming_preferences.unregister()
-    renaming_panels.unregister()
-    renaming_keymap.unregister()
+    preferences.unregister()
 
-    # renaming_vallidate.unregister()
-    renaming_utilities.unregister()
-    info_messages.unregister()
-    renaming_sufPre_operators.unregister()
-    renaming_proFeatures.unregister()
-    renaming_popup.unregister()
-    renaming_operators.unregister()
+    vallidation.unregister()
+    ui.unregister()
+    operators.unregister()
+    add_suffix_panel.unregister()
+
 
 
 if __name__ == "__main__":

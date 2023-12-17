@@ -1,63 +1,6 @@
 import bpy
 from bpy.props import StringProperty
 
-
-def tChange(self, context):
-    '''
-
-    :param context: current blender context
-    :return: no return value
-    '''
-
-    wm = bpy.context.scene
-
-    # The print function works fine
-    nameingPreset = context.scene.renaming_presetNaming
-    nameVar = ""
-
-    ##### System and Global Values ################
-    if nameingPreset == 'FILE':
-        nameVar = "@f"
-    if nameingPreset == "DATE":
-        nameVar = "@d"
-    if nameingPreset == "TIME":
-        nameVar = "@i"
-    if nameingPreset == "RANDOM":
-        nameVar = "@r"
-
-    ##### UserStrings ################
-    if nameingPreset == "HIGH":
-        nameVar = "@h"
-    if nameingPreset == "LOW":
-        nameVar = "@l"
-    if nameingPreset == "CAGE":
-        nameVar = "@b"
-    if nameingPreset == "USER1":
-        nameVar = "@u1"
-    if nameingPreset == "USER2":
-        nameVar = "@u2"
-    if nameingPreset == "USER3":
-        nameVar = "@u3"
-    if nameingPreset == "NUMERATE":
-        nameVar = "@n"
-
-    if wm.renaming_object_types == 'OBJECT':
-        if nameingPreset == 'OBJECT':
-            nameVar = "@o"
-        if nameingPreset == "TYPE":
-            nameVar = "@t"
-        if nameingPreset == "PARENT":
-            nameVar = "@p"
-        if nameingPreset == "ACTIVE":
-            nameVar = "@a"
-        if nameingPreset == "COLLECTION":
-            nameVar = "@c"
-        if nameingPreset == "DATA":
-            nameVar = "@m"
-
-    context.scene.renaming_newName += str(nameVar)
-
-
 class RENAMING_MT_variableMenu(bpy.types.Menu):
     bl_label = "Renaming Variables"
     bl_idname = "MENU_MT_renaming_variables"
@@ -159,21 +102,3 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
         return {'FINISHED'}
 
 
-classes = (
-    RENAMING_MT_variableMenu,
-    VIEW3D_OT_inputVariables,
-)
-
-
-def register():
-    from bpy.utils import register_class
-
-    for cls in classes:
-        register_class(cls)
-
-
-def unregister():
-    from bpy.utils import unregister_class
-
-    for cls in reversed(classes):
-        unregister_class(cls)

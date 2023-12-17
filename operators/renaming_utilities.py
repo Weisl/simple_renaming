@@ -1,5 +1,4 @@
 import bpy
-from bpy.app.handlers import persistent
 from bpy.types import PoseBone, EditBone
 
 
@@ -11,19 +10,28 @@ def trimString(string, size):
 
 def getRenamingList(context, overrideSelection=False):
     scene = context.scene
+    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+
     renamingList = []
     switchEditMode = False
 
     onlySelection = scene.renaming_only_selection
+    useObjectOrder = prefs.renamingPanel_useObjectOrder
+
     if overrideSelection == True:
         onlySelection = False
 
     if scene.renaming_object_types == 'OBJECT':
         if onlySelection == True:
-            ordered_selection = get_ordered_selection_objects()
-            for obj in ordered_selection:
-                if obj.type in scene.renaming_object_types_specified:
-                    renamingList.append(obj)
+            if useObjectOrder:
+                ordered_selection = get_ordered_selection_objects()
+                for obj in ordered_selection:
+                    if obj.type in scene.renaming_object_types_specified:
+                        renamingList.append(obj)
+            else:
+                for obj in context.selected_objects:
+                    if obj.type in scene.renaming_object_types_specified:
+                        renamingList.append(obj)
         else:
             for obj in bpy.data.objects:
                 if obj.type in scene.renaming_object_types_specified:
@@ -165,15 +173,6 @@ def getRenamingList(context, overrideSelection=False):
             for uv in obj.data.uv_layers:
                 renamingList.append(uv)
 
-    elif context.scene.renaming_object_types == 'FACEMAPS':
-        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
-
-        for obj in obj_list:
-            if obj.type != 'MESH':
-                continue
-            for face_map in obj.face_maps:
-                renamingList.append(face_map)
-
     elif context.scene.renaming_object_types == 'COLORATTRIBUTES':
         obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 
@@ -213,9 +212,9 @@ def getRenamingList(context, overrideSelection=False):
 
 def callRenamingPopup(context):
     preferences = context.preferences
-    addon_prefs = preferences.addons[__package__].preferences
+    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
 
-    if addon_prefs.renamingPanel_showPopup == True:
+    if prefs.renamingPanel_showPopup == True:
         bpy.ops.wm.call_panel(name="POPUP_PT_popup")
     return
 
@@ -228,7 +227,6 @@ def callInfoPopup(context):
 def callErrorPopup(context):
     bpy.ops.wm.call_panel(name="POPUP_PT_error")
     return
-
 
 def get_ordered_selection_objects():
     tagged_objects = []
@@ -267,24 +265,7 @@ def update_selection_order():
             selection_order.append(o)
 
 
-# persistent is needed for handler to work in addons https://docs.blender.org/api/current/bpy.app.handlers.html
-@persistent
-def PostChange(scene):
-    if bpy.context.mode != "OBJECT":
-        return
-    is_selection_update = any(
-        not u.is_updated_geometry
-        and not u.is_updated_transform
-        and not u.is_updated_shading
-        for u in bpy.context.view_layer.depsgraph.updates
-    )
-    if is_selection_update:
-        update_selection_order()
 
 
-def register():
-    bpy.app.handlers.depsgraph_update_post.append(PostChange)
 
 
-def unregister():
-    bpy.app.handlers.depsgraph_update_post.remove(PostChange)

@@ -138,22 +138,3 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
         wm.renaming_messages.clear()
 
 
-classes = (
-    VIEW3D_PT_error_popup,
-    VIEW3D_PT_info_popup,
-    VIEW3D_PT_renaming_popup,
-)
-
-
-def register():
-    from bpy.utils import register_class
-
-    for cls in classes:
-        register_class(cls)
-
-
-def unregister():
-    from bpy.utils import unregister_class
-
-    for cls in reversed(classes):
-        unregister_class(cls)
