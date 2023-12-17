@@ -13,13 +13,49 @@ keymaps_items_dict = {
                                 'Outliner', 'OUTLINER', 'WINDOW',
                                 'F2', 'PRESS', True, False, False
                                 ]
-    }
+}
+
+
+class BUTTON_OT_change_key(bpy.types.Operator):
+    """UI button to assign a new key to a addon hotkey"""
+    bl_idname = "rename.key_selection_button"
+    bl_label = "Press the button you want to assign to this operation."
+    bl_options = {'REGISTER', 'INTERNAL'}
+
+    property_prefix: bpy.props.StringProperty()
+
+    def __init__(self):
+        self.my_event = ''
+
+    def invoke(self, context, event):
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        self.prefs = prefs
+        setattr(prefs, f'{self.property_prefix}_type', "NONE")
+
+        context.window_manager.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+
+    def modal(self, context, event):
+        self.my_event = 'NONE'
+
+        if event.type and event.value == 'RELEASE':  # Apply
+            self.my_event = event.type
+
+            setattr(self.prefs, f'{self.property_prefix}_type', self.my_event)
+            self.execute(context)
+            return {'FINISHED'}
+
+        return {'RUNNING_MODAL'}
+
+    def execute(self, context):
+        self.report({'INFO'},
+                    "Key change: " + bpy.types.Event.bl_rna.properties['type'].enum_items[self.my_event].name)
+        return {'FINISHED'}
 
 
 def add_keymap():
     km = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name="Window")
     prefs = bpy.context.preferences.addons[__package__.split('.')[0]].preferences
-
 
     kmi = km.keymap_items.new(idname='wm.call_panel', type=prefs.renaming_panel_type, value='PRESS',
                               ctrl=prefs.renaming_panel_ctrl, shift=prefs.renaming_panel_shift,
@@ -64,7 +100,7 @@ def remove_keymap():
 
 class REMOVE_OT_hotkey(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "collision.remove_hotkey"
+    bl_idname = "rename.remove_hotkey"
     bl_label = "Remove hotkey"
     bl_description = "Remove hotkey"
     bl_options = {'REGISTER', 'INTERNAL'}

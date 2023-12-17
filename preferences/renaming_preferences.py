@@ -16,11 +16,13 @@ def label_multiline(context, text, parent):
     for text_line in text_lines:
         parent.label(text=text_line)
 
-def add_key(km, idname, properties_name, collision_pie_type, collision_pie_ctrl, collision_pie_shift, collision_pie_alt, collision_pie_active):
-    kmi = km.keymap_items.new(idname=idname, type=collision_pie_type, value='PRESS',
-                              ctrl=collision_pie_ctrl, shift=collision_pie_shift, alt=collision_pie_alt)
+
+def add_key(km, idname, properties_name, button_assignment_type, button_assignment_ctrl, button_assignment_shift,
+            button_assignment_alt, button_assignment_active):
+    kmi = km.keymap_items.new(idname=idname, type=button_assignment_type, value='PRESS',
+                              ctrl=button_assignment_ctrl, shift=button_assignment_shift, alt=button_assignment_alt)
     kmi.properties.name = properties_name
-    kmi.active = collision_pie_active
+    kmi.active = button_assignment_active
 
 
 def update_key(context, operation, operator_name, property_prefix):
@@ -28,10 +30,14 @@ def update_key(context, operation, operator_name, property_prefix):
     wm = context.window_manager
     km = wm.keyconfigs.addon.keymaps["Window"]
 
+    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+
     # Remove previous key assignment
     remove_key(context, operation, operator_name)
-    add_key(km, operation, operator_name, f'{property_prefix}_type',
-            f'{property_prefix}_ctrl', f'{property_prefix}_shift', f'{property_prefix}_alt', f'{property_prefix}_active')
+
+    add_key(km, operation, operator_name, getattr(prefs, f'{property_prefix}_type'),
+            getattr(prefs, f'{property_prefix}_ctrl'), getattr(prefs, f'{property_prefix}_shift'),
+            getattr(prefs, f'{property_prefix}_alt'), getattr(prefs, f'{property_prefix}_active'))
 
 
 def update_renaming_key(self, context):
@@ -42,43 +48,42 @@ def update_suf_pre_key(self, context):
     update_key(context, 'wm.call_panel', "VIEW3D_PT_tools_type_suffix", "renaming_suf_pre")
 
 
-
-
-
-
 def update_panel_category(self, context):
-    is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_renaming_panel')
-    if is_panel:
+    '''Update panel tab for collider tools'''
+
+    panels = [
+        VIEW3D_PT_tools_renaming_panel,
+        VIEW3D_PT_tools_type_suffix,
+    ]
+
+    for panel in panels:
         try:
-            bpy.utils.unregister_class(VIEW3D_PT_tools_renaming_panel)
+            bpy.utils.unregister_class(panel)
         except:
             pass
 
-    is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_type_suffix')
-    VIEW3D_PT_tools_renaming_panel.bl_category = context.preferences.addons[__package__].preferences.renaming_category
-    bpy.utils.register_class(VIEW3D_PT_tools_renaming_panel)
-
-    if is_panel:
-        try:
-            bpy.utils.unregister_class(VIEW3D_PT_tools_type_suffix)
-        except:
-            pass
-    VIEW3D_PT_tools_type_suffix.bl_category = context.preferences.addons[__package__].preferences.renaming_category
-    bpy.utils.register_class(VIEW3D_PT_tools_type_suffix)
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        panel.bl_category = prefs.renaming_category
+        bpy.utils.register_class(panel)
     return
 
 
-def update_panel_category_vallidation(self, context):
-    is_panel = hasattr(bpy.types, 'VIEW3D_PT_vallidation')
+def update_vallidate_panel_category(self, context):
+    '''Update panel tab for collider tools'''
 
-    if is_panel:
+    panels = [
+        VIEW3D_PT_vallidation,
+    ]
+
+    for panel in panels:
         try:
-            bpy.utils.unregister_class(VIEW3D_PT_vallidation)
+            bpy.utils.unregister_class(panel)
         except:
             pass
 
-    VIEW3D_PT_vallidation.bl_category = context.preferences.addons[__package__].preferences.vallidation_category
-    bpy.utils.register_class(VIEW3D_PT_vallidation)
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        panel.bl_category = prefs.vallidation_category
+        bpy.utils.register_class(panel)
     return
 
 
@@ -98,12 +103,12 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     bl_idname = __package__.split('.')[0]
     bl_options = {'REGISTER'}
 
-    prefs_tabs: EnumProperty(items=(('ui', "General", "General Settings"),
-                                    ('keymaps', "Keymaps", "Keymaps"),
-                                    ('validate', "Validate", "Validate (experimental)"),
+    prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
+                                    ('KEYMAPS', "Keymaps", "Keymaps"),
+                                    ('VALIDATE', "Validate", "Validate (experimental)")
                                     ('SUPPORT', "Support", "Support"),
                                     ),
-                             default='ui')
+                             default='UI')
 
     renaming_category: StringProperty(name="Category",
                                       description="Defines in which category of the tools panel the simple renaimg panel is listed",
@@ -190,7 +195,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     vallidation_category: StringProperty(name="Category",
                                          description="Defines in which category of the tools panel the simple renaimg vallidation panel is listed",
                                          default='Rename',
-                                         update=update_panel_category_vallidation)  # update = update_panel_position,
+                                         update=update_vallidate_panel_category)  # update = update_panel_position,
 
     regex_Mesh: bpy.props.StringProperty(
         name="Naming Regex",
@@ -242,7 +247,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         "renaming_user2",
         "renaming_user3"
     ]
-
 
     renaming_panel_type: bpy.props.StringProperty(
         name="Renaming Popup",
@@ -322,10 +326,10 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             else 'Press a key'
         )
 
-        op = row.operator("collider.key_selection_button", text=text)
-        op.menu_id = property_prefix
+        op = row.operator("rename.key_selection_button", text=text)
+        op.property_prefix = property_prefix
         # row.prop(self, f'{property_prefix}_type', text="")
-        op = row.operator("collision.remove_hotkey", text="", icon="X")
+        op = row.operator("rename.remove_hotkey", text="", icon="X")
         op.idname = id_name
         op.properties_name = properties_name
         op.property_prefix = property_prefix
@@ -345,7 +349,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         row = layout.row(align=True)
         row.prop(self, "prefs_tabs", expand=True)
 
-        if self.prefs_tabs == 'ui':
+        # Genral settings regarding renaming
+        if self.prefs_tabs == 'UI':
             for propName in self.props_general:
                 row = layout.row()
                 row.prop(self, propName)
@@ -371,19 +376,26 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 row = box.row()
                 row.prop(self, propName)
 
-        elif self.prefs_tabs == 'keymaps':
+        # Settings regarding the keymap
+        if self.prefs_tabs == 'KEYMAPS':
+          
             self.keymap_ui(layout, 'Renaming Panel', 'renaming_panel',
                            'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
             self.keymap_ui(layout, 'Renaming Sub/Prefix', 'renaming_suf_pre',
                            'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
 
-
-        elif self.prefs_tabs == 'validate':
-            box = layout.box()
-            row = box.row()
+        # Settings regarding the vallidation.
+        if self.prefs_tabs == 'VALIDATE':
+            row = layout.row()
             row.prop(self, "renaming_show_validation", expand=True)
-            row = box.row()
+            row = layout.row()
             row.prop(self, "vallidation_category", expand=True)
+
+        elif self.prefs_tabs == 'VALIDATE':
+            box = layout.box()
+
+            row = box.row()
+            row.label(text="Vallidation Regex")
             row = box.row()
             row.prop(self, "regex_Mesh", expand=True)
             row = box.row()
@@ -406,3 +418,4 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
 
             row.operator("wm.url_open", text="Collider Tools").url = "https://blendermarket.com/products/collider-tools"
+

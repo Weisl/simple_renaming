@@ -1,6 +1,3 @@
-import bpy
-
-
 class MESSAGE():
     '''messages parent class'''
     message = []
