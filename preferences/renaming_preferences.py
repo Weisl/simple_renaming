@@ -36,43 +36,43 @@ def update_suf_pre_key(self, context):
 
 
 
-
-
 def update_panel_category(self, context):
-    is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_renaming_panel')
-    if is_panel:
+    '''Update panel tab for collider tools'''
+
+    panels = [
+        VIEW3D_PT_tools_renaming_panel,
+        VIEW3D_PT_tools_type_suffix,
+    ]
+
+    for panel in panels:
         try:
-            bpy.utils.unregister_class(VIEW3D_PT_tools_renaming_panel)
+            bpy.utils.unregister_class(panel)
         except:
             pass
 
-    is_panel = hasattr(bpy.types, 'VIEW3D_PT_tools_type_suffix')
-    VIEW3D_PT_tools_renaming_panel.bl_category = context.preferences.addons[__package__].preferences.renaming_category
-    bpy.utils.register_class(VIEW3D_PT_tools_renaming_panel)
-
-    if is_panel:
-        try:
-            bpy.utils.unregister_class(VIEW3D_PT_tools_type_suffix)
-        except:
-            pass
-    VIEW3D_PT_tools_type_suffix.bl_category = context.preferences.addons[__package__].preferences.renaming_category
-    bpy.utils.register_class(VIEW3D_PT_tools_type_suffix)
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        panel.bl_category = prefs.renaming_category
+        bpy.utils.register_class(panel)
     return
 
+def update_vallidate_panel_category(self, context):
+    '''Update panel tab for collider tools'''
 
-def update_panel_category_vallidation(self, context):
-    is_panel = hasattr(bpy.types, 'VIEW3D_PT_vallidation')
+    panels = [
+        VIEW3D_PT_vallidation,
+    ]
 
-    if is_panel:
+
+    for panel in panels:
         try:
-            bpy.utils.unregister_class(VIEW3D_PT_vallidation)
+            bpy.utils.unregister_class(panel)
         except:
             pass
 
-    VIEW3D_PT_vallidation.bl_category = context.preferences.addons[__package__].preferences.vallidation_category
-    bpy.utils.register_class(VIEW3D_PT_vallidation)
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        panel.bl_category = prefs.vallidation_category
+        bpy.utils.register_class(panel)
     return
-
 
 def toggle_validation_panel(self, context):
     if self.renaming_show_validation:
@@ -181,7 +181,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     vallidation_category: StringProperty(name="Category",
                                          description="Defines in which category of the tools panel the simple renaimg vallidation panel is listed",
                                          default='Rename',
-                                         update=update_panel_category_vallidation)  # update = update_panel_position,
+                                         update=update_vallidate_panel_category)  # update = update_panel_position,
 
     regex_Mesh: bpy.props.StringProperty(
         name="Naming Regex",
@@ -370,11 +370,16 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
 
         if self.prefs_tabs == 'validate':
-            box = layout.box()
-            row = box.row()
+
+            row = layout.row()
             row.prop(self, "renaming_show_validation", expand=True)
-            row = box.row()
+            row = layout.row()
             row.prop(self, "vallidation_category", expand=True)
+
+            box = layout.box()
+
+            row = box.row()
+            row.label(text="Vallidation Regex")
             row = box.row()
             row.prop(self, "regex_Mesh", expand=True)
             row = box.row()

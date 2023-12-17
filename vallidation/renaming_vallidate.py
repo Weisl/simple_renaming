@@ -38,7 +38,7 @@ class VIEW3D_OT_Validate(bpy.types.Operator):
 # addon Panel
 class VIEW3D_PT_vallidation(bpy.types.Panel):
     """Creates a renaming Panel"""
-    bl_label = "Rename"
+    bl_label = "Name Vallidation"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Vallidation"
