@@ -105,9 +105,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
                                     ('KEYMAPS', "Keymaps", "Keymaps"),
-                                    ('VALIDATE', "Validate", "Validate (experimental)")
-                                    ('SUPPORT', "Support", "Support"),
-                                    ),
+                                    ('VALIDATE', "Validate", "Validate"),
+                                    ('SUPPORT', "Support", "Support")),
                              default='UI')
 
     renaming_category: StringProperty(name="Category",
@@ -404,7 +403,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
         elif self.prefs_tabs == 'SUPPORT':
             box = layout.box()
-            text = "Please support me by donating for this addon .
+            text = "Please support me by donating for this addon."
             label_multiline(
                 context=context,
                 text=text,
