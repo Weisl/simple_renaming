@@ -8,6 +8,7 @@ classes = (
     renaming_preferences.VIEW3D_OT_renaming_preferences,
     renaming_keymap.RENAMING_OT_add_hotkey_renaming,
     renaming_keymap.REMOVE_OT_hotkey,
+    renaming_keymap.BUTTON_OT_change_key,
 )
 
 def register():

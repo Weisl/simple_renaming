@@ -15,6 +15,33 @@ keymaps_items_dict = {
                                 ]
     }
 
+class BUTTON_OT_change_key(bpy.types.Operator):
+    """UI button to assign a new key to a addon hotkey"""
+    bl_idname = "rename.key_selection_button"
+    bl_label = "Press the button you want to assign to this operation."
+    bl_options = {'REGISTER','INTERNAL'}
+
+    menu_id: bpy.props.StringProperty()
+
+    def __init__(self):
+        self.my_event = ''
+
+    def invoke(self, context, event):
+        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        self.prefs = prefs
+        self.my_type = ''
+        if self.menu_id == 'collision_pie':
+            self.my_type = self.prefs.collision_pie_type
+            self.prefs.collision_pie_type = 'NONE'
+        elif self.menu_id == 'collision_material':
+            self.my_type = self.prefs.collision_material_type
+            self.prefs.collision_material_type = 'NONE'
+        elif self.menu_id == 'collision_visibility':
+            self.my_type = self.prefs.collision_visibility_type
+            self.prefs.collision_visibility_type = 'NONE'
+
+        context.window_manager.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
 
 def add_keymap():
     km = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name="Window")
@@ -62,9 +89,12 @@ def remove_keymap():
             km.keymap_items.remove(kmi)
 
 
+
+
+
 class REMOVE_OT_hotkey(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "collision.remove_hotkey"
+    bl_idname = "rename.remove_hotkey"
     bl_label = "Remove hotkey"
     bl_description = "Remove hotkey"
     bl_options = {'REGISTER', 'INTERNAL'}

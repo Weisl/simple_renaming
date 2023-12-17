@@ -313,10 +313,10 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             else 'Press a key'
         )
 
-        op = row.operator("collider.key_selection_button", text=text)
+        op = row.operator("rename.key_selection_button", text=text)
         op.menu_id = property_prefix
         # row.prop(self, f'{property_prefix}_type', text="")
-        op = row.operator("collision.remove_hotkey", text="", icon="X")
+        op = row.operator("rename.remove_hotkey", text="", icon="X")
         op.idname = id_name
         op.properties_name = properties_name
         op.property_prefix = property_prefix
