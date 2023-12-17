@@ -27,6 +27,7 @@ bl_info = {
     "location": "View3D > Tools ",
     "warning": "",
     "wiki_url": "https://weisl.github.io/renaming/",
+    "doc_url": "https://weisl.github.io/renaming/",
     "tracker_url": "https://github.com/Weisl/simple_renaming_panel/issues",
     "support": "COMMUNITY",
     "category": "Scene"
