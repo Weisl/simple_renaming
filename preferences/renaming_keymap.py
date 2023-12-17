@@ -13,15 +13,16 @@ keymaps_items_dict = {
                                 'Outliner', 'OUTLINER', 'WINDOW',
                                 'F2', 'PRESS', True, False, False
                                 ]
-    }
+}
+
 
 class BUTTON_OT_change_key(bpy.types.Operator):
     """UI button to assign a new key to a addon hotkey"""
     bl_idname = "rename.key_selection_button"
     bl_label = "Press the button you want to assign to this operation."
-    bl_options = {'REGISTER','INTERNAL'}
+    bl_options = {'REGISTER', 'INTERNAL'}
 
-    menu_id: bpy.props.StringProperty()
+    property_prefix: bpy.props.StringProperty()
 
     def __init__(self):
         self.my_event = ''
@@ -29,24 +30,32 @@ class BUTTON_OT_change_key(bpy.types.Operator):
     def invoke(self, context, event):
         prefs = context.preferences.addons[__package__.split('.')[0]].preferences
         self.prefs = prefs
-        self.my_type = ''
-        if self.menu_id == 'collision_pie':
-            self.my_type = self.prefs.collision_pie_type
-            self.prefs.collision_pie_type = 'NONE'
-        elif self.menu_id == 'collision_material':
-            self.my_type = self.prefs.collision_material_type
-            self.prefs.collision_material_type = 'NONE'
-        elif self.menu_id == 'collision_visibility':
-            self.my_type = self.prefs.collision_visibility_type
-            self.prefs.collision_visibility_type = 'NONE'
+        setattr(prefs, f'{self.property_prefix}_type', "NONE")
 
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
 
+    def modal(self, context, event):
+        self.my_event = 'NONE'
+
+        if event.type and event.value == 'RELEASE':  # Apply
+            self.my_event = event.type
+
+            setattr(self.prefs, f'{self.property_prefix}_type', self.my_event)
+            self.execute(context)
+            return {'FINISHED'}
+
+        return {'RUNNING_MODAL'}
+
+    def execute(self, context):
+        self.report({'INFO'},
+                    "Key change: " + bpy.types.Event.bl_rna.properties['type'].enum_items[self.my_event].name)
+        return {'FINISHED'}
+
+
 def add_keymap():
     km = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name="Window")
     prefs = bpy.context.preferences.addons[__package__.split('.')[0]].preferences
-
 
     kmi = km.keymap_items.new(idname='wm.call_panel', type=prefs.renaming_panel_type, value='PRESS',
                               ctrl=prefs.renaming_panel_ctrl, shift=prefs.renaming_panel_shift,
@@ -87,9 +96,6 @@ def remove_keymap():
                                                                        'VIEW3D_PT_collision_visibility_panel',
                                                                        'VIEW3D_PT_collision_material_panel']:
             km.keymap_items.remove(kmi)
-
-
-
 
 
 class REMOVE_OT_hotkey(bpy.types.Operator):

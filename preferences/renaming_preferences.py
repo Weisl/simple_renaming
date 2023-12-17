@@ -315,7 +315,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         )
 
         op = row.operator("rename.key_selection_button", text=text)
-        op.menu_id = property_prefix
+        op.property_prefix = property_prefix
         # row.prop(self, f'{property_prefix}_type', text="")
         op = row.operator("rename.remove_hotkey", text="", icon="X")
         op.idname = id_name
