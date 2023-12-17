@@ -11,19 +11,28 @@ def trimString(string, size):
 
 def getRenamingList(context, overrideSelection=False):
     scene = context.scene
+    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+
     renamingList = []
     switchEditMode = False
 
     onlySelection = scene.renaming_only_selection
+    useObjectOrder = prefs.renamingPanel_useObjectOrder
+
     if overrideSelection == True:
         onlySelection = False
 
     if scene.renaming_object_types == 'OBJECT':
         if onlySelection == True:
-            ordered_selection = get_ordered_selection_objects()
-            for obj in ordered_selection:
-                if obj.type in scene.renaming_object_types_specified:
-                    renamingList.append(obj)
+            if useObjectOrder:
+                ordered_selection = get_ordered_selection_objects()
+                for obj in ordered_selection:
+                    if obj.type in scene.renaming_object_types_specified:
+                        renamingList.append(obj)
+            else:
+                for obj in context.selected_objects:
+                    if obj.type in scene.renaming_object_types_specified:
+                        renamingList.append(obj)
         else:
             for obj in bpy.data.objects:
                 if obj.type in scene.renaming_object_types_specified:
@@ -165,15 +174,6 @@ def getRenamingList(context, overrideSelection=False):
             for uv in obj.data.uv_layers:
                 renamingList.append(uv)
 
-    elif context.scene.renaming_object_types == 'FACEMAPS':
-        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
-
-        for obj in obj_list:
-            if obj.type != 'MESH':
-                continue
-            for face_map in obj.face_maps:
-                renamingList.append(face_map)
-
     elif context.scene.renaming_object_types == 'COLORATTRIBUTES':
         obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 
@@ -213,9 +213,9 @@ def getRenamingList(context, overrideSelection=False):
 
 def callRenamingPopup(context):
     preferences = context.preferences
-    addon_prefs = preferences.addons[__package__].preferences
+    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
 
-    if addon_prefs.renamingPanel_showPopup == True:
+    if prefs.renamingPanel_showPopup == True:
         bpy.ops.wm.call_panel(name="POPUP_PT_popup")
     return
 

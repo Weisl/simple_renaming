@@ -1,6 +1,3 @@
-import bpy
-
-
 class MESSAGE():
     '''messages parent class'''
     message = []
@@ -58,16 +55,3 @@ class RENAMING_MESSAGES(MESSAGE):
         return
 
 
-def register():
-    IDStore = bpy.types.Scene
-
-    IDStore.renaming_messages = RENAMING_MESSAGES()
-    IDStore.renaming_error_messages = WarningError_MESSAGES()
-    IDStore.renaming_info_messages = INFO_MESSAGES()
-
-
-def unregister():
-    IDStore = bpy.types.Scene
-    del IDStore.renaming_messages
-    del IDStore.renaming_error_messages
-    del IDStore.renaming_info_messages
