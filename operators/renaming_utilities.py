@@ -1,5 +1,4 @@
 import bpy
-from bpy.app.handlers import persistent
 from bpy.types import PoseBone, EditBone
 
 
@@ -229,7 +228,6 @@ def callErrorPopup(context):
     bpy.ops.wm.call_panel(name="POPUP_PT_error")
     return
 
-
 def get_ordered_selection_objects():
     tagged_objects = []
     for o in bpy.data.objects:
@@ -267,24 +265,7 @@ def update_selection_order():
             selection_order.append(o)
 
 
-# persistent is needed for handler to work in addons https://docs.blender.org/api/current/bpy.app.handlers.html
-@persistent
-def PostChange(scene):
-    if bpy.context.mode != "OBJECT":
-        return
-    is_selection_update = any(
-        not u.is_updated_geometry
-        and not u.is_updated_transform
-        and not u.is_updated_shading
-        for u in bpy.context.view_layer.depsgraph.updates
-    )
-    if is_selection_update:
-        update_selection_order()
 
 
-def register():
-    bpy.app.handlers.depsgraph_update_post.append(PostChange)
 
 
-def unregister():
-    bpy.app.handlers.depsgraph_update_post.remove(PostChange)

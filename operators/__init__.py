@@ -6,6 +6,8 @@ from bpy.props import (
     IntProperty,
 )
 
+from bpy.app.handlers import persistent
+
 from . import add_pre_suffix
 from . import name_from_data
 from . import name_replace
@@ -13,6 +15,7 @@ from . import numerate
 from . import search_replace
 from . import search_select
 from . import trim_string
+from .renaming_utilities import update_selection_order
 
 enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1),
                    ('MESH', "", "Rename mesh objects", 'OUTLINER_OB_MESH', 2),
@@ -71,6 +74,23 @@ classes = (
 )
 
 
+# persistent is needed for handler to work in addons https://docs.blender.org/api/current/bpy.app.handlers.html
+@persistent
+def PostChange(scene):
+    if bpy.context.mode != "OBJECT":
+        return
+
+    #The any() function returns True if any element of an iterable is True. If not, it returns False.
+    is_selection_update = any(
+        not u.is_updated_geometry
+        and not u.is_updated_transform
+        and not u.is_updated_shading
+        for u in bpy.context.view_layer.depsgraph.updates
+    )
+    if is_selection_update:
+        update_selection_order()
+
+
 def register():
     IDStore = bpy.types.Scene
 
@@ -121,6 +141,11 @@ def register():
         register_class(cls)
 
 
+    bpy.app.handlers.depsgraph_update_post.append(PostChange)
+
+
+
+
 def unregister():
     from bpy.utils import unregister_class
 
@@ -139,3 +164,5 @@ def unregister():
     del IDStore.renaming_base_numerate
     del IDStore.renaming_digits_numerate
     del IDStore.renaming_cut_size
+
+    bpy.app.handlers.depsgraph_update_post.remove(PostChange)

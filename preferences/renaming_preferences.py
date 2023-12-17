@@ -402,6 +402,25 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
 
         elif self.prefs_tabs == 'SUPPORT':
+            text = "Support me developing great tools!"
+            label_multiline(
+                context=context,
+                text=text,
+                parent=layout
+            )
+            box = layout.box()
+            text = "Check out my other Blender Addons providing more efficient workflows for game asset creation."
+            label_multiline(
+                context=context,
+                text=text,
+                parent=box
+            )
+            box = layout.box()
+            row = box.row()
+            row.operator("wm.url_open", text="Collider Tools").url = "https://blendermarket.com/products/collider-tools"
+            row = box.row()
+            row.operator("wm.url_open", text="Cam-Manager").url = "https://blendermarket.com/products/cam-manager"
+
             box = layout.box()
             text = "Please support me by donating for this addon."
             label_multiline(
@@ -410,11 +429,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 parent=box
             )
             row = box.row()
-
             row.operator("wm.url_open", text="Gumroad").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
+            row = box.row()
+            row.operator("wm.url_open", text="PayPal").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
+            row = box.row()
             row.operator("wm.url_open", text="Blender Market (TODO)").url = "https://blendermarket.com/products/collider-tools"
 
 
-
-            row.operator("wm.url_open", text="Collider Tools").url = "https://blendermarket.com/products/collider-tools"
 
