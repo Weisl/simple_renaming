@@ -22,12 +22,21 @@ def getRenamingList(context):
         selection = context.selected_objects.copy()
 
         if onlySelection == True:
-            if useObjectOrder:
+            if scene.renaming_sorting:
+                if scene.renaming_sort_enum == 'SELECTION':
+                    ordered_selection = get_ordered_selection_objects()
+                elif scene.renaming_sort_enum == 'X':
+                    ordered_selection = get_sorted_objects_x(selection)
+                elif scene.renaming_sort_enum == 'Y':
+                    ordered_selection = get_sorted_objects_y(selection)
+                else: # scene.renaming_sort_enum == 'Z':
+                    ordered_selection = get_sorted_objects_z(selection)
 
-                ordered_selection = get_ordered_selection_objects()
                 for obj in ordered_selection:
                     if obj in selection and obj.type in scene.renaming_object_types_specified:
                         renamingList.append(obj)
+
+
             else:
                 for obj in selection:
                     if obj.type in scene.renaming_object_types_specified:
@@ -228,6 +237,21 @@ def callErrorPopup(context):
     bpy.ops.wm.call_panel(name="POPUP_PT_error")
     return
 
+
+# Function to get the global X location of an object
+def get_global_x(obj):
+    return obj.matrix_world.to_translation().x
+
+
+# Function to get the global X location of an object
+def get_global_y(obj):
+    return obj.matrix_world.to_translation().y
+
+
+def get_global_z(obj):
+    return obj.matrix_world.to_translation().z
+
+
 def get_ordered_selection_objects():
     tagged_objects = []
     for o in bpy.data.objects:
@@ -236,6 +260,24 @@ def get_ordered_selection_objects():
             tagged_objects.append((order_index, o))
     tagged_objects = sorted(tagged_objects, key=lambda item: item[0])
     return [o for i, o in tagged_objects]
+
+
+def get_sorted_objects_x(objects):
+    # Sort objects by their global X location
+    sorted_objects = sorted(objects, key=get_global_x)
+    return sorted_objects
+
+
+def get_sorted_objects_y(objects):
+    # Sort objects by their global X location
+    sorted_objects = sorted(objects, key=get_global_y)
+    return sorted_objects
+
+
+def get_sorted_objects_z(objects):
+    # Sort objects by their global X location
+    sorted_objects = sorted(objects, key=get_global_z)
+    return sorted_objects
 
 
 def clear_order_flag(obj):
@@ -263,9 +305,3 @@ def update_selection_order():
         if o not in selection_order:
             o["selection_order"] = len(selection_order)
             selection_order.append(o)
-
-
-
-
-
-
