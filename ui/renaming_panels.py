@@ -34,10 +34,13 @@ def drawAdvancedUI(layout, context):
             row = layout.row(align=True)
             row.prop(scene, "renaming_only_selection", text="Only Selected")
         else:
-            row = layout.row(align=True)
+            col = layout.column(align=True)
+            row = col.row(align=True)
             row.enabled = False
             row.prop(scene, "renaming_only_selection", text="Only Selected")
-
+            row = col.row(align=True)
+            row.enabled = False
+            row.label(text="Open from Outliner", icon="ERROR" )
     layout.label(text="Rename")
 
     ###### NEW NAME #######
