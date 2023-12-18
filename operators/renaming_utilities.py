@@ -8,7 +8,7 @@ def trimString(string, size):
     return ''.join(list2)
 
 
-def getRenamingList(context, overrideSelection=False):
+def getRenamingList(context):
     scene = context.scene
     prefs = context.preferences.addons[__package__.split('.')[0]].preferences
 
@@ -17,10 +17,6 @@ def getRenamingList(context, overrideSelection=False):
 
     onlySelection = scene.renaming_only_selection
     useObjectOrder = prefs.renamingPanel_useObjectOrder
-
-    if overrideSelection == True:
-        onlySelection = False
-
 
     if scene.renaming_object_types == 'OBJECT':
         selection = context.selected_objects.copy()
