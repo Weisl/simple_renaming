@@ -21,15 +21,19 @@ def getRenamingList(context, overrideSelection=False):
     if overrideSelection == True:
         onlySelection = False
 
+
     if scene.renaming_object_types == 'OBJECT':
+        selection = context.selected_objects.copy()
+
         if onlySelection == True:
             if useObjectOrder:
+
                 ordered_selection = get_ordered_selection_objects()
                 for obj in ordered_selection:
-                    if obj.type in scene.renaming_object_types_specified:
+                    if obj in selection and obj.type in scene.renaming_object_types_specified:
                         renamingList.append(obj)
             else:
-                for obj in context.selected_objects:
+                for obj in selection:
                     if obj.type in scene.renaming_object_types_specified:
                         renamingList.append(obj)
         else:
