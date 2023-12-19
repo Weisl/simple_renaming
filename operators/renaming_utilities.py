@@ -17,7 +17,7 @@ def getRenamingList(context):
 
     onlySelection = scene.renaming_only_selection
 
-    obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
+    obj_list = context.selected_objects.copy() if onlySelection == True else list(bpy.data.objects).copy()
 
     if scene.renaming_sorting:
         if scene.renaming_sort_enum == 'SELECTION':
@@ -30,10 +30,9 @@ def getRenamingList(context):
             obj_list = get_sorted_objects_z(obj_list)
 
     if scene.renaming_object_types == 'OBJECT':
-        if scene.renaming_sorting:
-            for obj in obj_list:
-                if obj in obj_list and obj.type in scene.renaming_object_types_specified:
-                    renamingList.append(obj)
+        for obj in obj_list:
+            if obj in obj_list and obj.type in scene.renaming_object_types_specified:
+                renamingList.append(obj)
 
     elif scene.renaming_object_types == 'DATA':
         for obj in obj_list:
