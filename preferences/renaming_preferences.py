@@ -6,7 +6,7 @@ from bpy.props import (
 )
 
 from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
-from ..vallidation.renaming_vallidate import VIEW3D_PT_vallidation
+#from ..vallidation.renaming_vallidate import VIEW3D_PT_vallidation
 from .renaming_keymap import remove_key
 
 def label_multiline(context, text, parent):
@@ -68,31 +68,31 @@ def update_panel_category(self, context):
     return
 
 
-def update_vallidate_panel_category(self, context):
-    '''Update panel tab for collider tools'''
+# def update_vallidate_panel_category(self, context):
+#     '''Update panel tab for collider tools'''
+#
+#     panels = [
+#         VIEW3D_PT_vallidation,
+#     ]
+#
+#     for panel in panels:
+#         try:
+#             bpy.utils.unregister_class(panel)
+#         except:
+#             pass
+#
+#         prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+#         panel.bl_category = prefs.vallidation_category
+#         bpy.utils.register_class(panel)
+#     return
 
-    panels = [
-        VIEW3D_PT_vallidation,
-    ]
 
-    for panel in panels:
-        try:
-            bpy.utils.unregister_class(panel)
-        except:
-            pass
-
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
-        panel.bl_category = prefs.vallidation_category
-        bpy.utils.register_class(panel)
-    return
-
-
-def toggle_validation_panel(self, context):
-    if self.renaming_show_validation:
-        bpy.utils.register_class(VIEW3D_PT_vallidation)
-    else:
-        bpy.utils.unregister_class(VIEW3D_PT_vallidation)
-    return
+# def toggle_validation_panel(self, context):
+#     if self.renaming_show_validation:
+#         bpy.utils.register_class(VIEW3D_PT_vallidation)
+#     else:
+#         bpy.utils.unregister_class(VIEW3D_PT_vallidation)
+#     return
 
 
 # addon Preferences
@@ -105,7 +105,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
                                     ('KEYMAPS', "Keymaps", "Keymaps"),
-                                    ('VALIDATE', "Validate", "Validate"),
+                                    # ('VALIDATE', "Validate", "Validate"),
                                     ('SUPPORT', "Support", "Support")),
                              default='UI')
 
@@ -185,17 +185,17 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         # update = update_panel_position,
     )
 
-    renaming_show_validation: bpy.props.BoolProperty(
-        name="Use Name Validation",
-        description="Enable or Disable Validation Panel",
-        default=False,
-        update=toggle_validation_panel)
+    # renaming_show_validation: bpy.props.BoolProperty(
+    #     name="Use Name Validation",
+    #     description="Enable or Disable Validation Panel",
+    #     default=False,
+    #     update=toggle_validation_panel)
 
-    vallidation_category: StringProperty(name="Category",
-                                         description="Defines in which category of the tools panel the simple renaimg vallidation panel is listed",
-                                         default='Rename',
-                                         update=update_vallidate_panel_category)  # update = update_panel_position,
-
+    # vallidation_category: StringProperty(name="Category",
+    #                                      description="Defines in which category of the tools panel the simple renaimg vallidation panel is listed",
+    #                                      default='Rename',
+    #                                      update=update_vallidate_panel_category)  # update = update_panel_position,
+    #
 
     regex_Mesh: bpy.props.StringProperty(
         name="Naming Regex",
@@ -429,7 +429,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = box.row()
             row.operator("wm.url_open", text="PayPal Donation").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
             row = box.row()
-            row.operator("wm.url_open", text="Blender Market (TODO)").url = "https://blendermarket.com/products/collider-tools"
+            row.operator("wm.url_open", text="Blender Market").url = "https://blendermarket.com/products/simple-renaming-panel"
 
 
 
