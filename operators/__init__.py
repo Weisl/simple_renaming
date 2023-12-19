@@ -121,7 +121,7 @@ def register():
 
     IDStore.renaming_sort_enum = EnumProperty(
         name="Sort by",
-        description="Sort",
+        description="Sort Objects based on following attribute",
         items=enum_sort_items,
         default='X',  # Set a default value
     )
@@ -134,7 +134,7 @@ def register():
     IDStore.renaming_numerate = StringProperty(name="Numerate", default='###')
 
     IDStore.renaming_sorting = bpy.props.BoolProperty(
-        name="Sort",
+        name="Sort Target Objects",
         description="Sort the entries for renaming",
         default=False,
     )
