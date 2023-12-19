@@ -8,7 +8,7 @@ def trimString(string, size):
     return ''.join(list2)
 
 
-def getRenamingList(context, overrideSelection=False):
+def getRenamingList(context):
     scene = context.scene
     prefs = context.preferences.addons[__package__.split('.')[0]].preferences
 
@@ -16,36 +16,29 @@ def getRenamingList(context, overrideSelection=False):
     switchEditMode = False
 
     onlySelection = scene.renaming_only_selection
-    useObjectOrder = prefs.renamingPanel_useObjectOrder
 
-    if overrideSelection == True:
-        onlySelection = False
+    obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
+
+    if scene.renaming_sorting:
+        if scene.renaming_sort_enum == 'SELECTION':
+            obj_list = get_ordered_selection_objects()
+        elif scene.renaming_sort_enum == 'X':
+            obj_list = get_sorted_objects_x(obj_list)
+        elif scene.renaming_sort_enum == 'Y':
+            obj_list = get_sorted_objects_y(obj_list)
+        else:  # scene.renaming_sort_enum == 'Z':
+            obj_list = get_sorted_objects_z(obj_list)
 
     if scene.renaming_object_types == 'OBJECT':
-        if onlySelection == True:
-            if useObjectOrder:
-                ordered_selection = get_ordered_selection_objects()
-                for obj in ordered_selection:
-                    if obj.type in scene.renaming_object_types_specified:
-                        renamingList.append(obj)
-            else:
-                for obj in context.selected_objects:
-                    if obj.type in scene.renaming_object_types_specified:
-                        renamingList.append(obj)
-        else:
-            for obj in bpy.data.objects:
-                if obj.type in scene.renaming_object_types_specified:
+        if scene.renaming_sorting:
+            for obj in obj_list:
+                if obj in obj_list and obj.type in scene.renaming_object_types_specified:
                     renamingList.append(obj)
 
     elif scene.renaming_object_types == 'DATA':
-        if onlySelection == True:
-            for obj in context.selected_objects:
-                if obj.data not in renamingList:
-                    renamingList.append(obj.data)
-        else:
-            for obj in bpy.data.objects:
-                if obj.data not in renamingList:
-                    renamingList.append(obj.data)
+        for obj in obj_list:
+            if obj.data not in renamingList:
+                renamingList.append(obj.data)
 
     elif scene.renaming_object_types == 'MATERIAL':
         if onlySelection == True:
@@ -165,7 +158,6 @@ def getRenamingList(context, overrideSelection=False):
             renamingList.append(particles)
 
     elif context.scene.renaming_object_types == 'UVMAPS':
-        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 
         for obj in obj_list:
             if obj.type != 'MESH':
@@ -174,7 +166,6 @@ def getRenamingList(context, overrideSelection=False):
                 renamingList.append(uv)
 
     elif context.scene.renaming_object_types == 'COLORATTRIBUTES':
-        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 
         for obj in obj_list:
             if obj.type != 'MESH':
@@ -183,7 +174,6 @@ def getRenamingList(context, overrideSelection=False):
                 renamingList.append(color_attribute)
 
     elif context.scene.renaming_object_types == 'ATTRIBUTES':
-        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 
         for obj in obj_list:
             if obj.type != 'MESH':
@@ -228,6 +218,21 @@ def callErrorPopup(context):
     bpy.ops.wm.call_panel(name="POPUP_PT_error")
     return
 
+
+# Function to get the global X location of an object
+def get_global_x(obj):
+    return obj.matrix_world.to_translation().x
+
+
+# Function to get the global X location of an object
+def get_global_y(obj):
+    return obj.matrix_world.to_translation().y
+
+
+def get_global_z(obj):
+    return obj.matrix_world.to_translation().z
+
+
 def get_ordered_selection_objects():
     tagged_objects = []
     for o in bpy.data.objects:
@@ -236,6 +241,24 @@ def get_ordered_selection_objects():
             tagged_objects.append((order_index, o))
     tagged_objects = sorted(tagged_objects, key=lambda item: item[0])
     return [o for i, o in tagged_objects]
+
+
+def get_sorted_objects_x(objects):
+    # Sort objects by their global X location
+    sorted_objects = sorted(objects, key=get_global_x)
+    return sorted_objects
+
+
+def get_sorted_objects_y(objects):
+    # Sort objects by their global X location
+    sorted_objects = sorted(objects, key=get_global_y)
+    return sorted_objects
+
+
+def get_sorted_objects_z(objects):
+    # Sort objects by their global X location
+    sorted_objects = sorted(objects, key=get_global_z)
+    return sorted_objects
 
 
 def clear_order_flag(obj):
@@ -263,9 +286,3 @@ def update_selection_order():
         if o not in selection_order:
             o["selection_order"] = len(selection_order)
             selection_order.append(o)
-
-
-
-
-
-

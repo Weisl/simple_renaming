@@ -34,9 +34,20 @@ def drawAdvancedUI(layout, context):
             row = layout.row(align=True)
             row.prop(scene, "renaming_only_selection", text="Only Selected")
         else:
-            row = layout.row(align=True)
+            col = layout.column(align=True)
+            row = col.row(align=True)
             row.enabled = False
             row.prop(scene, "renaming_only_selection", text="Only Selected")
+            row = col.row(align=True)
+            row.enabled = False
+            row.label(text="Open from Outliner", icon="ERROR" )
+
+    box = layout
+    col = box.column(align=True)
+    col.prop(scene, "renaming_sorting")
+    if scene.renaming_sorting:
+        col.prop(scene, "renaming_sort_enum", expand=True)
+
 
     layout.label(text="Rename")
 
@@ -261,7 +272,7 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
         row.operator('renaming.add_sufpre_by_type', text="Light Probes").option = 'lightprops'
 
         row = col.row()
-        row.operator('renaming.add_sufpre_by_type', text="All").option = 'all'
+        row.operator('renaming.add_sufpre_by_type', text="Rename All").option = 'all'
 
 
 class VIEW3D_OT_SetVariable(bpy.types.Operator):

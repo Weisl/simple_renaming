@@ -33,7 +33,6 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
         # get list of objects to be selected
         selectionList = []
 
-        # renamingList, switchEditMode = getRenamingList(context, overrideSelection = True)
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
         if errMsg != None:

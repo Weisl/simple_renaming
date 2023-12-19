@@ -73,6 +73,11 @@ classes = (
     name_from_data.VIEW3D_OT_use_objectname_for_data,
 )
 
+enum_sort_items = [('X', "X Axis", "Sort the object based on the X axis."),
+                   ('Y', "Y Axis", "Sort the object based on the Y axis."),
+                   ('Z', "Z Axis", "Sort the object based on the Z axis."),
+                   ('SELECTION', "Selection", "Sort the objects based on the selection order"), ]
+
 
 # persistent is needed for handler to work in addons https://docs.blender.org/api/current/bpy.app.handlers.html
 @persistent
@@ -80,7 +85,7 @@ def PostChange(scene):
     if bpy.context.mode != "OBJECT":
         return
 
-    #The any() function returns True if any element of an iterable is True. If not, it returns False.
+    # The any() function returns True if any element of an iterable is True. If not, it returns False.
     is_selection_update = any(
         not u.is_updated_geometry
         and not u.is_updated_transform
@@ -114,12 +119,25 @@ def register():
                                                                     'FONT', 'SPEAKER', 'LIGHT_PROBE', 'VOLUME'}
                                                            )
 
+    IDStore.renaming_sort_enum = EnumProperty(
+        name="Sort by",
+        description="Sort Objects based on following attribute",
+        items=enum_sort_items,
+        default='X',  # Set a default value
+    )
+
     IDStore.renaming_newName = StringProperty(name="New Name", default='')
     IDStore.renaming_search = StringProperty(name='Search', default='')
     IDStore.renaming_replace = StringProperty(name='Replace', default='')
     IDStore.renaming_suffix = StringProperty(name="Suffix", default='')
     IDStore.renaming_prefix = StringProperty(name="Prefix", default='')
     IDStore.renaming_numerate = StringProperty(name="Numerate", default='###')
+
+    IDStore.renaming_sorting = bpy.props.BoolProperty(
+        name="Sort Target Objects",
+        description="Sort the entries for renaming",
+        default=False,
+    )
 
     IDStore.renaming_only_selection = BoolProperty(name="Selected Objects", description="Rename Selected Objects",
                                                    default=True)
@@ -140,10 +158,7 @@ def register():
     for cls in classes:
         register_class(cls)
 
-
     bpy.app.handlers.depsgraph_update_post.append(PostChange)
-
-
 
 
 def unregister():

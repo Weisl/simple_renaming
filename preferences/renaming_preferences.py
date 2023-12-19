@@ -196,33 +196,19 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                                          default='Rename',
                                          update=update_vallidate_panel_category)  # update = update_panel_position,
 
+
     regex_Mesh: bpy.props.StringProperty(
         name="Naming Regex",
         description="",
-        default='r"^[A-Za-z]{2}_[A-Za-z]{6}_[A-Za-z0-9]+(_[A-Za-z0-9]+)?$"',
+        default='r"^[A-Za-z_]"',
     )
 
-    assetRegex: bpy.props.StringProperty(
-        name="Asset Regex",
-        description="",
-        default='r"^[A-Za-z]+(_[A-Za-z0-9]+)?$"',
-    )
     materialRegex: bpy.props.StringProperty(
         name="Material Regex",
         description="",
-        default='r"^[A-Za-z](_mat|_main_mat)?$"',
-    )
-    genericMaterialRegex: bpy.props.StringProperty(
-        name="Generic Material Regex",
-        description="",
-        default='r"^Gen[A-Za-z]+_mat"',
+        default='r"^[A-Za-z_](_mat)?$""',
     )
 
-    socketPrefix: bpy.props.StringProperty(
-        name="Socket Prefix",
-        description="",
-        default="SOCKET_",
-    )
 
     props_general = [
         "renaming_category",
@@ -245,6 +231,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         "renaming_user1",
         "renaming_user2",
         "renaming_user3"
+    ]
+
+    vallidation_variables = [
+        "regex_Mesh",
+        "materialRegex",
     ]
 
     renaming_panel_type: bpy.props.StringProperty(
@@ -390,6 +381,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = layout.row()
             row.prop(self, "vallidation_category", expand=True)
 
+            box = layout.box()
+            for propName in self.vallidation_variables:
+                row = box.row()
+                row.prop(self, propName)
+
         elif self.prefs_tabs == 'VALIDATE':
             box = layout.box()
 
@@ -431,9 +427,10 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = box.row()
             row.operator("wm.url_open", text="Gumroad").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
             row = box.row()
-            row.operator("wm.url_open", text="PayPal").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
+            row.operator("wm.url_open", text="PayPal Donation").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
             row = box.row()
             row.operator("wm.url_open", text="Blender Market (TODO)").url = "https://blendermarket.com/products/collider-tools"
+
 
 
 
