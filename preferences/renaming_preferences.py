@@ -429,7 +429,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row = box.row()
             row.operator("wm.url_open", text="PayPal Donation").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
             row = box.row()
-            row.operator("wm.url_open", text="Blender Market (TODO)").url = "https://blendermarket.com/products/collider-tools"
+            row.operator("wm.url_open", text="Blender Market").url = "https://blendermarket.com/products/simple-renaming-panel"
 
 
 
