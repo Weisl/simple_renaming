@@ -41,7 +41,7 @@ if "bpy" in locals():
     importlib.reload(operators)
     importlib.reload(preferences)
     importlib.reload(ui)
-    importlib.reload(vallidation)
+    #.reload(vallidation)
     importlib.reload(variable_replacer)
 
 else:
@@ -49,7 +49,7 @@ else:
     from . import operators
     from . import preferences
     from . import ui
-    from . import vallidation
+    #from . import vallidation
     from . import variable_replacer
 
 # import standard modules
@@ -65,7 +65,7 @@ def register():
     add_suffix_panel.register()
     operators.register()
     ui.register()
-    vallidation.register()
+    #vallidation.register()
 
     # keymap and preferences should be last
     preferences.register()
@@ -76,7 +76,7 @@ def unregister():
     # keymap and preferences should be last
     preferences.unregister()
 
-    vallidation.unregister()
+    #vallidation.unregister()
     ui.unregister()
     operators.unregister()
     add_suffix_panel.unregister()

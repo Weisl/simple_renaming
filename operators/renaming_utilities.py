@@ -16,45 +16,28 @@ def getRenamingList(context):
     switchEditMode = False
 
     onlySelection = scene.renaming_only_selection
-    useObjectOrder = prefs.renamingPanel_useObjectOrder
+
+    obj_list = context.selected_objects.copy() if onlySelection == True else list(bpy.data.objects).copy()
+
+    if scene.renaming_sorting:
+        if scene.renaming_sort_enum == 'SELECTION':
+            obj_list = get_ordered_selection_objects()
+        elif scene.renaming_sort_enum == 'X':
+            obj_list = get_sorted_objects_x(obj_list)
+        elif scene.renaming_sort_enum == 'Y':
+            obj_list = get_sorted_objects_y(obj_list)
+        else:  # scene.renaming_sort_enum == 'Z':
+            obj_list = get_sorted_objects_z(obj_list)
 
     if scene.renaming_object_types == 'OBJECT':
-        selection = context.selected_objects.copy()
-
-        if onlySelection == True:
-            if scene.renaming_sorting:
-                if scene.renaming_sort_enum == 'SELECTION':
-                    ordered_selection = get_ordered_selection_objects()
-                elif scene.renaming_sort_enum == 'X':
-                    ordered_selection = get_sorted_objects_x(selection)
-                elif scene.renaming_sort_enum == 'Y':
-                    ordered_selection = get_sorted_objects_y(selection)
-                else: # scene.renaming_sort_enum == 'Z':
-                    ordered_selection = get_sorted_objects_z(selection)
-
-                for obj in ordered_selection:
-                    if obj in selection and obj.type in scene.renaming_object_types_specified:
-                        renamingList.append(obj)
-
-
-            else:
-                for obj in selection:
-                    if obj.type in scene.renaming_object_types_specified:
-                        renamingList.append(obj)
-        else:
-            for obj in bpy.data.objects:
-                if obj.type in scene.renaming_object_types_specified:
-                    renamingList.append(obj)
+        for obj in obj_list:
+            if obj in obj_list and obj.type in scene.renaming_object_types_specified:
+                renamingList.append(obj)
 
     elif scene.renaming_object_types == 'DATA':
-        if onlySelection == True:
-            for obj in context.selected_objects:
-                if obj.data not in renamingList:
-                    renamingList.append(obj.data)
-        else:
-            for obj in bpy.data.objects:
-                if obj.data not in renamingList:
-                    renamingList.append(obj.data)
+        for obj in obj_list:
+            if obj.data not in renamingList:
+                renamingList.append(obj.data)
 
     elif scene.renaming_object_types == 'MATERIAL':
         if onlySelection == True:
@@ -174,7 +157,6 @@ def getRenamingList(context):
             renamingList.append(particles)
 
     elif context.scene.renaming_object_types == 'UVMAPS':
-        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 
         for obj in obj_list:
             if obj.type != 'MESH':
@@ -183,7 +165,6 @@ def getRenamingList(context):
                 renamingList.append(uv)
 
     elif context.scene.renaming_object_types == 'COLORATTRIBUTES':
-        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 
         for obj in obj_list:
             if obj.type != 'MESH':
@@ -192,7 +173,6 @@ def getRenamingList(context):
                 renamingList.append(color_attribute)
 
     elif context.scene.renaming_object_types == 'ATTRIBUTES':
-        obj_list = context.selected_objects.copy() if onlySelection == True else bpy.data.objects
 
         for obj in obj_list:
             if obj.type != 'MESH':
