@@ -92,9 +92,8 @@ def remove_keymap():
     km = wm.keyconfigs.addon.keymaps['Window']
 
     for kmi in km.keymap_items:
-        if hasattr(kmi.properties, 'name') and kmi.properties.name in ['COLLISION_MT_pie_menu',
-                                                                       'VIEW3D_PT_collision_visibility_panel',
-                                                                       'VIEW3D_PT_collision_material_panel']:
+        if hasattr(kmi.properties, 'name') and kmi.properties.name in ['VIEW3D_PT_tools_renaming_panel',
+                                                                       'VIEW3D_PT_tools_type_suffix']:
             km.keymap_items.remove(kmi)
 
 
