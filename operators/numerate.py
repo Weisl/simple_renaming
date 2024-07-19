@@ -1,6 +1,8 @@
 import bpy
 from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
 
+from .. import __package__ as base_package
+
 from .renaming_operators import switchToEditMode
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
     bl_idname = "renaming.numerate"
@@ -9,7 +11,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        prefs = context.preferences.addons[base_package].preferences
         separator = prefs.renaming_separator
 
         wm = context.scene

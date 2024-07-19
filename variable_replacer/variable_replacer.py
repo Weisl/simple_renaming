@@ -4,7 +4,7 @@ import string
 import time
 
 import bpy
-
+from .. import __package__ as base_package
 
 def randomString(stringLength=10):
     """Generate a random string of fixed length """
@@ -24,7 +24,7 @@ class VariableReplacer():
     @classmethod
     def reset(cls):
         '''reset all values to initial state'''
-        prefs = bpy.context.preferences.addons[__package__.split('.')[0]].preferences
+        prefs = bpy.context.preferences.addons[base_package].preferences
         startNum = prefs.numerate_start_number
         numerate_step = prefs.numerate_step
         numerate_digits = prefs.numerate_digits
@@ -40,7 +40,7 @@ class VariableReplacer():
 
         '''Replace custom variables with the according string'''
         wm = context.scene
-        cls.addon_prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        cls.addon_prefs = context.preferences.addons[base_package].preferences
 
         ##### System and Global Values ################
         inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
@@ -187,7 +187,7 @@ class VariableReplacer():
 
     @classmethod
     def getCollection(cls, context, entity):
-        # prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        # prefs = context.preferences.addons[base_package].preferences
         # separator = prefs.renaming_separator
 
         collectionNames = ""

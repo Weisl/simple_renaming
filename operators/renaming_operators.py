@@ -1,6 +1,6 @@
 import bpy
 from ..variable_replacer.variable_replacer import VariableReplacer
-
+from .. import __package__ as base_package
 
 def switchToEditMode(context):
     '''Switch to Edit Mode'''
@@ -13,7 +13,7 @@ def numerate_entity_name(context, basename, typelist, active_entity_name, return
     digits = len(wm.renaming_numerate)
 
     # Preferences
-    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+    prefs = context.preferences.addons[base_package].preferences
     separator = prefs.renaming_separator
     startNum = prefs.numerate_start_number
     step = prefs.numerate_step

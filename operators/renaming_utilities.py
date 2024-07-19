@@ -1,6 +1,6 @@
 import bpy
 from bpy.types import PoseBone, EditBone
-
+from .. import __package__ as base_package
 
 def trimString(string, size):
     list1 = string
@@ -10,7 +10,7 @@ def trimString(string, size):
 
 def getRenamingList(context):
     scene = context.scene
-    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+    prefs = context.preferences.addons[base_package].preferences
 
     renamingList = []
     switchEditMode = False
@@ -201,7 +201,7 @@ def getRenamingList(context):
 
 def callRenamingPopup(context):
     preferences = context.preferences
-    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+    prefs = context.preferences.addons[base_package].preferences
 
     if prefs.renamingPanel_showPopup == True:
         bpy.ops.wm.call_panel(name="POPUP_PT_popup")

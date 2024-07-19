@@ -18,21 +18,6 @@ Created by Matthias Patscheider
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-bl_info = {
-    "name": "Simple Renaming Panel",
-    "description": "This Addon offers the basic functionality of renaming a set of objects",
-    "author": "Matthias Patscheider",
-    "version": (2, 0, 0),
-    "blender": (3, 0, 0),
-    "location": "View3D > Tools ",
-    "warning": "",
-    "wiki_url": "https://weisl.github.io/renaming/",
-    "doc_url": "https://weisl.github.io/renaming/",
-    "tracker_url": "https://github.com/Weisl/simple_renaming_panel/issues",
-    "support": "COMMUNITY",
-    "category": "Scene"
-}
-
 # support reloading sub-modules
 if "bpy" in locals():
     import importlib

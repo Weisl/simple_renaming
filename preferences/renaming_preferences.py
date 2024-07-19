@@ -1,5 +1,6 @@
 import bpy
 import textwrap
+from .. import __package__ as base_package
 from bpy.props import (
     EnumProperty,
     StringProperty,
@@ -30,7 +31,7 @@ def update_key(context, operation, operator_name, property_prefix):
     wm = context.window_manager
     km = wm.keyconfigs.addon.keymaps["Window"]
 
-    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+    prefs = context.preferences.addons[base_package].preferences
 
     # Remove previous key assignment
     remove_key(context, operation, operator_name)
@@ -62,7 +63,7 @@ def update_panel_category(self, context):
         except:
             pass
 
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        prefs = context.preferences.addons[base_package].preferences
         panel.bl_category = prefs.renaming_category
         bpy.utils.register_class(panel)
     return
@@ -81,7 +82,7 @@ def update_panel_category(self, context):
 #         except:
 #             pass
 #
-#         prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+#         prefs = context.preferences.addons[base_package].preferences
 #         panel.bl_category = prefs.vallidation_category
 #         bpy.utils.register_class(panel)
 #     return
@@ -98,9 +99,9 @@ def update_panel_category(self, context):
 # addon Preferences
 class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     """Contains the blender addon preferences"""
-    # this must match the addon name, use '__package__'
+    # this must match the addon name, use 'base_package'
     # when defining this in a submodule of a python package.
-    bl_idname = __package__.split('.')[0]
+    bl_idname = base_package
     bl_options = {'REGISTER'}
 
     prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
@@ -413,9 +414,9 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             )
             box = layout.box()
             row = box.row()
-            row.operator("wm.url_open", text="Collider Tools").url = "https://blendermarket.com/products/collider-tools"
+            row.operator("wm.url_open", text="Collider Tools", icon="URL").url = "https://blendermarket.com/products/collider-tools"
             row = box.row()
-            row.operator("wm.url_open", text="Cam-Manager").url = "https://blendermarket.com/products/cam-manager"
+            row.operator("wm.url_open", text="Cam-Manager", icon="URL").url = "https://blendermarket.com/products/cam-manager"
 
             box = layout.box()
             text = "Please support me by donating for this addon."
@@ -425,11 +426,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                 parent=box
             )
             row = box.row()
-            row.operator("wm.url_open", text="Gumroad").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
+            row.operator("wm.url_open", text="Gumroad", icon="URL").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
             row = box.row()
-            row.operator("wm.url_open", text="PayPal Donation").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
+            row.operator("wm.url_open", text="PayPal Donation", icon="URL").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
             row = box.row()
-            row.operator("wm.url_open", text="Blender Market").url = "https://blendermarket.com/products/simple-renaming-panel"
+            row.operator("wm.url_open", text="Blender Market", icon="URL").url = "https://blendermarket.com/products/simple-renaming-panel"
 
 
 

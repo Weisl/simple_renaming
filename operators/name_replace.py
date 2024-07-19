@@ -1,6 +1,7 @@
 import bpy
 from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
 from ..variable_replacer.variable_replacer import VariableReplacer
+from .. import __package__ as base_package
 
 from .renaming_operators import switchToEditMode, numerate_entity_name
 from .renaming_operators import getAllVertexGroups, getAllAttributes, getAllBones, getAllModifiers, getAllUvMaps, getAllColorAttributes, getAllParticleNames, getAllParticleSettingsNames, getAllDataNames, getAllShapeKeys
@@ -26,7 +27,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         modeOld = context.mode
 
         # settings for numerating the new name
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        prefs = context.preferences.addons[base_package].preferences
         separator = prefs.renaming_separator
         startNum = prefs.numerate_start_number
         step = prefs.numerate_step

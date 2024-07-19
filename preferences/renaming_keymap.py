@@ -1,4 +1,5 @@
 import bpy
+from .. import __package__ as base_package
 
 keymaps_items_dict = {
     "Renaming Popup": ['wm.call_panel', 'VIEW3D_PT_tools_renaming_panel', '3D View Generic', 'VIEW_3D', 'WINDOW',
@@ -28,7 +29,7 @@ class BUTTON_OT_change_key(bpy.types.Operator):
         self.my_event = ''
 
     def invoke(self, context, event):
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        prefs = context.preferences.addons[base_package].preferences
         self.prefs = prefs
         setattr(prefs, f'{self.property_prefix}_type', "NONE")
 
@@ -55,7 +56,7 @@ class BUTTON_OT_change_key(bpy.types.Operator):
 
 def add_keymap():
     km = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name="Window")
-    prefs = bpy.context.preferences.addons[__package__.split('.')[0]].preferences
+    prefs = bpy.context.preferences.addons[base_package].preferences
 
     kmi = km.keymap_items.new(idname='wm.call_panel', type=prefs.renaming_panel_type, value='PRESS',
                               ctrl=prefs.renaming_panel_ctrl, shift=prefs.renaming_panel_shift,
@@ -111,7 +112,7 @@ class REMOVE_OT_hotkey(bpy.types.Operator):
     def execute(self, context):
         remove_key(context, self.idname, self.properties_name)
 
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        prefs = context.preferences.addons[base_package].preferences
         setattr(prefs, f'{self.property_prefix}_type', "NONE")
         setattr(prefs, f'{self.property_prefix}_ctrl', False)
         setattr(prefs, f'{self.property_prefix}_shift', False)

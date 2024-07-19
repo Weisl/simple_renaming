@@ -1,0 +1,31 @@
+schema_version = "1.0.0"
+
+id = "simple_renaming_panel"
+version = "2.1.0"
+name = "Simple Renaming Panel"
+tagline = "Effortlessly rename multiple objects with this simple addon"
+maintainer = "Matthias Patscheider <patscheider.matthias@gmail.com>"
+type = "add-on"
+
+website = "https://weisl.github.io/renaming/"
+
+tags = ["3D View","Scene","User Interface"]
+
+blender_version_min = "4.2.0"
+
+license = [
+  "SPDX:GPL-3.0-or-later",
+]
+
+copyright = [
+  "2023 Matthias Patscheider",
+]
+
+platforms = ["windows-x64", "macos-arm64", "linux-x64"]
+
+[build]
+paths_exclude_pattern = [
+ "__pycache__/",
+ "/.git/",
+ "/*.zip",
+]

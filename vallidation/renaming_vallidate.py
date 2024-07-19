@@ -1,6 +1,7 @@
 import re
 
 import bpy
+from .. import __package__ as base_package
 
 from ..operators.renaming_utilities import getRenamingList, callInfoPopup
 from ..ui.renaming_panels import get_addon_name
@@ -13,8 +14,7 @@ class VIEW3D_OT_Validate(bpy.types.Operator):
 
     def execute(self, context):
         wm = context.scene
-        package = __package__.split('.')[0]
-        prefs = context.preferences.addons[f'{package}'].preferences
+        prefs = context.preferences.addons[f'{base_package}'].preferences
         regex = prefs.regex_Mesh
 
         renamingList = []
@@ -57,7 +57,7 @@ class VIEW3D_PT_vallidation(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
 
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        prefs = context.preferences.addons[base_package].preferences
         regex = prefs.regex_Mesh
 
         row = layout.row()

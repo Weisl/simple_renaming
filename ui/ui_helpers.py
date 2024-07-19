@@ -1,4 +1,5 @@
 import bpy
+from .. import __package__ as base_package
 
 class PREFERENCES_OT_open_addon(bpy.types.Operator):
     """Tooltip"""
@@ -15,7 +16,7 @@ class PREFERENCES_OT_open_addon(bpy.types.Operator):
         bpy.context.preferences.active_section = 'ADDONS'
         bpy.data.window_managers["WinMan"].addon_search = self.addon_name
 
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        prefs = context.preferences.addons[base_package].preferences
         prefs.prefs_tabs = self.prefs_tabs
 
         import addon_utils
