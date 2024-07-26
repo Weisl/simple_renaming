@@ -66,7 +66,7 @@ class VariableReplacer:
             ##### Objects #################
             inputText = re.sub(r'@o', cls.getObject(entity), inputText)  # object
             inputText = re.sub(r'@t', cls.getType(entity), inputText)  # type
-            inputText = re.sub(r'@p', cls.getParent(context), inputText)  # parent
+            inputText = re.sub(r'@p', cls.getParent(entity), inputText)  # parent
             inputText = re.sub(r'@m', cls.getData(entity), inputText)  # data
             inputText = re.sub(r'@c', cls.getCollection(entity), inputText)  # collection
 
