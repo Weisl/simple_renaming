@@ -107,7 +107,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
                                     ('KEYMAPS', "Keymaps", "Keymaps"),
                                     # ('VALIDATE', "Validate", "Validate"),
-                                    ('SUPPORT', "Support", "Support")),
+                                    ('SUPPORT', "Support & Donation", "Support")),
                              default='UI')
 
     renaming_category: StringProperty(name="Category",
@@ -399,38 +399,48 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
 
         elif self.prefs_tabs == 'SUPPORT':
+
             text = "Support me developing great tools!"
             label_multiline(
                 context=context,
                 text=text,
                 parent=layout
             )
-            box = layout.box()
-            text = "Check out my other Blender Addons providing more efficient workflows for game asset creation."
-            label_multiline(
-                context=context,
-                text=text,
-                parent=box
-            )
-            box = layout.box()
-            row = box.row()
-            row.operator("wm.url_open", text="Collider Tools", icon="URL").url = "https://blendermarket.com/products/collider-tools"
-            row = box.row()
-            row.operator("wm.url_open", text="Cam-Manager", icon="URL").url = "https://blendermarket.com/products/cam-manager"
 
+            # Donations
             box = layout.box()
-            text = "Please support me by donating for this addon."
+            text = "Consider supporting the development of this addon with a donation!"
             label_multiline(
                 context=context,
                 text=text,
                 parent=box
             )
-            row = box.row()
-            row.operator("wm.url_open", text="Gumroad", icon="URL").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
-            row = box.row()
-            row.operator("wm.url_open", text="PayPal Donation", icon="URL").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
-            row = box.row()
-            row.operator("wm.url_open", text="Blender Market", icon="URL").url = "https://blendermarket.com/products/simple-renaming-panel"
+            col = box.column(align=True)
+            row = col.row()
+            row.operator("wm.url_open", text="Gumroad",
+                         icon="URL").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
+            row = col.row()
+            row.operator("wm.url_open", text="Blender Market",
+                         icon="URL").url = "https://blendermarket.com/products/simple-renaming-panel"
+            row = col.row()
+            row.operator("wm.url_open", text="PayPal Donation",
+                         icon="URL").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
+
+
+            # Cross Promotion
+            box = layout.box()
+            text = "Explore my other Blender Addons designed for more efficient game asset workflows!"
+            label_multiline(
+                context=context,
+                text=text,
+                parent=box
+            )
+
+            col = box.column(align=True)
+            row = col.row()
+            row.operator("wm.url_open", text="Collider Tools", icon="URL").url = "https://blendermarket.com/products/collider-tools"
+            row = col.row()
+            row.operator("wm.url_open", text="Cam-Manager", icon="URL").url = "https://blendermarket.com/products/cam-manager"
 
 
 
