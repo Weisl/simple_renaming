@@ -1,10 +1,11 @@
 import re
+
 import bpy
 
+from .renaming_operators import switchToEditMode
 from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
 from ..variable_replacer.variable_replacer import VariableReplacer
 
-from .renaming_operators import switchToEditMode
 
 class VIEW3D_OT_search_and_replace(bpy.types.Operator):
     bl_idname = "renaming.search_replace"
@@ -59,4 +60,3 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
         if switchEditMode:
             switchToEditMode(context)
         return {'FINISHED'}
-

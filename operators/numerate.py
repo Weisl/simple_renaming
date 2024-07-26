@@ -1,9 +1,10 @@
 import bpy
-from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
-
-from .. import __package__ as base_package
 
 from .renaming_operators import switchToEditMode
+from .. import __package__ as base_package
+from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
+
+
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
     bl_idname = "renaming.numerate"
     bl_label = "Numerate"

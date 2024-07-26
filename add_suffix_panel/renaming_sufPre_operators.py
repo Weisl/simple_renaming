@@ -1,7 +1,5 @@
 import bpy
 from bpy.props import (
-    BoolProperty,
-    EnumProperty,
     StringProperty,
 )
 
@@ -10,7 +8,7 @@ from ..operators.renaming_utilities import callRenamingPopup
 
 class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
     """Add Type Suffix"""
-    bl_idname = "renaming.add_sufpre_by_type"
+    bl_idname = "renaming.add_suffix_prefix_by_type"
     bl_label = "Add Type Suffix or Prefix"
     bl_description = "Adds the above defined Suffixes or Prefixes to all objects in your scene"
     bl_options = {'REGISTER', 'UNDO'}
@@ -27,72 +25,75 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         else:
             return bpy.data.objects
 
-    def renameSufPre(self, objList, preSuf='', objectType='', icon=''):
+    def renameSufPre(self, obj_list, pre_suffix='', object_type='', icon=''):
         context = self.context
         wm = context.scene
 
-        switchSufPre = wm.renaming_sufpre_type  # either use pre of suffix
+        switch_suf_pre = wm.renaming_suffix_prefix_type  # either use pre of suffix
 
-        if preSuf != '':
-            for ent in objList:
+        if pre_suffix != '':
+            for ent in obj_list:
                 if hasattr(ent, 'name'):
-                    oldName = ent.name
-                    nameIsNew = True
+                    old_name = ent.name
+                    name_is_new = True
 
-                    if switchSufPre == 'SUF':
-                        if ent.name.endswith(preSuf) == False:
-                            newName = self.sufpreAdd(context, ent, preSuf)
+                    if switch_suf_pre == 'SUF':
+                        if not ent.name.endswith(pre_suffix):
+                            new_name = self.sufpreAdd(context, ent, pre_suffix)
                         else:
-                            nameIsNew = False
+                            name_is_new = False
                     else:
-                        if ent.name.startswith(preSuf) == False:
-                            newName = self.sufpreAdd(context, ent, preSuf)
+                        if not ent.name.startswith(pre_suffix):
+                            new_name = self.sufpreAdd(context, ent, pre_suffix)
                         else:
-                            nameIsNew = False
+                            name_is_new = False
 
-                    if nameIsNew == True:
-                        ent.name = newName
-                        wm.renaming_messages.addMessage(oldName, ent.name, objectType, icon)
+                    if name_is_new:
+                        ent.name = new_name
+                        wm.renaming_messages.addMessage(old_name, ent.name, object_type, icon)
                 else:
-                    # wm.renaming_messages.addMessage(oldName, ent.name, objectType, 'OUTLINER_OB_EMPTY')
+                    # wm.renaming_messages.addMessage(old_name, ent.name, objectType, 'OUTLINER_OB_EMPTY')
                     pass
 
     def empty(self):
         context = self.context
         wm = context.scene
-        objList = []
+        obj_list = []
 
         for obj in self.getSelectionAll():
             if obj.type == 'EMPTY':
-                objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_empty, objectType='EMPTY', icon='OUTLINER_OB_EMPTY')
+                obj_list.append(obj)
+        self.renameSufPre(obj_list, pre_suffix=wm.renaming_suffix_prefix_empty, object_type='EMPTY',
+                          icon='OUTLINER_OB_EMPTY')
         return
 
     def mesh(self):
         context = self.context
         wm = context.scene
-        objList = []
+        obj_list = []
 
         for obj in self.getSelectionAll():
             if obj.type == 'MESH':
-                objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_geometry, objectType='MESH', icon='OUTLINER_OB_MESH')
+                obj_list.append(obj)
+        self.renameSufPre(obj_list, pre_suffix=wm.renaming_suffix_prefix_geometry, object_type='MESH',
+                          icon='OUTLINER_OB_MESH')
         return
 
     def material(self):
         context = self.context
         wm = context.scene
-        objList = []
+        obj_list = []
 
         if wm.type_pre_sub_only_selection:
             for obj in context.selected_objects:
                 for mat in obj.material_slots:
                     if mat != None and mat.name != '':
-                        objList.append(bpy.data.materials[mat.name])
+                        obj_list.append(bpy.data.materials[mat.name])
         else:
-            objList = list(bpy.data.materials)
+            obj_list = list(bpy.data.materials)
 
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_material, objectType='MATERIAL', icon='MATERIAL')
+        self.renameSufPre(obj_list, pre_suffix=wm.renaming_suffix_prefix_material, object_type='MATERIAL',
+                          icon='MATERIAL')
         return
 
     def speakers(self):
@@ -103,7 +104,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'SPEAKER':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_speakers, objectType='SPEAKER', icon='OUTLINER_OB_SPEAKER')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_speakers, object_type='SPEAKER',
+                          icon='OUTLINER_OB_SPEAKER')
         return
 
     def lightprops(self):
@@ -114,7 +116,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'LIGHT_PROBE':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_lightprops, objectType='LIGHT_PROBE',
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_lightprops, object_type='LIGHT_PROBE',
                           icon='OUTLINER_OB_LIGHTPROBE')
         return
 
@@ -125,7 +127,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
         for obj in self.getSelectionAll():
             objList.append(obj.data)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_data, objectType='DATA', icon='FILE_BLANK')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_data, object_type='DATA', icon='FILE_BLANK')
         return
 
     def camera(self):
@@ -136,7 +138,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'CAMERA':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_cameras, objectType='CAMERA', icon='OUTLINER_OB_CAMERA')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_cameras, object_type='CAMERA',
+                          icon='OUTLINER_OB_CAMERA')
         return
 
     def light(self):
@@ -147,7 +150,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'LIGHT':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_lights, objectType='LIGHT', icon='LIGHT')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_lights, object_type='LIGHT', icon='LIGHT')
         return
 
     def armature(self):
@@ -158,7 +161,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'ARMATURE':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_armature, objectType='ARMATURE',
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_armature, object_type='ARMATURE',
                           icon='OUTLINER_OB_ARMATURE')
         return
 
@@ -170,7 +173,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'LATTICE':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_lattice, objectType='LATTICE', icon='OUTLINER_OB_LATTICE')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_lattice, object_type='LATTICE',
+                          icon='OUTLINER_OB_LATTICE')
         return
 
     def curve(self):
@@ -181,7 +185,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'CURVE':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_curve, objectType='CURVE', icon='OUTLINER_OB_CURVE')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_curve, object_type='CURVE',
+                          icon='OUTLINER_OB_CURVE')
         return
 
     def surface(self):
@@ -192,7 +197,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'SURFACE':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_surfaces, objectType='SURFACE', icon='OUTLINER_OB_SURFACE')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_surfaces, object_type='SURFACE',
+                          icon='OUTLINER_OB_SURFACE')
         return
 
     def text(self):
@@ -203,7 +209,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'FONT':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_text, objectType='FONT', icon='OUTLINER_OB_FONT')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_text, object_type='FONT',
+                          icon='OUTLINER_OB_FONT')
         return
 
     def gpencil(self):
@@ -214,7 +221,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'GPENCIL':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_gpencil, objectType='GPENCIL',
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_gpencil, object_type='GPENCIL',
                           icon='OUTLINER_OB_GREASEPENCIL')
         return
 
@@ -226,7 +233,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'META':
                 objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_metaball, objectType='META', icon='OUTLINER_OB_META')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_metaball, object_type='META',
+                          icon='OUTLINER_OB_META')
         return
 
     def collection(self):
@@ -236,7 +244,8 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
         for col in bpy.data.collections:
             objList.append(col)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_collection, objectType='COLLECTION', icon='GROUP')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_collection, object_type='COLLECTION',
+                          icon='GROUP')
         return
 
     def bone(self):
@@ -248,7 +257,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
             if obj.type == 'ARMATURE':
                 for bone in obj.data.bones:
                     objList.append(obj)
-        self.renameSufPre(objList, preSuf=wm.renaming_sufpre_bone, objectType='BONE', icon='BONE_DATA')
+        self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_bone, object_type='BONE', icon='BONE_DATA')
         return
 
     def all(self):
@@ -315,7 +324,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         wm = context.scene
 
         nName = obj.name
-        if wm.renaming_sufpre_type == 'SUF':
+        if wm.renaming_suffix_prefix_type == 'SUF':
             nName = nName + sufpreName
         else:
             nName = sufpreName + nName
@@ -326,7 +335,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         else:
             i = 1
             while (nName in bpy.data.objects):
-                if wm.renaming_sufpre_type == 'SUF':
+                if wm.renaming_suffix_prefix_type == 'SUF':
                     nName = obj.name + "_" + str(i) + sufpreName
                 else:
                     nName = sufpreName + obj.name + "_" + str(i)
@@ -334,4 +343,3 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
         obj.name = nName
         return nName
-

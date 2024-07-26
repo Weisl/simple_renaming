@@ -1,14 +1,16 @@
-import bpy
 import textwrap
-from .. import __package__ as base_package
+
+import bpy
 from bpy.props import (
     EnumProperty,
     StringProperty,
 )
 
-from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
-#from ..vallidation.renaming_vallidate import VIEW3D_PT_vallidation
+# from ..validation.renaming_vallidate import VIEW3D_PT_validation
 from .renaming_keymap import remove_key
+from .. import __package__ as base_package
+from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
+
 
 def label_multiline(context, text, parent):
     chars = int(context.region.width / 7)  # 7 pix on 1 character
@@ -73,7 +75,7 @@ def update_panel_category(self, context):
 #     '''Update panel tab for collider tools'''
 #
 #     panels = [
-#         VIEW3D_PT_vallidation,
+#         VIEW3D_PT_validation,
 #     ]
 #
 #     for panel in panels:
@@ -83,16 +85,16 @@ def update_panel_category(self, context):
 #             pass
 #
 #         prefs = context.preferences.addons[base_package].preferences
-#         panel.bl_category = prefs.vallidation_category
+#         panel.bl_category = prefs.validation_category
 #         bpy.utils.register_class(panel)
 #     return
 
 
 # def toggle_validation_panel(self, context):
 #     if self.renaming_show_validation:
-#         bpy.utils.register_class(VIEW3D_PT_vallidation)
+#         bpy.utils.register_class(VIEW3D_PT_validation)
 #     else:
-#         bpy.utils.unregister_class(VIEW3D_PT_vallidation)
+#         bpy.utils.unregister_class(VIEW3D_PT_validation)
 #     return
 
 
@@ -192,8 +194,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     #     default=False,
     #     update=toggle_validation_panel)
 
-    # vallidation_category: StringProperty(name="Category",
-    #                                      description="Defines in which category of the tools panel the simple renaimg vallidation panel is listed",
+    # validation_category: StringProperty(name="Category",
+    #                                      description="Defines in which category of the tools panel the simple renaimg validation panel is listed",
     #                                      default='Rename',
     #                                      update=update_vallidate_panel_category)  # update = update_panel_position,
     #
@@ -209,7 +211,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         description="",
         default='r"^[A-Za-z_](_mat)?$""',
     )
-
 
     props_general = [
         "renaming_category",
@@ -234,7 +235,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         "renaming_user3"
     ]
 
-    vallidation_variables = [
+    validation_variables = [
         "regex_Mesh",
         "materialRegex",
     ]
@@ -369,21 +370,20 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
         # Settings regarding the keymap
         if self.prefs_tabs == 'KEYMAPS':
-          
             self.keymap_ui(layout, 'Renaming Panel', 'renaming_panel',
                            'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
             self.keymap_ui(layout, 'Renaming Sub/Prefix', 'renaming_suf_pre',
                            'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
 
-        # Settings regarding the vallidation.
+        # Settings regarding the validation.
         if self.prefs_tabs == 'VALIDATE':
             row = layout.row()
             row.prop(self, "renaming_show_validation", expand=True)
             row = layout.row()
-            row.prop(self, "vallidation_category", expand=True)
+            row.prop(self, "validation_category", expand=True)
 
             box = layout.box()
-            for propName in self.vallidation_variables:
+            for propName in self.validation_variables:
                 row = box.row()
                 row.prop(self, propName)
 
@@ -426,7 +426,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row.operator("wm.url_open", text="PayPal Donation",
                          icon="URL").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
 
-
             # Cross Promotion
             box = layout.box()
             text = "Explore my other Blender Addons designed for more efficient game asset workflows!"
@@ -438,10 +437,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
             col = box.column(align=True)
             row = col.row()
-            row.operator("wm.url_open", text="Collider Tools", icon="URL").url = "https://blendermarket.com/products/collider-tools"
+            row.operator("wm.url_open", text="Collider Tools",
+                         icon="URL").url = "https://blendermarket.com/products/collider-tools"
             row = col.row()
-            row.operator("wm.url_open", text="Cam-Manager", icon="URL").url = "https://blendermarket.com/products/cam-manager"
-
-
-
-
+            row.operator("wm.url_open", text="Cam-Manager",
+                         icon="URL").url = "https://blendermarket.com/products/cam-manager"

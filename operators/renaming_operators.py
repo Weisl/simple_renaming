@@ -1,6 +1,7 @@
 import bpy
-from ..variable_replacer.variable_replacer import VariableReplacer
+
 from .. import __package__ as base_package
+
 
 def switchToEditMode(context):
     '''Switch to Edit Mode'''
@@ -17,7 +18,6 @@ def numerate_entity_name(context, basename, typelist, active_entity_name, return
     separator = prefs.renaming_separator
     startNum = prefs.numerate_start_number
     step = prefs.numerate_step
-
 
     i = 0
     newName = basename + separator + (
@@ -37,7 +37,7 @@ def numerate_entity_name(context, basename, typelist, active_entity_name, return
 
 
 def getAllBones(mode):
-    '''Get list of all bones depending of Edit or Pose Mode'''
+    '''Get list of all bones depending on Edit or Pose Mode'''
     boneList = []
 
     for arm in bpy.data.armatures:
@@ -93,13 +93,15 @@ def getAllParticleNames():
             particlesNamesList.append(particle_system.name)
     return particlesNamesList
 
+
 def getAllParticleSettingsNames():
     '''get list of all particle settings'''
     particlesNamesList = []
     for par in bpy.data.particles:
         particlesNamesList.append(par.name)
-        
+
     return particlesNamesList
+
 
 def getAllUvMaps():
     uvNamesList = []
@@ -144,12 +146,3 @@ def getAllDataNames():
             dataList.append(obj.data.name)
 
     return dataList
-
-
-
-
-
-
-
-
-

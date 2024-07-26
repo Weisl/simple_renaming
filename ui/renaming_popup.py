@@ -136,5 +136,3 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
             if i == 0:
                 box.label(text="No Objects Renamed", icon="INFO")
         wm.renaming_messages.clear()
-
-

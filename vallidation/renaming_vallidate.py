@@ -1,10 +1,11 @@
 import re
 
 import bpy
-from .. import __package__ as base_package
 
+from .. import __package__ as base_package
 from ..operators.renaming_utilities import getRenamingList, callInfoPopup
 from ..ui.renaming_panels import get_addon_name
+
 
 class VIEW3D_OT_Validate(bpy.types.Operator):
     bl_idname = "renaming.vallidate"
@@ -36,7 +37,7 @@ class VIEW3D_OT_Validate(bpy.types.Operator):
 
 
 # addon Panel
-class VIEW3D_PT_vallidation(bpy.types.Panel):
+class VIEW3D_PT_validation(bpy.types.Panel):
     """Creates a renaming Panel"""
     bl_label = "Name Vallidation"
     bl_space_type = "VIEW_3D"
@@ -64,5 +65,3 @@ class VIEW3D_PT_vallidation(bpy.types.Panel):
         row.label(text=prefs.regex_Mesh)
         row = layout.row()
         row.operator("renaming.vallidate")
-
-

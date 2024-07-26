@@ -26,7 +26,7 @@ if "bpy" in locals():
     importlib.reload(operators)
     importlib.reload(preferences)
     importlib.reload(ui)
-    #.reload(vallidation)
+    # .reload(validation)
     importlib.reload(variable_replacer)
 
 else:
@@ -34,38 +34,38 @@ else:
     from . import operators
     from . import preferences
     from . import ui
-    #from . import vallidation
+    # from . import validation
     from . import variable_replacer
 
 # import standard modules
 import bpy
 
+
 def menu_add_suffix(self, context):
     self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
 
-    from ..preferences.renaming_preferences import update_panel_category
+    from .preferences.renaming_preferences import update_panel_category
     update_panel_category(None, bpy.context)
-def register():
 
+
+def register():
     add_suffix_panel.register()
     operators.register()
     ui.register()
-    #vallidation.register()
+    # validation.register()
 
     # keymap and preferences should be last
     preferences.register()
 
 
 def unregister():
-
     # keymap and preferences should be last
     preferences.unregister()
 
-    #vallidation.unregister()
+    # validation.unregister()
     ui.unregister()
     operators.unregister()
     add_suffix_panel.unregister()
-
 
 
 if __name__ == "__main__":

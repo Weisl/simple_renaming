@@ -1,10 +1,11 @@
 import re
+
 import bpy
 
 from .renaming_operators import switchToEditMode
-
 from ..operators.renaming_utilities import getRenamingList, callErrorPopup
 from ..variable_replacer.variable_replacer import VariableReplacer
+
 
 class VIEW3D_OT_naming(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}

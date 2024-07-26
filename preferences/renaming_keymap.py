@@ -1,4 +1,5 @@
 import bpy
+
 from .. import __package__ as base_package
 
 keymaps_items_dict = {

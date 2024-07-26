@@ -1,7 +1,10 @@
 import bpy
+
+from .renaming_operators import switchToEditMode
 from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
 from ..variable_replacer.variable_replacer import VariableReplacer
-from .renaming_operators import switchToEditMode
+
+
 class VIEW3D_OT_add_suffix(bpy.types.Operator):
     bl_idname = "renaming.add_suffix"
     bl_label = "Add suffix"
@@ -39,6 +42,7 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
             switchToEditMode(context)
         callRenamingPopup(context)
         return {'FINISHED'}
+
 
 class VIEW3D_OT_add_prefix(bpy.types.Operator):
     bl_idname = "renaming.add_prefix"

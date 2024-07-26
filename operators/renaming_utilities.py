@@ -1,6 +1,8 @@
 import bpy
 from bpy.types import PoseBone, EditBone
+
 from .. import __package__ as base_package
+
 
 def trimString(string, size):
     list1 = string

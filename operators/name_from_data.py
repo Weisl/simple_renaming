@@ -1,6 +1,7 @@
 import bpy
-from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
+
 from .renaming_operators import switchToEditMode
+from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
 
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
@@ -11,7 +12,7 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
 
     def execute(self, context):
         wm = context.scene
-        suffix_data = wm.renaming_sufpre_data_02
+        suffix_data = wm.renaming_suffix_prefix_data_02
 
         msg = wm.renaming_messages  # variable to save messages
         errMsg = wm.renaming_error_messages
@@ -52,4 +53,3 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
             switchToEditMode(context)
 
         return {'FINISHED'}
-

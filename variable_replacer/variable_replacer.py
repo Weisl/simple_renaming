@@ -4,7 +4,9 @@ import string
 import time
 
 import bpy
+
 from .. import __package__ as base_package
+
 
 def randomString(stringLength=10):
     """Generate a random string of fixed length """

@@ -1,6 +1,9 @@
 import bpy
-from ..operators.renaming_utilities import getRenamingList, trimString, callRenamingPopup, callErrorPopup
+
 from .renaming_operators import switchToEditMode
+from ..operators.renaming_utilities import getRenamingList, trimString, callRenamingPopup, callErrorPopup
+
+
 class VIEW3D_OT_trim_string(bpy.types.Operator):
     bl_idname = "renaming.cut_string"
     bl_label = "Trim End of String"

@@ -53,5 +53,3 @@ class RENAMING_MESSAGES(MESSAGE):
         dict = {'oldName': oldName, 'newName': newName, 'obType': obType, 'obIcon': obIcon, 'warning': warning}
         cls.message.append(dict)
         return
-
-

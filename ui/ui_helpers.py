@@ -1,5 +1,7 @@
 import bpy
+
 from .. import __package__ as base_package
+
 
 class PREFERENCES_OT_open_addon(bpy.types.Operator):
     """Tooltip"""

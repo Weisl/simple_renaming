@@ -1,10 +1,13 @@
 import bpy
+
+from .renaming_operators import getAllVertexGroups, getAllAttributes, getAllBones, getAllModifiers, getAllUvMaps, \
+    getAllColorAttributes, getAllParticleNames, getAllParticleSettingsNames, getAllDataNames, getAllShapeKeys
+from .renaming_operators import switchToEditMode, numerate_entity_name
+from .. import __package__ as base_package
 from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
 from ..variable_replacer.variable_replacer import VariableReplacer
-from .. import __package__ as base_package
 
-from .renaming_operators import switchToEditMode, numerate_entity_name
-from .renaming_operators import getAllVertexGroups, getAllAttributes, getAllBones, getAllModifiers, getAllUvMaps, getAllColorAttributes, getAllParticleNames, getAllParticleSettingsNames, getAllDataNames, getAllShapeKeys
+
 class VIEW3D_OT_replace_name(bpy.types.Operator):
     bl_idname = "renaming.name_replace"
     bl_label = "Replace Names"
@@ -119,8 +122,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
                             elif context.scene.renaming_object_types == 'PARTICLESETTINGS':
                                 new_name, particleSettingsList = numerate_entity_name(context, replaceName,
-                                                                              particleSettingsList, entity.name,
-                                                                              return_type_list=True)
+                                                                                      particleSettingsList, entity.name,
+                                                                                      return_type_list=True)
 
 
 

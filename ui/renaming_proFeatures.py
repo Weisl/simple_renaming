@@ -1,6 +1,7 @@
 import bpy
 from bpy.props import StringProperty
 
+
 class RENAMING_MT_variableMenu(bpy.types.Menu):
     bl_label = "Renaming Variables"
     bl_idname = "MENU_MT_renaming_variables"
@@ -100,5 +101,3 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
             context.scene.renaming_replace += str(nameVar)
 
         return {'FINISHED'}
-
-
