@@ -19,28 +19,26 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
         # get list of objects to be renamed
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg != None:
+        if errMsg is not None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
             return {'CANCELLED'}
 
         searchName = wm.renaming_search
-        replaceName = wm.renaming_replace
 
         msg = wm.renaming_messages  # variable to save messages
-        errMsg = wm.renaming_error_messages
 
         VariableReplacer.reset()
 
         if len(renamingList) > 0:
             for entity in renamingList:  # iterate over all objects that are to be renamed
-                if entity != None:
+                if entity is not None:
                     if searchName != '':
                         oldName = entity.name
                         searchReplaced = VariableReplacer.replaceInputString(context, wm.renaming_search, entity)
                         replaceReplaced = VariableReplacer.replaceInputString(context, wm.renaming_replace, entity)
-                        if wm.renaming_useRegex == False:
+                        if not wm.renaming_useRegex:
                             if wm.renaming_matchcase:
                                 newName = str(entity.name).replace(searchReplaced, replaceReplaced)
                                 entity.name = newName

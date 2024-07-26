@@ -6,6 +6,31 @@ from bpy.props import (
 from ..operators.renaming_utilities import callRenamingPopup
 
 
+def sufpreAdd(context, obj, sufpreName):
+    wm = context.scene
+
+    nName = obj.name
+    if wm.renaming_suffix_prefix_type == 'SUF':
+        nName = nName + sufpreName
+    else:
+        nName = sufpreName + nName
+
+    if nName not in bpy.data.objects:
+        obj.name = nName
+        return nName
+    else:
+        i = 1
+        while nName in bpy.data.objects:
+            if wm.renaming_suffix_prefix_type == 'SUF':
+                nName = obj.name + "_" + str(i) + sufpreName
+            else:
+                nName = sufpreName + obj.name + "_" + str(i)
+            i = i + 1
+
+    obj.name = nName
+    return nName
+
+
 class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
     """Add Type Suffix"""
     bl_idname = "renaming.add_suffix_prefix_by_type"
@@ -28,6 +53,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
     def renameSufPre(self, obj_list, pre_suffix='', object_type='', icon=''):
         context = self.context
         wm = context.scene
+        new_name = ''
 
         switch_suf_pre = wm.renaming_suffix_prefix_type  # either use pre of suffix
 
@@ -39,12 +65,12 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
                     if switch_suf_pre == 'SUF':
                         if not ent.name.endswith(pre_suffix):
-                            new_name = self.sufpreAdd(context, ent, pre_suffix)
+                            new_name = sufpreAdd(context, ent, pre_suffix)
                         else:
                             name_is_new = False
                     else:
                         if not ent.name.startswith(pre_suffix):
-                            new_name = self.sufpreAdd(context, ent, pre_suffix)
+                            new_name = sufpreAdd(context, ent, pre_suffix)
                         else:
                             name_is_new = False
 
@@ -87,7 +113,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         if wm.type_pre_sub_only_selection:
             for obj in context.selected_objects:
                 for mat in obj.material_slots:
-                    if mat != None and mat.name != '':
+                    if mat is not None and mat.name != '':
                         obj_list.append(bpy.data.materials[mat.name])
         else:
             obj_list = list(bpy.data.materials)
@@ -256,7 +282,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         for obj in self.getSelectionAll():
             if obj.type == 'ARMATURE':
                 for bone in obj.data.bones:
-                    objList.append(obj)
+                    objList.append(bone)
         self.renameSufPre(objList, pre_suffix=wm.renaming_suffix_prefix_bone, object_type='BONE', icon='BONE_DATA')
         return
 
@@ -319,27 +345,3 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
         callRenamingPopup(context)
         return {'FINISHED'}
-
-    def sufpreAdd(self, context, obj, sufpreName):
-        wm = context.scene
-
-        nName = obj.name
-        if wm.renaming_suffix_prefix_type == 'SUF':
-            nName = nName + sufpreName
-        else:
-            nName = sufpreName + nName
-
-        if nName not in bpy.data.objects:
-            obj.name = nName
-            return nName
-        else:
-            i = 1
-            while (nName in bpy.data.objects):
-                if wm.renaming_suffix_prefix_type == 'SUF':
-                    nName = obj.name + "_" + str(i) + sufpreName
-                else:
-                    nName = sufpreName + obj.name + "_" + str(i)
-                i = i + 1
-
-        obj.name = nName
-        return nName

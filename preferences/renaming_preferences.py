@@ -6,7 +6,7 @@ from bpy.props import (
     StringProperty,
 )
 
-# from ..validation.renaming_vallidate import VIEW3D_PT_validation
+# from ..validation.renaming_validate import VIEW3D_PT_validation
 from .renaming_keymap import remove_key
 from .. import __package__ as base_package
 from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
@@ -52,7 +52,7 @@ def update_suf_pre_key(self, context):
 
 
 def update_panel_category(self, context):
-    '''Update panel tab for collider tools'''
+    """Update panel tab for collider tools"""
 
     panels = [
         VIEW3D_PT_tools_renaming_panel,
@@ -63,7 +63,7 @@ def update_panel_category(self, context):
         try:
             bpy.utils.unregister_class(panel)
         except:
-            pass
+            print('Could not register panel')
 
         prefs = context.preferences.addons[base_package].preferences
         panel.bl_category = prefs.renaming_category
@@ -71,7 +71,7 @@ def update_panel_category(self, context):
     return
 
 
-# def update_vallidate_panel_category(self, context):
+# def update_validate_panel_category(self, context):
 #     '''Update panel tab for collider tools'''
 #
 #     panels = [
@@ -113,7 +113,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
                              default='UI')
 
     renaming_category: StringProperty(name="Category",
-                                      description="Defines in which category of the tools panel the simple renaimg panel is listed",
+                                      description="Defines in which category of the tools panel the simple renaming "
+                                                  "panel is listed",
                                       default='Rename', update=update_panel_category)
 
     renaming_separator: StringProperty(
@@ -136,7 +137,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     numerate_start_number: bpy.props.IntProperty(
         name="Numerate Start",
-        description="Defines the first number for iterating objects. E.g., 1 means that the first object will be named [objectname]001",
+        description="Defines the first number for iterating objects. E.g., 1 means that the first object will be "
+                    "named [objectname]001",
         default=1,
     )
 
@@ -147,7 +149,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     )
     numerate_step: bpy.props.IntProperty(
         name="Numerate Step",
-        description="Defines the steps between numbers. E.g., 1 results in 1, 2, 3, a step siye ot two results in 1,3,5",
+        description="Defines the steps between numbers. E.g., 1 results in 1, 2, 3, a step size ot two results in 1,3,5",
         default=1,
     )
 
@@ -194,10 +196,9 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     #     default=False,
     #     update=toggle_validation_panel)
 
-    # validation_category: StringProperty(name="Category",
-    #                                      description="Defines in which category of the tools panel the simple renaimg validation panel is listed",
-    #                                      default='Rename',
-    #                                      update=update_vallidate_panel_category)  # update = update_panel_position,
+    # validation_category: StringProperty(name="Category", description="Defines in which category of the tools panel
+    # the simple renaming validation panel is listed", default='Rename', update=update_validate_panel_category)  #
+    # update = update_panel_position,
     #
 
     regex_Mesh: bpy.props.StringProperty(
@@ -332,16 +333,15 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         row.prop(self, f'{property_prefix}_alt')
 
     def draw(self, context):
-        '''
+        """
         simple preference UI to define custom inputs and user preferences
-        '''
+        """
         layout = self.layout
-        wm = context.window_manager
 
         row = layout.row(align=True)
         row.prop(self, "prefs_tabs", expand=True)
 
-        # Genral settings regarding renaming
+        # General settings regarding renaming
         if self.prefs_tabs == 'UI':
             for propName in self.props_general:
                 row = layout.row()
@@ -396,7 +396,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             row.prop(self, "regex_Mesh", expand=True)
             row = box.row()
             row.prop(self, "materialRegex", expand=True)
-
 
         elif self.prefs_tabs == 'SUPPORT':
 

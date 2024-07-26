@@ -8,7 +8,7 @@ from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, c
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
     bl_idname = "renaming.numerate"
     bl_label = "Numerate"
-    bl_description = "adds a growing number to the object names with the amount of digits specified in Number Lenght"
+    bl_description = "adds a growing number to the object names with the amount of digits specified in Number Length"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -23,12 +23,11 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         digits = prefs.numerate_digits
 
         msg = wm.renaming_messages
-        errMsg = wm.renaming_error_messages
 
         renamingList = []
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg != None:
+        if errMsg is not None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -37,7 +36,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         if len(renamingList) > 0:
             i = 0
             for entity in renamingList:
-                if entity != None:
+                if entity is not None:
                     oldName = entity.name
                     newName = entity.name + separator + (
                         '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))

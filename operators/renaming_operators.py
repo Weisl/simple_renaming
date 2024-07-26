@@ -4,12 +4,12 @@ from .. import __package__ as base_package
 
 
 def switchToEditMode(context):
-    '''Switch to Edit Mode'''
+    """Switch to Edit Mode"""
     bpy.ops.object.mode_set(mode='EDIT')
 
 
 def numerate_entity_name(context, basename, typelist, active_entity_name, return_type_list=False):
-    '''Numerate entities and make sure they have a unique number'''
+    """Numerate entities and make sure they have a unique number"""
     wm = context.scene
     digits = len(wm.renaming_numerate)
 
@@ -37,7 +37,7 @@ def numerate_entity_name(context, basename, typelist, active_entity_name, return
 
 
 def getAllBones(mode):
-    '''Get list of all bones depending on Edit or Pose Mode'''
+    """Get list of all bones depending on Edit or Pose Mode"""
     boneList = []
 
     for arm in bpy.data.armatures:
@@ -52,7 +52,7 @@ def getAllBones(mode):
 
 
 def getAllModifiers():
-    '''get list of all modifiers'''
+    """get list of all modifiers"""
     modifierList = []
 
     for obj in bpy.data.objects:
@@ -63,7 +63,7 @@ def getAllModifiers():
 
 
 def getAllShapeKeys():
-    '''get list of all shape keys'''
+    """get list of all shape keys"""
     shapeKeyNamesList = []
 
     for key_grp in bpy.data.shape_keys:
@@ -74,18 +74,18 @@ def getAllShapeKeys():
 
 
 def getAllVertexGroups():
-    '''get list of all vertex groups'''
-    vtrxGrpNamesList = []
+    """get list of all vertex groups"""
+    vrtxGrpNamesList = []
 
     for obj in bpy.data.objects:
         for vrtGrp in obj.vertex_groups:
-            vtrxGrpNamesList.append(vrtGrp.name)
+            vrtxGrpNamesList.append(vrtGrp.name)
 
-    return vtrxGrpNamesList
+    return vrtxGrpNamesList
 
 
 def getAllParticleNames():
-    '''get list of all particle systems'''
+    """get list of all particle systems"""
     particlesNamesList = []
 
     for obj in bpy.data.objects:
@@ -95,7 +95,7 @@ def getAllParticleNames():
 
 
 def getAllParticleSettingsNames():
-    '''get list of all particle settings'''
+    """get list of all particle settings"""
     particlesNamesList = []
     for par in bpy.data.particles:
         particlesNamesList.append(par.name)
@@ -138,11 +138,11 @@ def getAllAttributes():
 
 
 def getAllDataNames():
-    '''get list of all data'''
+    """get list of all data"""
     dataList = []
 
     for obj in bpy.data.objects:
-        if obj.data != None:
+        if obj.data is not None:
             dataList.append(obj.data.name)
 
     return dataList

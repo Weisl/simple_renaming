@@ -32,11 +32,11 @@ def register():
 
     bpy.types.VIEW3D_PT_tools_type_suffix.prepend(panel_func)
 
-    IDStore = bpy.types.Scene
+    id_store = bpy.types.Scene
 
-    IDStore.renaming_messages = RENAMING_MESSAGES()
-    IDStore.renaming_error_messages = WarningError_MESSAGES()
-    IDStore.renaming_info_messages = INFO_MESSAGES()
+    id_store.renaming_messages = RENAMING_MESSAGES()
+    id_store.renaming_error_messages = WarningError_MESSAGES()
+    id_store.renaming_info_messages = INFO_MESSAGES()
 
 
 def unregister():

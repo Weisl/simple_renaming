@@ -27,6 +27,7 @@ class BUTTON_OT_change_key(bpy.types.Operator):
     property_prefix: bpy.props.StringProperty()
 
     def __init__(self):
+        self.prefs = None
         self.my_event = ''
 
     def invoke(self, context, event):
@@ -71,14 +72,13 @@ def add_keymap():
 
 
 def add_key_to_keymap(idname, kmi, km, active=True):
-    ''' Add ta key to the appropriate keymap '''
+    """ Add ta key to the appropriate keymap """
     kmi.properties.name = idname
     kmi.active = active
-    # keys.append((km, kmi))
 
 
 def remove_key(context, idname, properties_name):
-    '''Removes addon hotkeys from the keymap'''
+    """Removes addon hotkeys from the keymap"""
     wm = bpy.context.window_manager
     km = wm.keyconfigs.addon.keymaps['Window']
 
@@ -88,7 +88,7 @@ def remove_key(context, idname, properties_name):
 
 
 def remove_keymap():
-    '''Removes keys from the keymap. Currently this is only called when unregistering the addon. '''
+    """Removes keys from the keymap. Currently, this is only called when unregistering the addon. """
     # only works for menues and pie menus
     wm = bpy.context.window_manager
     km = wm.keyconfigs.addon.keymaps['Window']
@@ -119,15 +119,4 @@ class REMOVE_OT_hotkey(bpy.types.Operator):
         setattr(prefs, f'{self.property_prefix}_shift', False)
         setattr(prefs, f'{self.property_prefix}_alt', False)
 
-        return {'FINISHED'}
-
-
-class RENAMING_OT_add_hotkey_renaming(bpy.types.Operator):
-    ''' Add hotkey entry '''
-    bl_idname = "utilities.add_hotkey"
-    bl_label = "Addon Preferences Example"
-    bl_options = {'REGISTER', 'INTERNAL'}
-
-    def execute(self, context):
-        add_hotkey(context)
         return {'FINISHED'}

@@ -7,7 +7,8 @@ from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, c
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
     bl_idname = "renaming.dataname_from_obj"
     bl_label = "Data Name from Object"
-    bl_description = "Renames the object data according to the object name and adds the in the data textfield specified suffix."
+    bl_description = "Renames the object data according to the object name and adds the in the data textfield " \
+                     "specified suffix. "
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -15,11 +16,10 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         suffix_data = wm.renaming_suffix_prefix_data_02
 
         msg = wm.renaming_messages  # variable to save messages
-        errMsg = wm.renaming_error_messages
 
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg != None:
+        if errMsg is not None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -27,12 +27,12 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
 
         # TODO: Clean up. Should use getRenamingList instead of iterating through all objects by itself.
 
-        if wm.renaming_only_selection == True:
+        if wm.renaming_only_selection:
             for obj in context.selected_objects:
 
                 objName = obj.name + suffix_data
                 # if suffix_data != '':
-                if hasattr(obj, 'data') and obj.data != None:
+                if hasattr(obj, 'data') and obj.data is not None:
                     oldName = obj.data.name
                     newName = objName
                     obj.data.name = newName
@@ -40,9 +40,9 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         else:
             for obj in bpy.data.objects:
                 objName = obj.name + suffix_data
-                # if suffix_data != '':
-                # if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
-                if hasattr(obj, 'data') and obj.data != None:
+                # if suffix_data != '': if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or
+                # obj.type == 'META' or obj.type == 'SURFACE'):
+                if hasattr(obj, 'data') and obj.data is not None:
                     oldName = obj.data.name
                     newName = objName
                     obj.data.name = newName

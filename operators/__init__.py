@@ -143,7 +143,7 @@ def register():
 
     IDStore.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
     IDStore.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
-    IDStore.renaming_usenumerate = BoolProperty(name="Numerate",
+    IDStore.renaming_use_enumerate = BoolProperty(name="Numerate",
                                                 description="Enable and Disable the numeration of objects. This can be especially useful in combination with the custom numberation variable @n",
                                                 default=True,
                                                 )

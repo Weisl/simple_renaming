@@ -8,8 +8,8 @@ from ..ui.renaming_panels import get_addon_name
 
 
 class VIEW3D_OT_Validate(bpy.types.Operator):
-    bl_idname = "renaming.vallidate"
-    bl_label = "Vallidate Names"
+    bl_idname = "renaming.validate"
+    bl_label = "Validate Names"
     bl_description = "replaces parts in the object names"
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -18,17 +18,16 @@ class VIEW3D_OT_Validate(bpy.types.Operator):
         prefs = context.preferences.addons[f'{base_package}'].preferences
         regex = prefs.regex_Mesh
 
-        renamingList = []
-        renamingList, switchEditMode, errMsg = getRenamingList(context)
+        renaming_list, switch_edit_mode, err_msg = getRenamingList(context)
 
-        if len(renamingList) > 0:
-            for entity in renamingList:
+        if len(renaming_list) > 0:
+            for entity in renaming_list:
                 if entity != None:
                     if regex != '':
                         match = bool(re.compile(regex).match(entity.name))
 
                         if match:
-                            wm.renaming_info_messages.addMessage("Vallid", entity.name)
+                            wm.renaming_info_messages.addMessage("Valid", entity.name)
                         else:
                             wm.renaming_info_messages.addMessage("Not", entity.name)
 
@@ -39,10 +38,10 @@ class VIEW3D_OT_Validate(bpy.types.Operator):
 # addon Panel
 class VIEW3D_PT_validation(bpy.types.Panel):
     """Creates a renaming Panel"""
-    bl_label = "Name Vallidation"
+    bl_label = "Name Validation"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Vallidation"
+    bl_category = "Validation"
 
     def draw_header(self, context):
         layout = self.layout

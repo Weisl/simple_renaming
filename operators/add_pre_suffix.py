@@ -15,10 +15,9 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
 
         wm = context.scene
 
-        renamingList = []
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg != None:
+        if errMsg is not None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -29,15 +28,15 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
         VariableReplacer.reset()
         if len(renamingList) > 0:
             for entity in renamingList:
-                if entity != None:
+                if entity is not None:
                     suffix = VariableReplacer.replaceInputString(context, wm.renaming_suffix, entity)
-                    if entity.name.endswith(suffix) != True:
+                    if not entity.name.endswith(suffix):
                         oldName = entity.name
                         newName = entity.name + suffix
                         entity.name = newName
                         msg.addMessage(oldName, entity.name)
         else:
-            msg.addMessage(None, None, "Insert Valide String")
+            msg.addMessage(None, None, "Insert Valid String")
         if switchEditMode:
             switchToEditMode(context)
         callRenamingPopup(context)
@@ -54,12 +53,10 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
         wm = context.scene
 
         msg = wm.renaming_messages
-        errMsg = wm.renaming_error_messages
 
-        renamingList = []
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg != None:
+        if errMsg is not None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -69,9 +66,9 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
 
         if len(renamingList) > 0:
             for entity in renamingList:
-                if entity != None:
+                if entity is not None:
                     pre = VariableReplacer.replaceInputString(context, wm.renaming_prefix, entity)
-                    if entity.name.startswith(pre) != True:
+                    if not entity.name.startswith(pre):
                         oldName = entity.name
                         newName = pre + entity.name
                         entity.name = newName

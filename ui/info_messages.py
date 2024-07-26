@@ -1,5 +1,5 @@
 class MESSAGE():
-    '''messages parent class'''
+    """messages parent class"""
     message = []
 
     @classmethod
@@ -25,7 +25,7 @@ class MESSAGE():
 
 
 class INFO_MESSAGES(MESSAGE):
-    '''Custom info messages'''
+    """Custom info messages"""
 
     @classmethod
     def addMessage(cls, assetName, message='', obType=False, obIcon=False):
@@ -35,7 +35,7 @@ class INFO_MESSAGES(MESSAGE):
 
 
 class WarningError_MESSAGES(MESSAGE):
-    '''Custom error warning messages'''
+    """Custom error warning messages"""
 
     @classmethod
     def addMessage(cls, message='', isError=False):
@@ -45,7 +45,7 @@ class WarningError_MESSAGES(MESSAGE):
 
 
 class RENAMING_MESSAGES(MESSAGE):
-    '''Custom renaming messages'''
+    """Custom renaming messages"""
     message = []
 
     @classmethod

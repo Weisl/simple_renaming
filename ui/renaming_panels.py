@@ -22,7 +22,7 @@ def drawAdvancedUI(layout, context):
     row = layout.row(align=True)
     row.prop(scene, "renaming_object_types", text="")
 
-    #### SELECTED ############
+    # SELECTED
     if str(scene.renaming_object_types) == 'OBJECT':
         layout.prop(scene, "renaming_object_types_specified", expand=True)
     if str(scene.renaming_object_types) in types_of_selected:
@@ -50,9 +50,9 @@ def drawAdvancedUI(layout, context):
 
     layout.label(text="Rename")
 
-    ###### NEW NAME #######
+    # NEW NAME
     col = layout.column(align=True)
-    col.prop(scene, "renaming_usenumerate")
+    col.prop(scene, "renaming_use_enumerate")
 
     row = col.row(align=True)
     split = row.split(factor=0.6, align=True)
@@ -64,7 +64,7 @@ def drawAdvancedUI(layout, context):
     row = col.row()
     row.operator("renaming.name_replace", icon="FORWARD")
 
-    ###### SEARCH REPLACE #######
+    # SEARCH REPLACE
     layout.separator()
     layout.label(text="Search and Replace")
 
@@ -104,7 +104,7 @@ def drawAdvancedUI(layout, context):
     layout.separator()
     layout.label(text="Add Prefix and Suffix")
 
-    #### REFIX SUFFIX
+    # REFIX SUFFIX
     col = layout.column(align=True)
     split = col.split(factor=0.9, align=True)
     split.prop(scene, "renaming_prefix", text='')
@@ -203,23 +203,23 @@ class VIEW3D_PT_tools_type_suffix(bpy.types.Panel):
         col = split.column()
         row = col.row()
         row.prop(scene, "renaming_suffix_prefix_empty", text="")
-        op = row.operator("renaming.add_suffix_prefix_by_type", text="Empties").option = 'empty'
+        row.operator("renaming.add_suffix_prefix_by_type", text="Empties").option = 'empty'
 
         row = col.row()
         row.prop(scene, "renaming_suffix_prefix_geometry", text="")
-        op = row.operator('renaming.add_suffix_prefix_by_type', text="Meshes").option = 'mesh'
+        row.operator('renaming.add_suffix_prefix_by_type', text="Meshes").option = 'mesh'
 
         row = col.row()
         row.prop(scene, "renaming_suffix_prefix_material", text="")
-        op = row.operator('renaming.add_suffix_prefix_by_type', text="Materials").option = 'material'
+        row.operator('renaming.add_suffix_prefix_by_type', text="Materials").option = 'material'
 
         row = col.row()
         row.prop(scene, "renaming_suffix_prefix_curve", text="")
-        op = row.operator('renaming.add_suffix_prefix_by_type', text="Curves").option = 'curve'
+        row.operator('renaming.add_suffix_prefix_by_type', text="Curves").option = 'curve'
 
         row = col.row()
         row.prop(scene, "renaming_suffix_prefix_armature", text="")
-        op = row.operator('renaming.add_suffix_prefix_by_type', text="Armatures").option = 'armature'
+        row.operator('renaming.add_suffix_prefix_by_type', text="Armatures").option = 'armature'
 
         row = col.row()
         row.prop(scene, "renaming_suffix_prefix_lattice", text="")
