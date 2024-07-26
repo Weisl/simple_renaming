@@ -44,13 +44,13 @@ class VariableReplacer:
         wm = context.scene
         cls.addon_prefs = context.preferences.addons[base_package].preferences
 
-        ##### System and Global Values ################
+        # System and Global Values #
         inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
         inputText = re.sub(r'@d', cls.getDateName(), inputText)  # date
         inputText = re.sub(r'@i', cls.getTimeName(), inputText)  # time
         inputText = re.sub(r'@r', cls.getRandomString(), inputText)
 
-        ##### UserStrings ################
+        # UserStrings #
         inputText = re.sub(r'@h', cls.gethigh(), inputText)  # high
         inputText = re.sub(r'@l', cls.getlow(), inputText)  # low
         inputText = re.sub(r'@b', cls.getcage(), inputText)  # cage
@@ -58,19 +58,19 @@ class VariableReplacer:
         inputText = re.sub(r'@u2', cls.getuser2(), inputText)
         inputText = re.sub(r'@u3', cls.getuser3(), inputText)
 
-        ##### GetScene ################
+        # GetScene #
         inputText = re.sub(r'@a', cls.getActive(context), inputText)  # active object
         inputText = re.sub(r'@n', cls.getNumber(), inputText)
 
         if wm.renaming_object_types == 'OBJECT':
-            ##### Objects #################
+            # Objects
             inputText = re.sub(r'@o', cls.getObject(entity), inputText)  # object
             inputText = re.sub(r'@t', cls.getType(entity), inputText)  # type
             inputText = re.sub(r'@p', cls.getParent(entity), inputText)  # parent
             inputText = re.sub(r'@m', cls.getData(entity), inputText)  # data
             inputText = re.sub(r'@c', cls.getCollection(entity), inputText)  # collection
 
-        ###### IMAGES ###########
+        # IMAGES #
         if wm.renaming_object_types == 'IMAGE':
             inputText = re.sub(r'@r', 'RESOLUTION', inputText)
             inputText = re.sub(r'@i', 'FILETYPE', inputText)
