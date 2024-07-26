@@ -26,7 +26,7 @@ if "bpy" in locals():
     importlib.reload(operators)
     importlib.reload(preferences)
     importlib.reload(ui)
-    # .reload(validation)
+    # importlib.reload(validation)
     importlib.reload(variable_replacer)
 
 else:

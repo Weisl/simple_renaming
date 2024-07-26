@@ -8,7 +8,7 @@ from bpy.props import (
 from . import renaming_sufPre_operators
 
 
-def tChange(self, context):
+def variable_replacer(self, context):
     wm = bpy.context.scene
 
     # The print function works fine
@@ -142,31 +142,31 @@ def register():
     id_store.renaming_presetNaming = EnumProperty(name="Object Types",
                                                   items=enumPresetItems,
                                                   description="Which kind of object to rename",
-                                                  update=tChange
+                                                  update=variable_replacer
                                                   )
 
     id_store.renaming_presetNaming1 = EnumProperty(name="Object Types",
                                                    items=enumPresetItems,
                                                    description="Which kind of object to rename",
-                                                   update=tChange
+                                                   update=variable_replacer
                                                    )
 
     id_store.renaming_presetNaming2 = EnumProperty(name="Object Types",
                                                    items=enumPresetItems,
                                                    description="Which kind of object to rename",
-                                                   update=tChange
+                                                   update=variable_replacer
                                                    )
 
     id_store.renaming_presetNaming3 = EnumProperty(name="Object Types",
                                                    items=enumPresetItems,
                                                    description="Which kind of object to rename",
-                                                   update=tChange
+                                                   update=variable_replacer
                                                    )
 
     id_store.renaming_presetNaming4 = EnumProperty(name="Object Types",
                                                    items=enumPresetItems,
                                                    description="Which kind of object to rename",
-                                                   update=tChange
+                                                   update=variable_replacer
                                                    )
 
     from bpy.utils import register_class
