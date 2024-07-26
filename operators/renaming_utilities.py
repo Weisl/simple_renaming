@@ -78,7 +78,6 @@ def getRenamingList(context):
                 if obj.type == 'ARMATURE':
                     armatures.append(obj.data)
 
-            # TODO: Save armature for bones
             for selected_bone in selectedBones:
                 for arm in armatures:
                     if modeOld == 'POSE':

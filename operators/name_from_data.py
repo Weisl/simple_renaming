@@ -25,8 +25,6 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
             callErrorPopup(context)
             return {'CANCELLED'}
 
-        # TODO: Clean up. Should use getRenamingList instead of iterating through all objects by itself.
-
         if wm.renaming_only_selection:
             for obj in context.selected_objects:
 
