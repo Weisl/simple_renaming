@@ -6,8 +6,9 @@ from bpy.props import (
     StringProperty,
 )
 
-# from ..validation.renaming_validate import VIEW3D_PT_validation
+
 from .renaming_keymap import remove_key
+from ..name_vallidation.renaming_validation import VIEW3D_PT_validation
 from .. import __package__ as base_package
 from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
 
@@ -71,31 +72,31 @@ def update_panel_category(self, context):
     return
 
 
-# def update_validate_panel_category(self, context):
-#     '''Update panel tab for collider tools'''
-#
-#     panels = [
-#         VIEW3D_PT_validation,
-#     ]
-#
-#     for panel in panels:
-#         try:
-#             bpy.utils.unregister_class(panel)
-#         except:
-#             pass
-#
-#         prefs = context.preferences.addons[base_package].preferences
-#         panel.bl_category = prefs.validation_category
-#         bpy.utils.register_class(panel)
-#     return
+def update_validate_panel_category(self, context):
+    """Update panel tab for collider tools"""
+
+    panels = [
+        VIEW3D_PT_validation,
+    ]
+
+    for panel in panels:
+        try:
+            bpy.utils.unregister_class(panel)
+        except:
+            pass
+
+        prefs = context.preferences.addons[base_package].preferences
+        panel.bl_category = prefs.validation_category
+        bpy.utils.register_class(panel)
+    return
 
 
-# def toggle_validation_panel(self, context):
-#     if self.renaming_show_validation:
-#         bpy.utils.register_class(VIEW3D_PT_validation)
-#     else:
-#         bpy.utils.unregister_class(VIEW3D_PT_validation)
-#     return
+def toggle_validation_panel(self, context):
+    if self.renaming_show_validation:
+        bpy.utils.register_class(VIEW3D_PT_validation)
+    else:
+        bpy.utils.unregister_class(VIEW3D_PT_validation)
+    return
 
 
 # addon Preferences
@@ -108,7 +109,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
                                     ('KEYMAPS', "Keymaps", "Keymaps"),
-                                    # ('VALIDATE', "Validate", "Validate"),
+                                    ('VALIDATE', "Validate", "Validate"),
                                     ('SUPPORT', "Support & Donation", "Support")),
                              default='UI')
 
@@ -157,49 +158,40 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         name="High",
         description="",
         default="high",
-        # update = update_panel_position,
     )
     renaming_stringLow: StringProperty(
         name="Low",
         description="",
         default='low',
-        # update = update_panel_position,
     )
     renaming_stringCage: StringProperty(
         name="Cage",
         description="",
         default='cage',
-        # update = update_panel_position,
     )
     renaming_user1: StringProperty(
         name="User 1",
         description="",
         default='',
-        # update = update_panel_position,
     )
     renaming_user2: StringProperty(
         name="User 2",
         description="",
         default='',
-        # update = update_panel_position,
     )
     renaming_user3: StringProperty(
         name="User 3",
         description="",
         default='',
-        # update = update_panel_position,
     )
 
-    # renaming_show_validation: bpy.props.BoolProperty(
-    #     name="Use Name Validation",
-    #     description="Enable or Disable Validation Panel",
-    #     default=False,
-    #     update=toggle_validation_panel)
+    renaming_show_validation: bpy.props.BoolProperty(
+        name="Use Name Validation",
+        description="Enable or Disable Validation Panel",
+        default=False,
+        update=toggle_validation_panel)
 
-    # validation_category: StringProperty(name="Category", description="Defines in which category of the tools panel
-    # the simple renaming validation panel is listed", default='Rename', update=update_validate_panel_category)  #
-    # update = update_panel_position,
-    #
+    validation_category: StringProperty(name="Category", description="Defines in which category of the tools panel the simple renaming validation panel is listed", default='Rename', update=update_validate_panel_category)
 
     regex_Mesh: bpy.props.StringProperty(
         name="Naming Regex",

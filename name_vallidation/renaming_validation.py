@@ -4,7 +4,6 @@ import bpy
 
 from .. import __package__ as base_package
 from ..operators.renaming_utilities import getRenamingList, callInfoPopup
-from ..ui.renaming_panels import get_addon_name
 
 
 class VIEW3D_OT_Validate(bpy.types.Operator):
