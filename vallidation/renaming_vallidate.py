@@ -22,7 +22,7 @@ class VIEW3D_OT_Validate(bpy.types.Operator):
 
         if len(renaming_list) > 0:
             for entity in renaming_list:
-                if entity != None:
+                if entity is not None:
                     if regex != '':
                         match = bool(re.compile(regex).match(entity.name))
 
@@ -47,10 +47,10 @@ class VIEW3D_PT_validation(bpy.types.Panel):
         layout = self.layout
         row = layout.row(align=True)
         row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/renaming/"
-        addon_name = get_addon_name()
+        #addon_name = get_addon_name()
 
         op = row.operator("preferences.rename_addon_search", text="", icon='PREFERENCES')
-        op.addon_name = addon_name
+        #op.addon_name = addon_name
         op.prefs_tabs = 'VALIDATE'
 
     def draw(self, context):
@@ -63,4 +63,4 @@ class VIEW3D_PT_validation(bpy.types.Panel):
         row = layout.row()
         row.label(text=prefs.regex_Mesh)
         row = layout.row()
-        row.operator("renaming.vallidate")
+        row.operator("renaming.validate")
