@@ -34,5 +34,5 @@ class PREFERENCES_OT_open_addon(bpy.types.Operator):
                     if area.type == 'USER_PREFERENCES':
                         area.tag_redraw()
 
-        # bpy.ops.preferences.addon_expand(module=self.addon_name)
+        bpy.ops.preferences.addon_expand(module=self.addon_name)
         return {'FINISHED'}
