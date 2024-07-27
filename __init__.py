@@ -26,7 +26,6 @@ if "bpy" in locals():
     importlib.reload(operators)
     importlib.reload(preferences)
     importlib.reload(ui)
-    importlib.reload(validation)
     importlib.reload(variable_replacer)
 
 else:
@@ -34,7 +33,6 @@ else:
     from . import operators
     from . import preferences
     from . import ui
-    from . import name_vallidation
     from . import variable_replacer
 
 
@@ -43,7 +41,6 @@ files = [
     add_suffix_panel,
     operators,
     ui,
-    name_vallidation,
 
     # keymap and preferences should be last
     preferences,

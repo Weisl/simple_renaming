@@ -10,7 +10,6 @@ from bpy.props import (
 from .renaming_keymap import remove_key
 from .. import __package__ as base_package
 from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
-from ..ui.validation_panel import VIEW3D_PT_validation
 
 
 def label_multiline(context, text, parent):
@@ -72,30 +71,11 @@ def update_panel_category(self, context):
     return
 
 
-def update_validate_panel_category(self, context):
-    """Update panel tab for collider tools"""
-
-    panels = [
-        VIEW3D_PT_validation,
-    ]
-
-    for panel in panels:
-        try:
-            bpy.utils.unregister_class(panel)
-        except:
-            pass
-
-        prefs = context.preferences.addons[base_package].preferences
-        panel.bl_category = prefs.validation_category
-        bpy.utils.register_class(panel)
-    return
-
-
-def toggle_validation_panel(self, context):
-    if self.renaming_show_validation:
-        bpy.utils.register_class(VIEW3D_PT_validation)
+def toggle_suffix_prefix_panel(self, context):
+    if self.renaming_show_suffix_prefix_panel:
+        bpy.utils.register_class(VIEW3D_PT_tools_type_suffix)
     else:
-        bpy.utils.unregister_class(VIEW3D_PT_validation)
+        bpy.utils.unregister_class(VIEW3D_PT_tools_type_suffix)
     return
 
 
@@ -185,13 +165,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         default='',
     )
 
-    renaming_show_validation: bpy.props.BoolProperty(
-        name="Use Name Validation",
-        description="Enable or Disable Validation Panel",
-        default=False,
-        update=toggle_validation_panel)
-
-    validation_category: StringProperty(name="Category", description="Defines in which category of the tools panel the simple renaming validation panel is listed", default='Rename', update=update_validate_panel_category)
+    renaming_show_suffix_prefix_panel: bpy.props.BoolProperty(
+        name="Prefix/Suffix by Type Panel",
+        description="Enable or disable the Prefix/Suffix by Type Panel",
+        default=True,
+        update=toggle_suffix_prefix_panel)
 
     regex_Mesh: bpy.props.StringProperty(
         name="Naming Regex",
@@ -208,7 +186,9 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     props_general = [
         "renaming_category",
         "renamingPanel_showPopup",
+        "renaming_show_suffix_prefix_panel",
         "renamingPanel_useObjectOrder",
+
     ]
     props_naming = [
         "renaming_separator",
@@ -226,11 +206,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         "renaming_user1",
         "renaming_user2",
         "renaming_user3"
-    ]
-
-    validation_variables = [
-        "regex_Mesh",
-        "materialRegex",
     ]
 
     renaming_panel_type: bpy.props.StringProperty(
@@ -367,27 +342,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             self.keymap_ui(layout, 'Renaming Sub/Prefix', 'renaming_suf_pre',
                            'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
 
-        # Settings regarding the validation.
-        if self.prefs_tabs == 'VALIDATE':
-            row = layout.row()
-            row.prop(self, "renaming_show_validation", expand=True)
-            row = layout.row()
-            row.prop(self, "validation_category", expand=True)
-
-            box = layout.box()
-            for propName in self.validation_variables:
-                row = box.row()
-                row.prop(self, propName)
-
-        elif self.prefs_tabs == 'VALIDATE':
-            box = layout.box()
-
-            row = box.row()
-            row.label(text="Validation Regex")
-            row = box.row()
-            row.prop(self, "regex_Mesh", expand=True)
-            row = box.row()
-            row.prop(self, "materialRegex", expand=True)
 
         elif self.prefs_tabs == 'SUPPORT':
 

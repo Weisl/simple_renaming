@@ -2,7 +2,7 @@ import bpy
 
 from . import renaming_keymap
 from . import renaming_preferences
-from .renaming_preferences import update_panel_category, update_validate_panel_category
+from .renaming_preferences import update_panel_category
 
 
 classes = (
@@ -19,7 +19,6 @@ def register():
 
     # update addon categories
     update_panel_category(None, bpy.context)
-    update_validate_panel_category(None, bpy.context)
 
     renaming_keymap.add_keymap()
 
