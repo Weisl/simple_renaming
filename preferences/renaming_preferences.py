@@ -8,9 +8,9 @@ from bpy.props import (
 
 
 from .renaming_keymap import remove_key
-from ..name_vallidation.renaming_validation import VIEW3D_PT_validation
 from .. import __package__ as base_package
 from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
+from ..ui.validation_panel import VIEW3D_PT_validation
 
 
 def label_multiline(context, text, parent):

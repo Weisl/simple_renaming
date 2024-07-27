@@ -1,8 +1,7 @@
-from .renaming_validation import VIEW3D_OT_Validate, VIEW3D_PT_validation
+from .validation_operator import VIEW3D_OT_Validate
 
 classes = (
     VIEW3D_OT_Validate,
-    VIEW3D_PT_validation,
 )
 
 
