@@ -51,9 +51,9 @@ class VariableReplacer:
         inputText = re.sub(r'@r', cls.getRandomString(), inputText)
 
         # UserStrings #
-        inputText = re.sub(r'@h', cls.gethigh(), inputText)  # high
-        inputText = re.sub(r'@l', cls.getlow(), inputText)  # low
-        inputText = re.sub(r'@b', cls.getcage(), inputText)  # cage
+        inputText = re.sub(r'@h', cls.get_high_variable(), inputText)  # high
+        inputText = re.sub(r'@l', cls.get_low_variable(), inputText)  # low
+        inputText = re.sub(r'@b', cls.get_cage_variable(), inputText)  # cage
         inputText = re.sub(r'@u1', cls.getuser1(), inputText)
         inputText = re.sub(r'@u2', cls.getuser2(), inputText)
         inputText = re.sub(r'@u3', cls.getuser3(), inputText)
@@ -83,17 +83,17 @@ class VariableReplacer:
         return randomString(6)
 
     @classmethod
-    def gethigh(cls):
+    def get_high_variable(cls):
         """Get High Poly identifier string"""
         return cls.addon_prefs.renaming_stringHigh
 
     @classmethod
-    def getlow(cls):
+    def get_low_variable(cls):
         """Get Low Poly identifier string"""
         return cls.addon_prefs.renaming_stringLow
 
     @classmethod
-    def getcage(cls):
+    def get_cage_variable(cls):
         """Get baking cage identifier string"""
         return cls.addon_prefs.renaming_stringCage
 
