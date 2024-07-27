@@ -6,14 +6,14 @@ from bpy.props import (
 from ..operators.renaming_utilities import callRenamingPopup
 
 
-def sufpreAdd(context, obj, sufpreName):
+def suffix_prefix_add(context, obj, suffix_prefix_name):
     wm = context.scene
 
     nName = obj.name
     if wm.renaming_suffix_prefix_type == 'SUF':
-        nName = nName + sufpreName
+        nName = nName + suffix_prefix_name
     else:
-        nName = sufpreName + nName
+        nName = suffix_prefix_name + nName
 
     if nName not in bpy.data.objects:
         obj.name = nName
@@ -22,9 +22,9 @@ def sufpreAdd(context, obj, sufpreName):
         i = 1
         while nName in bpy.data.objects:
             if wm.renaming_suffix_prefix_type == 'SUF':
-                nName = obj.name + "_" + str(i) + sufpreName
+                nName = obj.name + "_" + str(i) + suffix_prefix_name
             else:
-                nName = sufpreName + obj.name + "_" + str(i)
+                nName = suffix_prefix_name + obj.name + "_" + str(i)
             i = i + 1
 
     obj.name = nName
@@ -39,6 +39,9 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     option: StringProperty()
+
+    def __init__(self):
+        self.context = None
 
     def getSelectionAll(self):
 
@@ -65,12 +68,12 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
                     if switch_suf_pre == 'SUF':
                         if not ent.name.endswith(pre_suffix):
-                            new_name = sufpreAdd(context, ent, pre_suffix)
+                            new_name = suffix_prefix_add(context, ent, pre_suffix)
                         else:
                             name_is_new = False
                     else:
                         if not ent.name.startswith(pre_suffix):
-                            new_name = sufpreAdd(context, ent, pre_suffix)
+                            new_name = suffix_prefix_add(context, ent, pre_suffix)
                         else:
                             name_is_new = False
 
@@ -307,31 +310,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         pass
 
     def switch_type(self, argument):
-        context = self.context
-        selection = context.selected_objects
-        all = bpy.data.objects
-
-        switcher = {
-            1: 'empty',
-            2: 'mesh',
-            3: 'camera',
-            4: 'light',
-            5: 'armature',
-            6: 'lattice',
-            7: 'curve',
-            8: 'surface',
-            9: 'text',
-            10: 'gpencil',
-            11: 'metaball',
-            12: 'collection',
-            13: 'bone',
-            14: 'material',
-            15: 'data',
-            16: 'all',
-            # 17: 'actions',
-        }
-
-        method = getattr(self, argument, lambda: "Invalid month")
+        method = getattr(self, argument, lambda: "Invalid Type")
         return method()
 
     def main(self, context, objectList, isSuffix, stringExtension):
@@ -340,7 +319,6 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
     def execute(self, context):
         self.context = context
 
-        wm = context.scene
         self.switch_type(self.option)
 
         callRenamingPopup(context)

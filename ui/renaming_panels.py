@@ -135,7 +135,7 @@ def drawAdvancedUI(layout, context):
         split = col.split(factor=0.9, align=True)
         split.prop(scene, "renaming_suffix_prefix_data_02", text='')
         split.operator("object.renaming_set_variable", text="@").inputBox = "dataFromObj"
-        col.operator("renaming.dataname_from_obj", icon="MOD_DATA_TRANSFER")
+        col.operator("renaming.data_name_from_obj", icon="MOD_DATA_TRANSFER")
 
 
 def panel_func(self, context):
@@ -323,7 +323,7 @@ class OBJECT_MT_suffix_prefix_presets(Menu):
 
 
 class AddPresetRenamingPresets(AddPresetBase, Operator):
-    '''Add an Object Display Preset'''
+    """Add an Object Display Preset"""
     bl_idname = "renaming.sufpreadd_presets"
     bl_label = "Add Renaming Preset"
     preset_menu = "OBJECT_MT_suffix_prefix_presets"

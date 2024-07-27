@@ -19,7 +19,7 @@ keymaps_items_dict = {
 
 
 class BUTTON_OT_change_key(bpy.types.Operator):
-    """UI button to assign a new key to a addon hotkey"""
+    """UI button to assign a new key to an addon hotkey"""
     bl_idname = "rename.key_selection_button"
     bl_label = "Press the button you want to assign to this operation."
     bl_options = {'REGISTER', 'INTERNAL'}
@@ -89,7 +89,7 @@ def remove_key(context, idname, properties_name):
 
 def remove_keymap():
     """Removes keys from the keymap. Currently, this is only called when unregistering the addon. """
-    # only works for menues and pie menus
+    # only works for menus and pie menus
     wm = bpy.context.window_manager
     km = wm.keyconfigs.addon.keymaps['Window']
 

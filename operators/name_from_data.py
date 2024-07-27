@@ -5,7 +5,7 @@ from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, c
 
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
-    bl_idname = "renaming.dataname_from_obj"
+    bl_idname = "renaming.data_name_from_obj"
     bl_label = "Data Name from Object"
     bl_description = "Renames the object data according to the object name and adds the in the data textfield " \
                      "specified suffix. "

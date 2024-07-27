@@ -1,4 +1,4 @@
-class MESSAGE():
+class MESSAGE:
     """messages parent class"""
     message = []
 
@@ -29,8 +29,8 @@ class INFO_MESSAGES(MESSAGE):
 
     @classmethod
     def addMessage(cls, assetName, message='', obType=False, obIcon=False):
-        dict = {'assetName': assetName, 'message': message, 'obType': obType, 'obIcon': obIcon}
-        cls.message.append(dict)
+        message_dict = {'assetName': assetName, 'message': message, 'obType': obType, 'obIcon': obIcon}
+        cls.message.append(message_dict)
         return
 
 

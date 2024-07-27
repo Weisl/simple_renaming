@@ -8,7 +8,7 @@ def switchToEditMode(context):
     bpy.ops.object.mode_set(mode='EDIT')
 
 
-def numerate_entity_name(context, basename, typelist, active_entity_name, return_type_list=False):
+def numerate_entity_name(context, basename, type_list, active_entity_name, return_type_list=False):
     """Numerate entities and make sure they have a unique number"""
     wm = context.scene
     digits = len(wm.renaming_numerate)
@@ -24,14 +24,14 @@ def numerate_entity_name(context, basename, typelist, active_entity_name, return
         '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
 
     i = 1
-    while newName in typelist and newName != active_entity_name:
+    while newName in type_list and newName != active_entity_name:
         newName = basename + separator + (
             '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
         i += 1
 
     if return_type_list:  # Manually add new name to custom generated list like all bones and all shape keys
-        typelist.append(newName)
-        return newName, typelist
+        type_list.append(newName)
+        return newName, type_list
 
     return newName
 

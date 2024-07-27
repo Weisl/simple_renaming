@@ -144,9 +144,11 @@ def register():
     IDStore.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
     IDStore.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
     IDStore.renaming_use_enumerate = BoolProperty(name="Numerate",
-                                                description="Enable and Disable the numeration of objects. This can be especially useful in combination with the custom numberation variable @n",
-                                                default=True,
-                                                )
+                                                  description="Enable and Disable the numeration of objects. This can "
+                                                              "be especially useful in combination with the numeration "
+                                                              "variable @n",
+                                                  default=True,
+                                                  )
     IDStore.renaming_base_numerate = IntProperty(name="Step Size", default=1)
     IDStore.renaming_start_number = IntProperty(name="Step Size", default=1)
     IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default=3)

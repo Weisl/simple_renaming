@@ -24,7 +24,6 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
 
         msg = wm.renaming_messages
 
-        renamingList = []
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
         if errMsg is not None:

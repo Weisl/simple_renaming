@@ -391,7 +391,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             box = layout.box()
 
             row = box.row()
-            row.label(text="Vallidation Regex")
+            row.label(text="Validation Regex")
             row = box.row()
             row.prop(self, "regex_Mesh", expand=True)
             row = box.row()
