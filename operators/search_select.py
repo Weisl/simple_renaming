@@ -1,10 +1,11 @@
 import re
+
 import bpy
 
 from .renaming_operators import switchToEditMode
-
 from ..operators.renaming_utilities import getRenamingList, callErrorPopup
 from ..variable_replacer.variable_replacer import VariableReplacer
+
 
 class VIEW3D_OT_naming(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
@@ -35,7 +36,7 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
 
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg != None:
+        if errMsg is not None:
             errorMsg = wm.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -46,11 +47,11 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
 
         if len(renamingList) > 0:
             for entity in renamingList:  # iterate over all objects that are to be renamed
-                if entity != None and searchName != '':
+                if entity is not None and searchName != '':
                     entityName = entity.name
                     searchReplaced = VariableReplacer.replaceInputString(context, searchName, entity)
 
-                    if wm.renaming_matchcase == True:
+                    if wm.renaming_matchcase:
                         if entityName.find(searchReplaced) >= 0:
                             selectionList.append(entity)
                             msg.addMessage("selected", entityName)

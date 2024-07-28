@@ -1,6 +1,8 @@
 import bpy
 from bpy.types import PoseBone, EditBone
 
+from .. import __package__ as base_package
+
 
 def trimString(string, size):
     list1 = string
@@ -10,14 +12,13 @@ def trimString(string, size):
 
 def getRenamingList(context):
     scene = context.scene
-    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
 
     renamingList = []
     switchEditMode = False
 
     onlySelection = scene.renaming_only_selection
 
-    obj_list = context.selected_objects.copy() if onlySelection == True else list(bpy.data.objects).copy()
+    obj_list = context.selected_objects.copy() if onlySelection is True else list(bpy.data.objects).copy()
 
     if scene.renaming_sorting:
         if scene.renaming_sort_enum == 'SELECTION':
@@ -40,7 +41,7 @@ def getRenamingList(context):
                 renamingList.append(obj.data)
 
     elif scene.renaming_object_types == 'MATERIAL':
-        if onlySelection == True:
+        if onlySelection:
             for obj in context.selected_objects:
                 for mat in obj.material_slots:
                     if mat is not None and mat.name != '':
@@ -54,13 +55,12 @@ def getRenamingList(context):
     elif scene.renaming_object_types == 'BONE':
         modeOld = context.mode
 
-        if onlySelection == True:
+        if onlySelection:
 
             selection_and_active = context.selected_objects.copy()
             if context.object not in selection_and_active:
                 selection_and_active.append(context.object)
 
-            selectedBones = []
 
             if modeOld == 'OBJECT':
                 errorMsg = "Renaming only selected Bones is only supported for EDIT and POSE mode by now."
@@ -78,7 +78,6 @@ def getRenamingList(context):
                 if obj.type == 'ARMATURE':
                     armatures.append(obj.data)
 
-            # TODO: Save armature for bones
             for selected_bone in selectedBones:
                 for arm in armatures:
                     if modeOld == 'POSE':
@@ -105,7 +104,7 @@ def getRenamingList(context):
                         renamingList.append(newBone)
 
     elif scene.renaming_object_types == 'COLLECTION':
-        if bpy.context.space_data.type == 'OUTLINER' and onlySelection == True:
+        if bpy.context.space_data.type == 'OUTLINER' and onlySelection is True:
             selected_collections = [c for c in context.selected_ids if c.bl_rna.identifier == "Collection"]
             for col in selected_collections:
                 renamingList.append(col)
@@ -113,7 +112,7 @@ def getRenamingList(context):
             renamingList = list(bpy.data.collections)
 
     elif scene.renaming_object_types == 'SHAPEKEYS':
-        if onlySelection == True:
+        if onlySelection:
             for obj in context.selected_objects:
                 for shape in obj.data.shape_keys.key_blocks:
                     renamingList.append(shape)
@@ -123,7 +122,7 @@ def getRenamingList(context):
                     renamingList.append(key)
 
     elif scene.renaming_object_types == 'MODIFIERS':
-        if onlySelection == True:
+        if onlySelection:
             for obj in context.selected_objects:
                 for mod in obj.modifiers:
                     renamingList.append(mod)
@@ -133,7 +132,7 @@ def getRenamingList(context):
                     renamingList.append(mod)
 
     elif context.scene.renaming_object_types == 'VERTEXGROUPS':
-        if onlySelection == True:
+        if onlySelection:
             for obj in context.selected_objects:
                 for vtx in obj.vertex_groups:
                     renamingList.append(vtx)
@@ -143,7 +142,7 @@ def getRenamingList(context):
                     renamingList.append(vtx)
 
     elif context.scene.renaming_object_types == 'PARTICLESYSTEM':
-        if onlySelection == True:
+        if onlySelection:
             for obj in context.selected_objects:
                 for particles in obj.particle_systems:
                     renamingList.append(particles)
@@ -181,7 +180,7 @@ def getRenamingList(context):
                 renamingList.append(attribute)
 
     elif scene.renaming_object_types == 'ACTIONS':
-        if onlySelection == True:
+        if onlySelection:
             obj_list = context.selected_objects.copy()
             for obj in obj_list:
                 ad = obj.animation_data
@@ -200,10 +199,9 @@ def getRenamingList(context):
 
 
 def callRenamingPopup(context):
-    preferences = context.preferences
-    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+    prefs = context.preferences.addons[base_package].preferences
 
-    if prefs.renamingPanel_showPopup == True:
+    if prefs.renamingPanel_showPopup:
         bpy.ops.wm.call_panel(name="POPUP_PT_popup")
     return
 

@@ -1,72 +1,66 @@
-from . import renaming_sufPre_operators
-
 import bpy
 from bpy.props import (
     BoolProperty,
     EnumProperty,
     StringProperty,
-    IntProperty,
 )
 
+from . import renaming_sufPre_operators
 
-def tChange(self, context):
-    '''
 
-    :param context: current blender context
-    :return: no return value
-    '''
-
+def variable_replacer(self, context):
     wm = bpy.context.scene
 
     # The print function works fine
-    nameingPreset = context.scene.renaming_presetNaming
-    nameVar = ""
+    renaming_variable = context.scene.renaming_variables
+    name_var = ""
 
-    ##### System and Global Values ################
-    if nameingPreset == 'FILE':
-        nameVar = "@f"
-    if nameingPreset == "DATE":
-        nameVar = "@d"
-    if nameingPreset == "TIME":
-        nameVar = "@i"
-    if nameingPreset == "RANDOM":
-        nameVar = "@r"
+    # System and Global Values
+    if renaming_variable == 'FILE':
+        name_var = "@f"
+    if renaming_variable == "DATE":
+        name_var = "@d"
+    if renaming_variable == "TIME":
+        name_var = "@i"
+    if renaming_variable == "RANDOM":
+        name_var = "@r"
 
-    ##### UserStrings ################
-    if nameingPreset == "HIGH":
-        nameVar = "@h"
-    if nameingPreset == "LOW":
-        nameVar = "@l"
-    if nameingPreset == "CAGE":
-        nameVar = "@b"
-    if nameingPreset == "USER1":
-        nameVar = "@u1"
-    if nameingPreset == "USER2":
-        nameVar = "@u2"
-    if nameingPreset == "USER3":
-        nameVar = "@u3"
-    if nameingPreset == "NUMERATE":
-        nameVar = "@n"
+    # UserStrings
+    if renaming_variable == "HIGH":
+        name_var = "@h"
+    if renaming_variable == "LOW":
+        name_var = "@l"
+    if renaming_variable == "CAGE":
+        name_var = "@b"
+    if renaming_variable == "USER1":
+        name_var = "@u1"
+    if renaming_variable == "USER2":
+        name_var = "@u2"
+    if renaming_variable == "USER3":
+        name_var = "@u3"
+    if renaming_variable == "NUMERATE":
+        name_var = "@n"
 
     if wm.renaming_object_types == 'OBJECT':
-        if nameingPreset == 'OBJECT':
-            nameVar = "@o"
-        if nameingPreset == "TYPE":
-            nameVar = "@t"
-        if nameingPreset == "PARENT":
-            nameVar = "@p"
-        if nameingPreset == "ACTIVE":
-            nameVar = "@a"
-        if nameingPreset == "COLLECTION":
-            nameVar = "@c"
-        if nameingPreset == "DATA":
-            nameVar = "@m"
+        if renaming_variable == 'OBJECT':
+            name_var = "@o"
+        if renaming_variable == "TYPE":
+            name_var = "@t"
+        if renaming_variable == "PARENT":
+            name_var = "@p"
+        if renaming_variable == "ACTIVE":
+            name_var = "@a"
+        if renaming_variable == "COLLECTION":
+            name_var = "@c"
+        if renaming_variable == "DATA":
+            name_var = "@m"
 
-    context.scene.renaming_newName += str(nameVar)
+    context.scene.renaming_newName += str(name_var)
     return
 
+
 classes = (
-   renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
+    renaming_sufPre_operators.VIEW3D_OT_add_type_suf_pre,
 )
 
 enumPresetItems = [('FILE', "File", "", '', 1),
@@ -102,75 +96,52 @@ enumObjectTypesExt = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY',
 
 
 def register():
-    IDStore = bpy.types.Scene
+    id_store = bpy.types.Scene
 
-    ############## Type Suffix Prefix ########################################
-    IDStore.type_pre_sub_only_selection = BoolProperty(
+    # Type Suffix Prefix
+    id_store.type_pre_sub_only_selection = BoolProperty(
         name="Selected Objects",
         description="Rename Selected Objects",
         default=True,
     )
 
-    IDStore.renaming_sufpre_types_specified = EnumProperty(name="Object Types",
-                                                           items=enumObjectTypesExt,
-                                                           description="Which kind of object to rename",
-                                                           options={'ENUM_FLAG'},
-                                                           default={'CURVE', 'LATTICE', 'SURFACE', 'METABALL', 'MESH',
-                                                                    'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY', 'GPENCIL',
-                                                                    'TEXT', 'BONE', 'COLLECTION'}
-                                                           )
+    id_store.renaming_suffix_prefix_types_specified = EnumProperty(name="Object Types",
+                                                                   items=enumObjectTypesExt,
+                                                                   description="Which kind of object to rename",
+                                                                   options={'ENUM_FLAG'},
+                                                                   default={'CURVE', 'LATTICE', 'SURFACE', 'METABALL',
+                                                                            'MESH',
+                                                                            'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY',
+                                                                            'GPENCIL',
+                                                                            'TEXT', 'BONE', 'COLLECTION'}
+                                                                   )
 
-    IDStore.renaming_sufpre_material = StringProperty(name='Material', default='')
-    IDStore.renaming_sufpre_geometry = StringProperty(name='Geometry', default='')
-    IDStore.renaming_sufpre_empty = StringProperty(name="Empty", default='')
-    IDStore.renaming_sufpre_group = StringProperty(name="Group", default='')
-    IDStore.renaming_sufpre_curve = StringProperty(name="Curve", default='')
-    IDStore.renaming_sufpre_armature = StringProperty(name="Armature", default='')
-    IDStore.renaming_sufpre_lattice = StringProperty(name="Lattice", default='')
-    IDStore.renaming_sufpre_data = StringProperty(name="Data", default='')
-    IDStore.renaming_sufpre_data_02 = StringProperty(name="Data = Objectname + ", default='')
-    IDStore.renaming_sufpre_surfaces = StringProperty(name="Surfaces", default='')
-    IDStore.renaming_sufpre_cameras = StringProperty(name="Cameras", default='')
-    IDStore.renaming_sufpre_lights = StringProperty(name="Lights", default='')
-    IDStore.renaming_sufpre_collection = StringProperty(name="Collections", default='')
-    IDStore.renaming_sufpre_text = StringProperty(name="Text", default='')
-    IDStore.renaming_sufpre_gpencil = StringProperty(name="Grease Pencil", default='')
-    IDStore.renaming_sufpre_metaball = StringProperty(name="Metaballs", default='')
-    IDStore.renaming_sufpre_bone = StringProperty(name="Bones", default='')
-    IDStore.renaming_sufpre_speakers = StringProperty(name="Speakers", default='')
-    IDStore.renaming_sufpre_lightprops = StringProperty(name="LightProps", default='')
+    id_store.renaming_suffix_prefix_material = StringProperty(name='Material', default='')
+    id_store.renaming_suffix_prefix_geometry = StringProperty(name='Geometry', default='')
+    id_store.renaming_suffix_prefix_empty = StringProperty(name="Empty", default='')
+    id_store.renaming_suffix_prefix_group = StringProperty(name="Group", default='')
+    id_store.renaming_suffix_prefix_curve = StringProperty(name="Curve", default='')
+    id_store.renaming_suffix_prefix_armature = StringProperty(name="Armature", default='')
+    id_store.renaming_suffix_prefix_lattice = StringProperty(name="Lattice", default='')
+    id_store.renaming_suffix_prefix_data = StringProperty(name="Data", default='')
+    id_store.renaming_suffix_prefix_data_02 = StringProperty(name="Data = Objectname + ", default='')
+    id_store.renaming_suffix_prefix_surfaces = StringProperty(name="Surfaces", default='')
+    id_store.renaming_suffix_prefix_cameras = StringProperty(name="Cameras", default='')
+    id_store.renaming_suffix_prefix_lights = StringProperty(name="Lights", default='')
+    id_store.renaming_suffix_prefix_collection = StringProperty(name="Collections", default='')
+    id_store.renaming_suffix_prefix_text = StringProperty(name="Text", default='')
+    id_store.renaming_suffix_prefix_gpencil = StringProperty(name="Grease Pencil", default='')
+    id_store.renaming_suffix_prefix_metaball = StringProperty(name="Metaballs", default='')
+    id_store.renaming_suffix_prefix_bone = StringProperty(name="Bones", default='')
+    id_store.renaming_suffix_prefix_speakers = StringProperty(name="Speakers", default='')
+    id_store.renaming_suffix_prefix_lightprops = StringProperty(name="LightProps", default='')
 
-    IDStore.renaming_inputContext = StringProperty(name="LightProps", default='')
+    id_store.renaming_inputContext = StringProperty(name="LightProps", default='')
 
-    # Pro Features
-    IDStore.renaming_presetNaming = EnumProperty(name="Object Types",
-                                                 items=enumPresetItems,
-                                                 description="Which kind of object to rename",
-                                                 update=tChange
-                                                 )
-
-    IDStore.renaming_presetNaming1 = EnumProperty(name="Object Types",
+    id_store.renaming_variables = EnumProperty(name="Object Types",
                                                   items=enumPresetItems,
                                                   description="Which kind of object to rename",
-                                                  update=tChange
-                                                  )
-
-    IDStore.renaming_presetNaming2 = EnumProperty(name="Object Types",
-                                                  items=enumPresetItems,
-                                                  description="Which kind of object to rename",
-                                                  update=tChange
-                                                  )
-
-    IDStore.renaming_presetNaming3 = EnumProperty(name="Object Types",
-                                                  items=enumPresetItems,
-                                                  description="Which kind of object to rename",
-                                                  update=tChange
-                                                  )
-
-    IDStore.renaming_presetNaming4 = EnumProperty(name="Object Types",
-                                                  items=enumPresetItems,
-                                                  description="Which kind of object to rename",
-                                                  update=tChange
+                                                  update=variable_replacer
                                                   )
 
     from bpy.utils import register_class
@@ -184,24 +155,24 @@ def unregister():
     for cls in reversed(classes):
         unregister_class(cls)
 
-    IDStore = bpy.types.Scene
+    id_store = bpy.types.Scene
 
-    del IDStore.renaming_sufpre_material
-    del IDStore.renaming_sufpre_geometry
-    del IDStore.renaming_sufpre_empty
-    del IDStore.renaming_sufpre_group
-    del IDStore.renaming_sufpre_curve
-    del IDStore.renaming_sufpre_armature
-    del IDStore.renaming_sufpre_lattice
-    del IDStore.renaming_sufpre_data
-    del IDStore.renaming_sufpre_data_02
-    del IDStore.renaming_start_number
+    del id_store.renaming_suffix_prefix_material
+    del id_store.renaming_suffix_prefix_geometry
+    del id_store.renaming_suffix_prefix_empty
+    del id_store.renaming_suffix_prefix_group
+    del id_store.renaming_suffix_prefix_curve
+    del id_store.renaming_suffix_prefix_armature
+    del id_store.renaming_suffix_prefix_lattice
+    del id_store.renaming_suffix_prefix_data
+    del id_store.renaming_suffix_prefix_data_02
+    del id_store.renaming_start_number
 
-    del IDStore.renaming_sufpre_lights
-    del IDStore.renaming_sufpre_cameras
-    del IDStore.renaming_sufpre_surfaces
-    del IDStore.renaming_sufpre_bone
-    del IDStore.renaming_sufpre_collection
-    del IDStore.renaming_object_types_specified
-    del IDStore.renaming_sufpre_speakers
-    del IDStore.renaming_sufpre_lightprops
+    del id_store.renaming_suffix_prefix_lights
+    del id_store.renaming_suffix_prefix_cameras
+    del id_store.renaming_suffix_prefix_surfaces
+    del id_store.renaming_suffix_prefix_bone
+    del id_store.renaming_suffix_prefix_collection
+    del id_store.renaming_object_types_specified
+    del id_store.renaming_suffix_prefix_speakers
+    del id_store.renaming_suffix_prefix_lightprops

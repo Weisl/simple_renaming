@@ -5,6 +5,8 @@ import time
 
 import bpy
 
+from .. import __package__ as base_package
+
 
 def randomString(stringLength=10):
     """Generate a random string of fixed length """
@@ -12,19 +14,19 @@ def randomString(stringLength=10):
     return ''.join(random.choice(letters) for i in range(stringLength))
 
 
-class VariableReplacer():
-    '''This class is responsible for the custom variables'''
+class VariableReplacer:
+    """This class is responsible for the custom variables"""
     addon_prefs = None
     entity = None
     number = 1
     digits = 3
     step = 1
-    startnumber = 0
+    start_number = 0
 
     @classmethod
     def reset(cls):
-        '''reset all values to initial state'''
-        prefs = bpy.context.preferences.addons[__package__.split('.')[0]].preferences
+        """reset all values to initial state"""
+        prefs = bpy.context.preferences.addons[base_package].preferences
         startNum = prefs.numerate_start_number
         numerate_step = prefs.numerate_step
         numerate_digits = prefs.numerate_digits
@@ -38,62 +40,62 @@ class VariableReplacer():
     @classmethod
     def replaceInputString(cls, context, inputText, entity):
 
-        '''Replace custom variables with the according string'''
+        """Replace custom variables with the according string"""
         wm = context.scene
-        cls.addon_prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        cls.addon_prefs = context.preferences.addons[base_package].preferences
 
-        ##### System and Global Values ################
+        # System and Global Values #
         inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
-        inputText = re.sub(r'@d', cls.getDateName(context), inputText)  # date
-        inputText = re.sub(r'@i', cls.getTimeName(context), inputText)  # time
-        inputText = re.sub(r'@r', cls.getRandomString(context), inputText)
+        inputText = re.sub(r'@d', cls.getDateName(), inputText)  # date
+        inputText = re.sub(r'@i', cls.getTimeName(), inputText)  # time
+        inputText = re.sub(r'@r', cls.getRandomString(), inputText)
 
-        ##### UserStrings ################
-        inputText = re.sub(r'@h', cls.gethigh(), inputText)  # high
-        inputText = re.sub(r'@l', cls.getlow(), inputText)  # low
-        inputText = re.sub(r'@b', cls.getcage(), inputText)  # cage
+        # UserStrings #
+        inputText = re.sub(r'@h', cls.get_high_variable(), inputText)  # high
+        inputText = re.sub(r'@l', cls.get_low_variable(), inputText)  # low
+        inputText = re.sub(r'@b', cls.get_cage_variable(), inputText)  # cage
         inputText = re.sub(r'@u1', cls.getuser1(), inputText)
         inputText = re.sub(r'@u2', cls.getuser2(), inputText)
         inputText = re.sub(r'@u3', cls.getuser3(), inputText)
 
-        ##### GetScene ################
+        # GetScene #
         inputText = re.sub(r'@a', cls.getActive(context), inputText)  # active object
-        inputText = re.sub(r'@n', cls.getNumber(context), inputText)
+        inputText = re.sub(r'@n', cls.getNumber(), inputText)
 
         if wm.renaming_object_types == 'OBJECT':
-            ##### Objects #################
-            inputText = re.sub(r'@o', cls.getObject(context, entity), inputText)  # object
-            inputText = re.sub(r'@t', cls.getType(context, entity), inputText)  # type
-            inputText = re.sub(r'@p', cls.getParent(context, entity), inputText)  # parent
-            inputText = re.sub(r'@m', cls.getData(context, entity), inputText)  # data
-            inputText = re.sub(r'@c', cls.getCollection(context, entity), inputText)  # collection
+            # Objects
+            inputText = re.sub(r'@o', cls.getObject(entity), inputText)  # object
+            inputText = re.sub(r'@t', cls.getType(entity), inputText)  # type
+            inputText = re.sub(r'@p', cls.getParent(entity), inputText)  # parent
+            inputText = re.sub(r'@m', cls.getData(entity), inputText)  # data
+            inputText = re.sub(r'@c', cls.getCollection(entity), inputText)  # collection
 
-        ###### IMAGES ###########
+        # IMAGES #
         if wm.renaming_object_types == 'IMAGE':
             inputText = re.sub(r'@r', 'RESOLUTION', inputText)
             inputText = re.sub(r'@i', 'FILETYPE', inputText)
 
         return inputText
 
+    @staticmethod
+    def getRandomString():
+        """Generate a Random String with the length of 6"""
+        return randomString(6)
+
     @classmethod
-    def gethigh(cls):
-        '''Get High Poly identifier string'''
+    def get_high_variable(cls):
+        """Get High Poly identifier string"""
         return cls.addon_prefs.renaming_stringHigh
 
     @classmethod
-    def getlow(cls):
-        '''Get Low Poly identifier string'''
+    def get_low_variable(cls):
+        """Get Low Poly identifier string"""
         return cls.addon_prefs.renaming_stringLow
 
     @classmethod
-    def getcage(cls):
-        '''Get baking cage identifier string'''
+    def get_cage_variable(cls):
+        """Get baking cage identifier string"""
         return cls.addon_prefs.renaming_stringCage
-
-    # @classmethod
-    def getRandomString(cls):
-        '''Generate a Random String with the length of 6'''
-        return randomString(6)
 
     @classmethod
     def getuser1(cls):
@@ -113,14 +115,12 @@ class VariableReplacer():
         return method()
 
     @classmethod
-    def getNumber(cls, context):
-        wm = context.scene
-        # digits = len(wm.renaming_numerate)
-        newNr = cls.number
+    def getNumber(cls):
+        new_nr = cls.number
         step = cls.step
-        startNum = cls.startNum
-        nr = str('{num:{fill}{width}}'.format(num=(newNr * step) + startNum, fill='0', width=cls.digits))
-        cls.number = newNr + 1
+        start_num = cls.startNum
+        nr = str('{num:{fill}{width}}'.format(num=(new_nr * step) + start_num, fill='0', width=cls.digits))
+        cls.number = new_nr + 1
         return nr
 
     @classmethod
@@ -132,20 +132,16 @@ class VariableReplacer():
         else:
             filename = "UNSAVED"
             # scn.renaming_messages.addMessage(oldName, entity.name)
-            # TODO: Error message! is unsaved
         return filename
 
     @classmethod
-    def getDateName(cls, context):
-        # Todo: Specify Date Layout in preferences
-        # TODO: Fix Timezone
+    def getDateName(cls):
         t = time.localtime()
         t = time.mktime(t)
         return time.strftime("%d%b%Y", time.gmtime(t))
 
     @classmethod
-    def getTimeName(cls, context):
-        # TODO: Specify Time Layout in preferences
+    def getTimeName(cls):
         t = time.localtime()
         t = time.mktime(t)
         return time.strftime("%H:%M", time.gmtime(t))
@@ -157,38 +153,32 @@ class VariableReplacer():
         else:
             return context.object.name
 
-    ################## OBJECTS ####################################
+    # OBJECTS
     @classmethod
-    def getObject(cls, context, entity):
-        objName = entity.name
-        return objName
+    def getObject(cls, entity):
+        obj_name = entity.name
+        return obj_name
 
     @classmethod
-    def getType(cls, context, entity):
-        # TODO: Error Case
-        # TODO: Per Object
+    def getType(cls, entity):
         return str(entity.type)
 
     @classmethod
-    def getParent(cls, context, entity):
-        # TODO: Error Case
+    def getParent(cls, entity):
         if entity.parent is not None:
             return str(entity.parent.name)
         else:
             return entity.name
 
     @classmethod
-    def getData(cls, context, entity):
-        # TODO: Error Case
+    def getData(cls, entity):
         if entity.data is not None:
             return str(entity.data.name)
         else:
             return entity.name
 
     @classmethod
-    def getCollection(cls, context, entity):
-        # prefs = context.preferences.addons[__package__.split('.')[0]].preferences
-        # separator = prefs.renaming_separator
+    def getCollection(cls, entity):
 
         collectionNames = ""
         for collection in bpy.data.collections:

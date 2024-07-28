@@ -1,4 +1,4 @@
-'''
+"""
 Copyright (C) 2019 Matthias Patscheider
 patscheider.matthias@gmail.com
 
@@ -16,22 +16,7 @@ Created by Matthias Patscheider
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
-
-bl_info = {
-    "name": "Simple Renaming Panel",
-    "description": "This Addon offers the basic functionality of renaming a set of objects",
-    "author": "Matthias Patscheider",
-    "version": (2, 0, 0),
-    "blender": (3, 0, 0),
-    "location": "View3D > Tools ",
-    "warning": "",
-    "wiki_url": "https://weisl.github.io/renaming/",
-    "doc_url": "https://weisl.github.io/renaming/",
-    "tracker_url": "https://github.com/Weisl/simple_renaming_panel/issues",
-    "support": "COMMUNITY",
-    "category": "Scene"
-}
+"""
 
 # support reloading sub-modules
 if "bpy" in locals():
@@ -41,7 +26,6 @@ if "bpy" in locals():
     importlib.reload(operators)
     importlib.reload(preferences)
     importlib.reload(ui)
-    #.reload(vallidation)
     importlib.reload(variable_replacer)
 
 else:
@@ -49,38 +33,28 @@ else:
     from . import operators
     from . import preferences
     from . import ui
-    #from . import vallidation
     from . import variable_replacer
 
-# import standard modules
-import bpy
 
-def menu_add_suffix(self, context):
-    self.layout.operator(VIEW3D_OT_add_suffix.bl_idname)  # or YourClass.bl_idname
 
-    from ..preferences.renaming_preferences import update_panel_category
-    update_panel_category(None, bpy.context)
-def register():
-
-    add_suffix_panel.register()
-    operators.register()
-    ui.register()
-    #vallidation.register()
+files = [
+    add_suffix_panel,
+    operators,
+    ui,
 
     # keymap and preferences should be last
-    preferences.register()
+    preferences,
+]
+
+
+def register():
+    for file in files:
+        file.register()
 
 
 def unregister():
-
-    # keymap and preferences should be last
-    preferences.unregister()
-
-    #vallidation.unregister()
-    ui.unregister()
-    operators.unregister()
-    add_suffix_panel.unregister()
-
+    for file in reversed(files):
+        file.unregister()
 
 
 if __name__ == "__main__":

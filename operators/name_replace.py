@@ -1,9 +1,12 @@
 import bpy
+
+from .renaming_operators import getAllVertexGroups, getAllAttributes, getAllBones, getAllModifiers, getAllUvMaps, \
+    getAllColorAttributes, getAllParticleNames, getAllParticleSettingsNames, getAllDataNames, getAllShapeKeys
+from .renaming_operators import switchToEditMode, numerate_entity_name
 from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
 from ..variable_replacer.variable_replacer import VariableReplacer
 
-from .renaming_operators import switchToEditMode, numerate_entity_name
-from .renaming_operators import getAllVertexGroups, getAllAttributes, getAllBones, getAllModifiers, getAllUvMaps, getAllColorAttributes, getAllParticleNames, getAllParticleSettingsNames, getAllDataNames, getAllShapeKeys
+
 class VIEW3D_OT_replace_name(bpy.types.Operator):
     bl_idname = "renaming.name_replace"
     bl_label = "Replace Names"
@@ -17,7 +20,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         replaceName = scene.renaming_newName
         renamingList, switchEditMode, errMsg = getRenamingList(context)
 
-        if errMsg != None:
+        if errMsg is not None:
             errorMsg = scene.renaming_error_messages
             errorMsg.addMessage(errMsg)
             callErrorPopup(context)
@@ -26,12 +29,20 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         modeOld = context.mode
 
         # settings for numerating the new name
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
-        separator = prefs.renaming_separator
-        startNum = prefs.numerate_start_number
-        step = prefs.numerate_step
-
         msg = scene.renaming_messages
+
+        vertexGroupNameList = []
+        particleSettingsList = []
+        particleList = []
+        uvmapsList = []
+        dataList = []
+        attributeList = []
+        colorAttributeList = []
+        shapeKeyNamesList = []
+        modifierNamesList = []
+        boneList = []
+
+
 
         if context.scene.renaming_object_types == 'VERTEXGROUPS':
             vertexGroupNameList = getAllVertexGroups()
@@ -49,31 +60,30 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             shapeKeyNamesList = getAllShapeKeys()
         if scene.renaming_object_types == 'MODIFIERS':
             modifierNamesList = getAllModifiers()
-
         if scene.renaming_object_types == 'BONE':
             boneList = getAllBones(modeOld)
         if scene.renaming_object_types == 'DATA':
             dataList = getAllDataNames()
+
+
 
         VariableReplacer.reset()
 
         if len(str(replaceName)) > 0:  # New name != empty
             if len(renamingList) > 0:  # List of objects to rename != empty
                 for entity in renamingList:
-                    if entity != None:
+                    if entity is not None:
 
                         replaceName = VariableReplacer.replaceInputString(context, scene.renaming_newName, entity)
 
-                        i = 0
-
                         oldName = entity.name
-                        newName = replaceName
+                        new_name = ''
 
-                        if scene.renaming_usenumerate == False:
+                        if not scene.renaming_use_enumerate:
                             entity.name = replaceName
                             msg.addMessage(oldName, entity.name)
 
-                        else:  # if scene.renaming_usenumerate == True
+                        else:  # if scene.renaming_use_enumerate == True
 
                             if scene.renaming_object_types == 'OBJECT':
                                 new_name = numerate_entity_name(context, replaceName, bpy.data.objects, entity.name)
@@ -118,8 +128,8 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
                             elif context.scene.renaming_object_types == 'PARTICLESETTINGS':
                                 new_name, particleSettingsList = numerate_entity_name(context, replaceName,
-                                                                              particleSettingsList, entity.name,
-                                                                              return_type_list=True)
+                                                                                      particleSettingsList, entity.name,
+                                                                                      return_type_list=True)
 
 
 

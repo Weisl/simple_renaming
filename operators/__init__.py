@@ -1,12 +1,11 @@
 import bpy
+from bpy.app.handlers import persistent
 from bpy.props import (
     BoolProperty,
     EnumProperty,
     StringProperty,
     IntProperty,
 )
-
-from bpy.app.handlers import persistent
 
 from . import add_pre_suffix
 from . import name_from_data
@@ -85,7 +84,7 @@ def PostChange(scene):
     if bpy.context.mode != "OBJECT":
         return
 
-    # The any() function returns True if any element of an iterable is True. If not, it returns False.
+    # Any() function returns True if any element of an iterable is True. If not, it returns False.
     is_selection_update = any(
         not u.is_updated_geometry
         and not u.is_updated_transform
@@ -99,11 +98,11 @@ def PostChange(scene):
 def register():
     IDStore = bpy.types.Scene
 
-    IDStore.renaming_sufpre_type = EnumProperty(name="Suffix or Prefix by Type",
-                                                items=prefixSuffixItems,
-                                                description="Add Prefix or Suffix to type",
-                                                default='SUF'
-                                                )
+    IDStore.renaming_suffix_prefix_type = EnumProperty(name="Suffix or Prefix by Type",
+                                                       items=prefixSuffixItems,
+                                                       description="Add Prefix or Suffix to type",
+                                                       default='SUF'
+                                                       )
 
     IDStore.renaming_object_types = EnumProperty(name="Renaming Objects",
                                                  items=renamingEntitiesItems,
@@ -144,10 +143,12 @@ def register():
 
     IDStore.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
     IDStore.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
-    IDStore.renaming_usenumerate = BoolProperty(name="Numerate",
-                                                description="Enable and Disable the numeration of objects. This can be especially useful in combination with the custom numberation variable @n",
-                                                default=True,
-                                                )
+    IDStore.renaming_use_enumerate = BoolProperty(name="Numerate",
+                                                  description="Enable and Disable the numeration of objects. This can "
+                                                              "be especially useful in combination with the numeration "
+                                                              "variable @n",
+                                                  default=True,
+                                                  )
     IDStore.renaming_base_numerate = IntProperty(name="Step Size", default=1)
     IDStore.renaming_start_number = IntProperty(name="Step Size", default=1)
     IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
@@ -171,7 +172,7 @@ def unregister():
     del IDStore.renaming_search
     del IDStore.renaming_newName
     del IDStore.renaming_object_types
-    del IDStore.renaming_sufpre_type
+    del IDStore.renaming_suffix_prefix_type
     del IDStore.renaming_replace
     del IDStore.renaming_suffix
     del IDStore.renaming_prefix
