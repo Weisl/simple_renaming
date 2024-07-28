@@ -35,8 +35,6 @@ else:
     from . import ui
     from . import variable_replacer
 
-
-
 files = [
     add_suffix_panel,
     operators,

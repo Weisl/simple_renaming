@@ -23,6 +23,7 @@ classes = (
     PREFERENCES_OT_open_addon,
 )
 
+
 def register():
     from bpy.utils import register_class
 

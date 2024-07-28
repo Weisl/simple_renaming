@@ -42,8 +42,6 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         modifierNamesList = []
         boneList = []
 
-
-
         if context.scene.renaming_object_types == 'VERTEXGROUPS':
             vertexGroupNameList = getAllVertexGroups()
         if scene.renaming_object_types == 'PARTICLESYSTEM':
@@ -64,8 +62,6 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             boneList = getAllBones(modeOld)
         if scene.renaming_object_types == 'DATA':
             dataList = getAllDataNames()
-
-
 
         VariableReplacer.reset()
 

@@ -6,7 +6,6 @@ from bpy.props import (
     StringProperty,
 )
 
-
 from .renaming_keymap import remove_key
 from .. import __package__ as base_package
 from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix

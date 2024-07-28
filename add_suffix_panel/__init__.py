@@ -139,10 +139,10 @@ def register():
     id_store.renaming_inputContext = StringProperty(name="LightProps", default='')
 
     id_store.renaming_variables = EnumProperty(name="Object Types",
-                                                  items=enumPresetItems,
-                                                  description="Which kind of object to rename",
-                                                  update=variable_replacer
-                                                  )
+                                               items=enumPresetItems,
+                                               description="Which kind of object to rename",
+                                               update=variable_replacer
+                                               )
 
     from bpy.utils import register_class
     for cls in classes:

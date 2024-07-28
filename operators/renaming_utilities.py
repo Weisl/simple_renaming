@@ -61,7 +61,6 @@ def getRenamingList(context):
             if context.object not in selection_and_active:
                 selection_and_active.append(context.object)
 
-
             if modeOld == 'OBJECT':
                 errorMsg = "Renaming only selected Bones is only supported for EDIT and POSE mode by now."
                 return None, None, errorMsg

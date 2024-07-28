@@ -100,7 +100,8 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
             for msg in wm.renaming_messages.message:
                 if msg is not None:
                     if not msg['warning']:
-                        if (msg['newName'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg['newName']:
+                        if (msg['newName'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg[
+                            'newName']:
 
                             if i == 0:
                                 row = box.row(align=True)

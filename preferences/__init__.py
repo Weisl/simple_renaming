@@ -4,7 +4,6 @@ from . import renaming_keymap
 from . import renaming_preferences
 from .renaming_preferences import update_panel_category
 
-
 classes = (
     renaming_preferences.VIEW3D_OT_renaming_preferences,
     renaming_keymap.REMOVE_OT_hotkey,
