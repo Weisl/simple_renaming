@@ -1,12 +1,11 @@
 import bpy
+from bpy.app.handlers import persistent
 from bpy.props import (
     BoolProperty,
     EnumProperty,
     StringProperty,
     IntProperty,
 )
-
-from bpy.app.handlers import persistent
 
 from . import add_pre_suffix
 from . import name_from_data
@@ -78,6 +77,10 @@ enum_sort_items = [('X', "X Axis", "Sort the object based on the X axis."),
                    ('Z', "Z Axis", "Sort the object based on the Z axis."),
                    ('SELECTION', "Selection", "Sort the objects based on the selection order"), ]
 
+enum_sort_bone_items = [('X', "X Axis", "Sort the object based on the X axis."),
+                        ('Y', "Y Axis", "Sort the object based on the Y axis."),
+                        ('Z', "Z Axis", "Sort the object based on the Z axis."), ]
+
 
 # persistent is needed for handler to work in addons https://docs.blender.org/api/current/bpy.app.handlers.html
 @persistent
@@ -85,7 +88,7 @@ def PostChange(scene):
     if bpy.context.mode != "OBJECT":
         return
 
-    # The any() function returns True if any element of an iterable is True. If not, it returns False.
+    # Any() function returns True if any element of an iterable is True. If not, it returns False.
     is_selection_update = any(
         not u.is_updated_geometry
         and not u.is_updated_transform
@@ -97,61 +100,70 @@ def PostChange(scene):
 
 
 def register():
-    IDStore = bpy.types.Scene
+    id_store = bpy.types.Scene
 
-    IDStore.renaming_sufpre_type = EnumProperty(name="Suffix or Prefix by Type",
-                                                items=prefixSuffixItems,
-                                                description="Add Prefix or Suffix to type",
-                                                default='SUF'
-                                                )
+    id_store.renaming_suffix_prefix_type = EnumProperty(name="Suffix or Prefix by Type",
+                                                        items=prefixSuffixItems,
+                                                        description="Add Prefix or Suffix to type",
+                                                        default='SUF'
+                                                        )
 
-    IDStore.renaming_object_types = EnumProperty(name="Renaming Objects",
-                                                 items=renamingEntitiesItems,
-                                                 description="Which kind of object to rename",
-                                                 )
+    id_store.renaming_object_types = EnumProperty(name="Renaming Objects",
+                                                  items=renamingEntitiesItems,
+                                                  description="Which kind of object to rename",
+                                                  )
 
-    IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",
-                                                           items=enumObjectTypes,
-                                                           description="Which kind of object to rename",
-                                                           options={'ENUM_FLAG'},
-                                                           default={'CURVE', 'LATTICE', 'SURFACE', 'MESH',
-                                                                    'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY', 'GPENCIL',
-                                                                    'FONT', 'SPEAKER', 'LIGHT_PROBE', 'VOLUME'}
-                                                           )
+    id_store.renaming_object_types_specified = EnumProperty(name="Object Types",
+                                                            items=enumObjectTypes,
+                                                            description="Which kind of object to rename",
+                                                            options={'ENUM_FLAG'},
+                                                            default={'CURVE', 'LATTICE', 'SURFACE', 'MESH',
+                                                                     'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY', 'GPENCIL',
+                                                                     'FONT', 'SPEAKER', 'LIGHT_PROBE', 'VOLUME'}
+                                                            )
 
-    IDStore.renaming_sort_enum = EnumProperty(
+    id_store.renaming_sort_enum = EnumProperty(
         name="Sort by",
         description="Sort Objects based on following attribute",
         items=enum_sort_items,
         default='X',  # Set a default value
     )
+    id_store.renaming_sort_bone_enum = EnumProperty(
+        name="Sort by",
+        description="Sort Bones based on following attribute",
+        items=enum_sort_bone_items,
+        default='X',  # Set a default value
+    )
 
-    IDStore.renaming_newName = StringProperty(name="New Name", default='')
-    IDStore.renaming_search = StringProperty(name='Search', default='')
-    IDStore.renaming_replace = StringProperty(name='Replace', default='')
-    IDStore.renaming_suffix = StringProperty(name="Suffix", default='')
-    IDStore.renaming_prefix = StringProperty(name="Prefix", default='')
-    IDStore.renaming_numerate = StringProperty(name="Numerate", default='###')
+    id_store.renaming_new_name = StringProperty(name="New Name", default='')
+    id_store.renaming_search = StringProperty(name='Search', default='')
+    id_store.renaming_replace = StringProperty(name='Replace', default='')
+    id_store.renaming_suffix = StringProperty(name="Suffix", default='')
+    id_store.renaming_prefix = StringProperty(name="Prefix", default='')
+    id_store.renaming_numerate = StringProperty(name="Numerate", default='###')
 
-    IDStore.renaming_sorting = bpy.props.BoolProperty(
+    id_store.renaming_sorting = bpy.props.BoolProperty(
         name="Sort Target Objects",
         description="Sort the entries for renaming",
         default=False,
     )
+    id_store.renaming_sort_reverse = BoolProperty(name="Reverse Sorting Order", default=False)
 
-    IDStore.renaming_only_selection = BoolProperty(name="Selected Objects", description="Rename Selected Objects",
-                                                   default=True)
+    id_store.renaming_only_selection = BoolProperty(name="Selected Objects", description="Rename Selected Objects",
+                                                    default=True)
 
-    IDStore.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
-    IDStore.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
-    IDStore.renaming_usenumerate = BoolProperty(name="Numerate",
-                                                description="Enable and Disable the numeration of objects. This can be especially useful in combination with the custom numberation variable @n",
-                                                default=True,
-                                                )
-    IDStore.renaming_base_numerate = IntProperty(name="Step Size", default=1)
-    IDStore.renaming_start_number = IntProperty(name="Step Size", default=1)
-    IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
-    IDStore.renaming_cut_size = IntProperty(name="Trim Size", default=3)
+    id_store.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
+    id_store.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
+    id_store.renaming_use_enumerate = BoolProperty(name="Numerate",
+                                                   description="Enable and Disable the numeration of objects. This can "
+                                                               "be especially useful in combination with the numeration "
+                                                               "variable @n",
+                                                   default=True,
+                                                   )
+    id_store.renaming_base_numerate = IntProperty(name="Step Size", default=1)
+    id_store.renaming_start_number = IntProperty(name="Step Size", default=1)
+    id_store.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
+    id_store.renaming_cut_size = IntProperty(name="Trim Size", default=3)
 
     from bpy.utils import register_class
 
@@ -169,9 +181,9 @@ def unregister():
 
     IDStore = bpy.types.Scene
     del IDStore.renaming_search
-    del IDStore.renaming_newName
+    del IDStore.renaming_new_name
     del IDStore.renaming_object_types
-    del IDStore.renaming_sufpre_type
+    del IDStore.renaming_suffix_prefix_type
     del IDStore.renaming_replace
     del IDStore.renaming_suffix
     del IDStore.renaming_prefix

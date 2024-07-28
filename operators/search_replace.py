@@ -1,10 +1,11 @@
 import re
+
 import bpy
 
-from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
+from .renaming_operators import switch_to_edit_mode
+from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup
 from ..variable_replacer.variable_replacer import VariableReplacer
 
-from .renaming_operators import switchToEditMode
 
 class VIEW3D_OT_search_and_replace(bpy.types.Operator):
     bl_idname = "renaming.search_replace"
@@ -16,47 +17,44 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
         wm = context.scene
 
         # get list of objects to be renamed
-        renamingList, switchEditMode, errMsg = getRenamingList(context)
+        renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
-        if errMsg != None:
-            errorMsg = wm.renaming_error_messages
-            errorMsg.addMessage(errMsg)
-            callErrorPopup(context)
+        if errMsg is not None:
+            error_msg = wm.renaming_error_messages
+            error_msg.add_message(errMsg)
+            call_error_popup(context)
             return {'CANCELLED'}
 
         searchName = wm.renaming_search
-        replaceName = wm.renaming_replace
 
         msg = wm.renaming_messages  # variable to save messages
-        errMsg = wm.renaming_error_messages
 
         VariableReplacer.reset()
 
-        if len(renamingList) > 0:
-            for entity in renamingList:  # iterate over all objects that are to be renamed
-                if entity != None:
+        if len(renaming_list) > 0:
+            for entity in renaming_list:  # iterate over all objects that are to be renamed
+                if entity is not None:
                     if searchName != '':
                         oldName = entity.name
                         searchReplaced = VariableReplacer.replaceInputString(context, wm.renaming_search, entity)
                         replaceReplaced = VariableReplacer.replaceInputString(context, wm.renaming_replace, entity)
-                        if wm.renaming_useRegex == False:
+                        if not wm.renaming_useRegex:
                             if wm.renaming_matchcase:
-                                newName = str(entity.name).replace(searchReplaced, replaceReplaced)
-                                entity.name = newName
-                                msg.addMessage(oldName, entity.name)
+                                new_name = str(entity.name).replace(searchReplaced, replaceReplaced)
+                                entity.name = new_name
+                                msg.add_message(oldName, entity.name)
                             else:
                                 replaceSearch = re.compile(re.escape(searchReplaced), re.IGNORECASE)
-                                newName = replaceSearch.sub(replaceReplaced, entity.name)
-                                entity.name = newName
-                                msg.addMessage(oldName, entity.name)
+                                new_name = replaceSearch.sub(replaceReplaced, entity.name)
+                                entity.name = new_name
+                                msg.add_message(oldName, entity.name)
                         else:  # Use regex
                             # pattern = re.compile(re.escape(searchName))
-                            newName = re.sub(searchReplaced, replaceReplaced, str(entity.name))
-                            entity.name = newName
-                            msg.addMessage(oldName, entity.name)
+                            new_name = re.sub(searchReplaced, replaceReplaced, str(entity.name))
+                            entity.name = new_name
+                            msg.add_message(oldName, entity.name)
 
-        callRenamingPopup(context)
-        if switchEditMode:
-            switchToEditMode(context)
+        call_renaming_popup(context)
+        if switch_edit_mode:
+            switch_to_edit_mode(context)
         return {'FINISHED'}
-

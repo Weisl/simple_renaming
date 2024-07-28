@@ -1,7 +1,10 @@
 import bpy
-from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
+
+from .renaming_operators import switch_to_edit_mode
+from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup
 from ..variable_replacer.variable_replacer import VariableReplacer
-from .renaming_operators import switchToEditMode
+
+
 class VIEW3D_OT_add_suffix(bpy.types.Operator):
     bl_idname = "renaming.add_suffix"
     bl_label = "Add suffix"
@@ -12,33 +15,33 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
 
         wm = context.scene
 
-        renamingList = []
-        renamingList, switchEditMode, errMsg = getRenamingList(context)
+        renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
-        if errMsg != None:
-            errorMsg = wm.renaming_error_messages
-            errorMsg.addMessage(errMsg)
-            callErrorPopup(context)
+        if errMsg is not None:
+            error_msg = wm.renaming_error_messages
+            error_msg.add_message(errMsg)
+            call_error_popup(context)
             return {'CANCELLED'}
 
         msg = wm.renaming_messages
 
         VariableReplacer.reset()
-        if len(renamingList) > 0:
-            for entity in renamingList:
-                if entity != None:
+        if len(renaming_list) > 0:
+            for entity in renaming_list:
+                if entity is not None:
                     suffix = VariableReplacer.replaceInputString(context, wm.renaming_suffix, entity)
-                    if entity.name.endswith(suffix) != True:
+                    if not entity.name.endswith(suffix):
                         oldName = entity.name
-                        newName = entity.name + suffix
-                        entity.name = newName
-                        msg.addMessage(oldName, entity.name)
+                        new_name = entity.name + suffix
+                        entity.name = new_name
+                        msg.add_message(oldName, entity.name)
         else:
-            msg.addMessage(None, None, "Insert Valide String")
-        if switchEditMode:
-            switchToEditMode(context)
-        callRenamingPopup(context)
+            msg.add_message(None, None, "Insert Valid String")
+        if switch_edit_mode:
+            switch_to_edit_mode(context)
+        call_renaming_popup(context)
         return {'FINISHED'}
+
 
 class VIEW3D_OT_add_prefix(bpy.types.Operator):
     bl_idname = "renaming.add_prefix"
@@ -50,31 +53,29 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
         wm = context.scene
 
         msg = wm.renaming_messages
-        errMsg = wm.renaming_error_messages
 
-        renamingList = []
-        renamingList, switchEditMode, errMsg = getRenamingList(context)
+        renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
-        if errMsg != None:
-            errorMsg = wm.renaming_error_messages
-            errorMsg.addMessage(errMsg)
-            callErrorPopup(context)
+        if errMsg is not None:
+            error_msg = wm.renaming_error_messages
+            error_msg.add_message(errMsg)
+            call_error_popup(context)
             return {'CANCELLED'}
 
         VariableReplacer.reset()
 
-        if len(renamingList) > 0:
-            for entity in renamingList:
-                if entity != None:
+        if len(renaming_list) > 0:
+            for entity in renaming_list:
+                if entity is not None:
                     pre = VariableReplacer.replaceInputString(context, wm.renaming_prefix, entity)
-                    if entity.name.startswith(pre) != True:
+                    if not entity.name.startswith(pre):
                         oldName = entity.name
-                        newName = pre + entity.name
-                        entity.name = newName
-                        msg.addMessage(oldName, entity.name)
+                        new_name = pre + entity.name
+                        entity.name = new_name
+                        msg.add_message(oldName, entity.name)
 
-        callRenamingPopup(context)
-        if switchEditMode:
-            switchToEditMode(context)
+        call_renaming_popup(context)
+        if switch_edit_mode:
+            switch_to_edit_mode(context)
 
         return {'FINISHED'}

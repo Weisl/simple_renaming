@@ -1,43 +1,43 @@
 import bpy
-from ..variable_replacer.variable_replacer import VariableReplacer
+
+from .. import __package__ as base_package
 
 
-def switchToEditMode(context):
-    '''Switch to Edit Mode'''
+def switch_to_edit_mode(context):
+    """Switch to Edit Mode"""
     bpy.ops.object.mode_set(mode='EDIT')
 
 
-def numerate_entity_name(context, basename, typelist, active_entity_name, return_type_list=False):
-    '''Numerate entities and make sure they have a unique number'''
+def numerate_entity_name(context, basename, type_list, active_entity_name, return_type_list=False):
+    """Numerate entities and make sure they have a unique number"""
     wm = context.scene
     digits = len(wm.renaming_numerate)
 
     # Preferences
-    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+    prefs = context.preferences.addons[base_package].preferences
     separator = prefs.renaming_separator
-    startNum = prefs.numerate_start_number
+    start_number = prefs.numerate_start_number
     step = prefs.numerate_step
 
-
     i = 0
-    newName = basename + separator + (
-        '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
+    new_name = basename + separator + (
+        '{num:{fill}{width}}'.format(num=(i * step) + start_number, fill='0', width=digits))
 
     i = 1
-    while newName in typelist and newName != active_entity_name:
-        newName = basename + separator + (
-            '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
+    while new_name in type_list and new_name != active_entity_name:
+        new_name = basename + separator + (
+            '{num:{fill}{width}}'.format(num=(i * step) + start_number, fill='0', width=digits))
         i += 1
 
     if return_type_list:  # Manually add new name to custom generated list like all bones and all shape keys
-        typelist.append(newName)
-        return newName, typelist
+        type_list.append(new_name)
+        return new_name, type_list
 
-    return newName
+    return new_name
 
 
 def getAllBones(mode):
-    '''Get list of all bones depending of Edit or Pose Mode'''
+    """Get list of all bones depending on Edit or Pose Mode"""
     boneList = []
 
     for arm in bpy.data.armatures:
@@ -52,7 +52,7 @@ def getAllBones(mode):
 
 
 def getAllModifiers():
-    '''get list of all modifiers'''
+    """get list of all modifiers"""
     modifierList = []
 
     for obj in bpy.data.objects:
@@ -63,7 +63,7 @@ def getAllModifiers():
 
 
 def getAllShapeKeys():
-    '''get list of all shape keys'''
+    """get list of all shape keys"""
     shapeKeyNamesList = []
 
     for key_grp in bpy.data.shape_keys:
@@ -74,18 +74,18 @@ def getAllShapeKeys():
 
 
 def getAllVertexGroups():
-    '''get list of all vertex groups'''
-    vtrxGrpNamesList = []
+    """get list of all vertex groups"""
+    vrtx_grp_names_list = []
 
     for obj in bpy.data.objects:
         for vrtGrp in obj.vertex_groups:
-            vtrxGrpNamesList.append(vrtGrp.name)
+            vrtx_grp_names_list.append(vrtGrp.name)
 
-    return vtrxGrpNamesList
+    return vrtx_grp_names_list
 
 
 def getAllParticleNames():
-    '''get list of all particle systems'''
+    """get list of all particle systems"""
     particlesNamesList = []
 
     for obj in bpy.data.objects:
@@ -93,13 +93,15 @@ def getAllParticleNames():
             particlesNamesList.append(particle_system.name)
     return particlesNamesList
 
+
 def getAllParticleSettingsNames():
-    '''get list of all particle settings'''
+    """get list of all particle settings"""
     particlesNamesList = []
     for par in bpy.data.particles:
         particlesNamesList.append(par.name)
-        
+
     return particlesNamesList
+
 
 def getAllUvMaps():
     uvNamesList = []
@@ -136,20 +138,11 @@ def getAllAttributes():
 
 
 def getAllDataNames():
-    '''get list of all data'''
+    """get list of all data"""
     dataList = []
 
     for obj in bpy.data.objects:
-        if obj.data != None:
+        if obj.data is not None:
             dataList.append(obj.data.name)
 
     return dataList
-
-
-
-
-
-
-
-
-

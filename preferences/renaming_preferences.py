@@ -1,13 +1,15 @@
-import bpy
 import textwrap
+
+import bpy
 from bpy.props import (
     EnumProperty,
     StringProperty,
 )
 
-from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
-#from ..vallidation.renaming_vallidate import VIEW3D_PT_vallidation
 from .renaming_keymap import remove_key
+from .. import __package__ as base_package
+from ..ui.renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix
+
 
 def label_multiline(context, text, parent):
     chars = int(context.region.width / 7)  # 7 pix on 1 character
@@ -30,7 +32,7 @@ def update_key(context, operation, operator_name, property_prefix):
     wm = context.window_manager
     km = wm.keyconfigs.addon.keymaps["Window"]
 
-    prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+    prefs = context.preferences.addons[base_package].preferences
 
     # Remove previous key assignment
     remove_key(context, operation, operator_name)
@@ -49,7 +51,7 @@ def update_suf_pre_key(self, context):
 
 
 def update_panel_category(self, context):
-    '''Update panel tab for collider tools'''
+    """Update panel tab for collider tools"""
 
     panels = [
         VIEW3D_PT_tools_renaming_panel,
@@ -60,57 +62,39 @@ def update_panel_category(self, context):
         try:
             bpy.utils.unregister_class(panel)
         except:
-            pass
+            print('Could not register panel')
 
-        prefs = context.preferences.addons[__package__.split('.')[0]].preferences
+        prefs = context.preferences.addons[base_package].preferences
         panel.bl_category = prefs.renaming_category
         bpy.utils.register_class(panel)
     return
 
 
-# def update_vallidate_panel_category(self, context):
-#     '''Update panel tab for collider tools'''
-#
-#     panels = [
-#         VIEW3D_PT_vallidation,
-#     ]
-#
-#     for panel in panels:
-#         try:
-#             bpy.utils.unregister_class(panel)
-#         except:
-#             pass
-#
-#         prefs = context.preferences.addons[__package__.split('.')[0]].preferences
-#         panel.bl_category = prefs.vallidation_category
-#         bpy.utils.register_class(panel)
-#     return
-
-
-# def toggle_validation_panel(self, context):
-#     if self.renaming_show_validation:
-#         bpy.utils.register_class(VIEW3D_PT_vallidation)
-#     else:
-#         bpy.utils.unregister_class(VIEW3D_PT_vallidation)
-#     return
+def toggle_suffix_prefix_panel(self, context):
+    if self.renaming_show_suffix_prefix_panel:
+        bpy.utils.register_class(VIEW3D_PT_tools_type_suffix)
+    else:
+        bpy.utils.unregister_class(VIEW3D_PT_tools_type_suffix)
+    return
 
 
 # addon Preferences
 class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     """Contains the blender addon preferences"""
-    # this must match the addon name, use '__package__'
+    # this must match the addon name, use 'base_package'
     # when defining this in a submodule of a python package.
-    bl_idname = __package__.split('.')[0]
+    bl_idname = base_package
     bl_options = {'REGISTER'}
 
     prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
                                     ('KEYMAPS', "Keymaps", "Keymaps"),
-                                    # ('VALIDATE', "Validate", "Validate"),
-                                    ('SUPPORT', "Support", "Support")),
+                                    ('VALIDATE', "Validate", "Validate"),
+                                    ('SUPPORT', "Support & Donation", "Support")),
                              default='UI')
 
     renaming_category: StringProperty(name="Category",
-                                      description="Defines in which category of the tools panel the simple renaimg panel is listed",
+                                      description="Defines in which category of the tools panel the simple renaming "
+                                                  "panel is listed",
                                       default='Rename', update=update_panel_category)
 
     renaming_separator: StringProperty(
@@ -133,7 +117,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     numerate_start_number: bpy.props.IntProperty(
         name="Numerate Start",
-        description="Defines the first number for iterating objects. E.g., 1 means that the first object will be named [objectname]001",
+        description="Defines the first number for iterating objects. E.g., 1 means that the first object will be "
+                    "named [objectname]001",
         default=1,
     )
 
@@ -144,7 +129,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     )
     numerate_step: bpy.props.IntProperty(
         name="Numerate Step",
-        description="Defines the steps between numbers. E.g., 1 results in 1, 2, 3, a step siye ot two results in 1,3,5",
+        description="Defines the steps between numbers. E.g., 1 results in 1, 2, 3, a step size ot two results in 1,3,5",
         default=1,
     )
 
@@ -152,50 +137,38 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         name="High",
         description="",
         default="high",
-        # update = update_panel_position,
     )
     renaming_stringLow: StringProperty(
         name="Low",
         description="",
         default='low',
-        # update = update_panel_position,
     )
     renaming_stringCage: StringProperty(
         name="Cage",
         description="",
         default='cage',
-        # update = update_panel_position,
     )
     renaming_user1: StringProperty(
         name="User 1",
         description="",
         default='',
-        # update = update_panel_position,
     )
     renaming_user2: StringProperty(
         name="User 2",
         description="",
         default='',
-        # update = update_panel_position,
     )
     renaming_user3: StringProperty(
         name="User 3",
         description="",
         default='',
-        # update = update_panel_position,
     )
 
-    # renaming_show_validation: bpy.props.BoolProperty(
-    #     name="Use Name Validation",
-    #     description="Enable or Disable Validation Panel",
-    #     default=False,
-    #     update=toggle_validation_panel)
-
-    # vallidation_category: StringProperty(name="Category",
-    #                                      description="Defines in which category of the tools panel the simple renaimg vallidation panel is listed",
-    #                                      default='Rename',
-    #                                      update=update_vallidate_panel_category)  # update = update_panel_position,
-    #
+    renaming_show_suffix_prefix_panel: bpy.props.BoolProperty(
+        name="Prefix/Suffix by Type Panel",
+        description="Enable or disable the Prefix/Suffix by Type Panel",
+        default=True,
+        update=toggle_suffix_prefix_panel)
 
     regex_Mesh: bpy.props.StringProperty(
         name="Naming Regex",
@@ -209,11 +182,12 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         default='r"^[A-Za-z_](_mat)?$""',
     )
 
-
     props_general = [
         "renaming_category",
         "renamingPanel_showPopup",
+        "renaming_show_suffix_prefix_panel",
         "renamingPanel_useObjectOrder",
+
     ]
     props_naming = [
         "renaming_separator",
@@ -231,11 +205,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         "renaming_user1",
         "renaming_user2",
         "renaming_user3"
-    ]
-
-    vallidation_variables = [
-        "regex_Mesh",
-        "materialRegex",
     ]
 
     renaming_panel_type: bpy.props.StringProperty(
@@ -330,16 +299,15 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         row.prop(self, f'{property_prefix}_alt')
 
     def draw(self, context):
-        '''
+        """
         simple preference UI to define custom inputs and user preferences
-        '''
+        """
         layout = self.layout
-        wm = context.window_manager
 
         row = layout.row(align=True)
         row.prop(self, "prefs_tabs", expand=True)
 
-        # Genral settings regarding renaming
+        # General settings regarding renaming
         if self.prefs_tabs == 'UI':
             for propName in self.props_general:
                 row = layout.row()
@@ -368,69 +336,53 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
         # Settings regarding the keymap
         if self.prefs_tabs == 'KEYMAPS':
-          
             self.keymap_ui(layout, 'Renaming Panel', 'renaming_panel',
                            'wm.call_panel', "VIEW3D_PT_tools_renaming_panel")
             self.keymap_ui(layout, 'Renaming Sub/Prefix', 'renaming_suf_pre',
                            'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
 
-        # Settings regarding the vallidation.
-        if self.prefs_tabs == 'VALIDATE':
-            row = layout.row()
-            row.prop(self, "renaming_show_validation", expand=True)
-            row = layout.row()
-            row.prop(self, "vallidation_category", expand=True)
-
-            box = layout.box()
-            for propName in self.vallidation_variables:
-                row = box.row()
-                row.prop(self, propName)
-
-        elif self.prefs_tabs == 'VALIDATE':
-            box = layout.box()
-
-            row = box.row()
-            row.label(text="Vallidation Regex")
-            row = box.row()
-            row.prop(self, "regex_Mesh", expand=True)
-            row = box.row()
-            row.prop(self, "materialRegex", expand=True)
-
 
         elif self.prefs_tabs == 'SUPPORT':
+
             text = "Support me developing great tools!"
             label_multiline(
                 context=context,
                 text=text,
                 parent=layout
             )
+
+            # Donations
             box = layout.box()
-            text = "Check out my other Blender Addons providing more efficient workflows for game asset creation."
+            text = "Consider supporting the development of this addon with a donation!"
             label_multiline(
                 context=context,
                 text=text,
                 parent=box
             )
-            box = layout.box()
-            row = box.row()
-            row.operator("wm.url_open", text="Collider Tools").url = "https://blendermarket.com/products/collider-tools"
-            row = box.row()
-            row.operator("wm.url_open", text="Cam-Manager").url = "https://blendermarket.com/products/cam-manager"
+            col = box.column(align=True)
+            row = col.row()
+            row.operator("wm.url_open", text="Gumroad",
+                         icon="URL").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
+            row = col.row()
+            row.operator("wm.url_open", text="Blender Market",
+                         icon="URL").url = "https://blendermarket.com/products/simple-renaming-panel"
+            row = col.row()
+            row.operator("wm.url_open", text="PayPal Donation",
+                         icon="URL").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
 
+            # Cross Promotion
             box = layout.box()
-            text = "Please support me by donating for this addon."
+            text = "Explore my other Blender Addons designed for more efficient game asset workflows!"
             label_multiline(
                 context=context,
                 text=text,
                 parent=box
             )
-            row = box.row()
-            row.operator("wm.url_open", text="Gumroad").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
-            row = box.row()
-            row.operator("wm.url_open", text="PayPal Donation").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
-            row = box.row()
-            row.operator("wm.url_open", text="Blender Market").url = "https://blendermarket.com/products/simple-renaming-panel"
 
-
-
-
+            col = box.column(align=True)
+            row = col.row()
+            row.operator("wm.url_open", text="Collider Tools",
+                         icon="URL").url = "https://blendermarket.com/products/collider-tools"
+            row = col.row()
+            row.operator("wm.url_open", text="Cam-Manager",
+                         icon="URL").url = "https://blendermarket.com/products/cam-manager"

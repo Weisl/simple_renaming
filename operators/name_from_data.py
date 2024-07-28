@@ -1,55 +1,38 @@
 import bpy
-from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
-from .renaming_operators import switchToEditMode
+
+from .renaming_operators import switch_to_edit_mode
+from .renaming_utilities import get_renaming_list, call_error_popup, call_renaming_popup
 
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
-    bl_idname = "renaming.dataname_from_obj"
+    bl_idname = "renaming.data_name_from_obj"
     bl_label = "Data Name from Object"
-    bl_description = "Renames the object data according to the object name and adds the in the data textfield specified suffix."
+    bl_description = "Renames the object data according to the object name and adds the in the data textfield " \
+                     "specified suffix. "
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         wm = context.scene
-        suffix_data = wm.renaming_sufpre_data_02
+        suffix_data = wm.renaming_suffix_prefix_data_02
+        msg = context.scene.renaming_messages
+        renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
-        msg = wm.renaming_messages  # variable to save messages
-        errMsg = wm.renaming_error_messages
-
-        renamingList, switchEditMode, errMsg = getRenamingList(context)
-
-        if errMsg != None:
-            errorMsg = wm.renaming_error_messages
-            errorMsg.addMessage(errMsg)
-            callErrorPopup(context)
+        if errMsg is not None:
+            error_msg = wm.renaming_error_messages
+            error_msg.add_message(errMsg)
+            call_error_popup(context)
             return {'CANCELLED'}
 
-        # TODO: Clean up. Should use getRenamingList instead of iterating through all objects by itself.
+        for obj in renaming_list:
 
-        if wm.renaming_only_selection == True:
-            for obj in context.selected_objects:
+            if obj.data:
+                oldName = obj.data.name
+                new_name = obj.name + suffix_data
+                obj.data.name = new_name
+                msg.add_message(oldName, obj.data.name)
 
-                objName = obj.name + suffix_data
-                # if suffix_data != '':
-                if hasattr(obj, 'data') and obj.data != None:
-                    oldName = obj.data.name
-                    newName = objName
-                    obj.data.name = newName
-                    msg.addMessage(oldName, obj.data.name)
-        else:
-            for obj in bpy.data.objects:
-                objName = obj.name + suffix_data
-                # if suffix_data != '':
-                # if (obj.type == 'CURVE' or obj.type == 'LATTICE' or obj.type == 'MESH' or obj.type == 'META' or obj.type == 'SURFACE'):
-                if hasattr(obj, 'data') and obj.data != None:
-                    oldName = obj.data.name
-                    newName = objName
-                    obj.data.name = newName
-                    msg.addMessage(oldName, obj.data.name)
-
-        callRenamingPopup(context)
-        if switchEditMode:
-            switchToEditMode(context)
+        call_renaming_popup(context)
+        if switch_edit_mode:
+            switch_to_edit_mode(context)
 
         return {'FINISHED'}
-
