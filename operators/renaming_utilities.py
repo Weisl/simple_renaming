@@ -30,6 +30,9 @@ def get_renaming_list(context):
         else:  # scene.renaming_sort_enum == 'Z':
             obj_list = get_sorted_objects_z(obj_list)
 
+        if scene.renaming_sort_reverse:
+            obj_list.reverse()
+
     if scene.renaming_object_types == 'OBJECT':
         for obj in obj_list:
             if obj in obj_list and obj.type in scene.renaming_object_types_specified:

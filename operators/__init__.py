@@ -96,20 +96,20 @@ def PostChange(scene):
 
 
 def register():
-    IDStore = bpy.types.Scene
+    id_store = bpy.types.Scene
 
-    IDStore.renaming_suffix_prefix_type = EnumProperty(name="Suffix or Prefix by Type",
+    id_store.renaming_suffix_prefix_type = EnumProperty(name="Suffix or Prefix by Type",
                                                        items=prefixSuffixItems,
                                                        description="Add Prefix or Suffix to type",
                                                        default='SUF'
                                                        )
 
-    IDStore.renaming_object_types = EnumProperty(name="Renaming Objects",
+    id_store.renaming_object_types = EnumProperty(name="Renaming Objects",
                                                  items=renamingEntitiesItems,
                                                  description="Which kind of object to rename",
                                                  )
 
-    IDStore.renaming_object_types_specified = EnumProperty(name="Object Types",
+    id_store.renaming_object_types_specified = EnumProperty(name="Object Types",
                                                            items=enumObjectTypes,
                                                            description="Which kind of object to rename",
                                                            options={'ENUM_FLAG'},
@@ -118,41 +118,43 @@ def register():
                                                                     'FONT', 'SPEAKER', 'LIGHT_PROBE', 'VOLUME'}
                                                            )
 
-    IDStore.renaming_sort_enum = EnumProperty(
+    id_store.renaming_sort_enum = EnumProperty(
         name="Sort by",
         description="Sort Objects based on following attribute",
         items=enum_sort_items,
         default='X',  # Set a default value
     )
 
-    IDStore.renaming_new_name = StringProperty(name="New Name", default='')
-    IDStore.renaming_search = StringProperty(name='Search', default='')
-    IDStore.renaming_replace = StringProperty(name='Replace', default='')
-    IDStore.renaming_suffix = StringProperty(name="Suffix", default='')
-    IDStore.renaming_prefix = StringProperty(name="Prefix", default='')
-    IDStore.renaming_numerate = StringProperty(name="Numerate", default='###')
 
-    IDStore.renaming_sorting = bpy.props.BoolProperty(
+    id_store.renaming_new_name = StringProperty(name="New Name", default='')
+    id_store.renaming_search = StringProperty(name='Search', default='')
+    id_store.renaming_replace = StringProperty(name='Replace', default='')
+    id_store.renaming_suffix = StringProperty(name="Suffix", default='')
+    id_store.renaming_prefix = StringProperty(name="Prefix", default='')
+    id_store.renaming_numerate = StringProperty(name="Numerate", default='###')
+
+    id_store.renaming_sorting = bpy.props.BoolProperty(
         name="Sort Target Objects",
         description="Sort the entries for renaming",
         default=False,
     )
+    id_store.renaming_sort_reverse = BoolProperty(name="Reverse Sorting Order", default=False)
 
-    IDStore.renaming_only_selection = BoolProperty(name="Selected Objects", description="Rename Selected Objects",
+    id_store.renaming_only_selection = BoolProperty(name="Selected Objects", description="Rename Selected Objects",
                                                    default=True)
 
-    IDStore.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
-    IDStore.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
-    IDStore.renaming_use_enumerate = BoolProperty(name="Numerate",
+    id_store.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
+    id_store.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
+    id_store.renaming_use_enumerate = BoolProperty(name="Numerate",
                                                   description="Enable and Disable the numeration of objects. This can "
                                                               "be especially useful in combination with the numeration "
                                                               "variable @n",
                                                   default=True,
                                                   )
-    IDStore.renaming_base_numerate = IntProperty(name="Step Size", default=1)
-    IDStore.renaming_start_number = IntProperty(name="Step Size", default=1)
-    IDStore.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
-    IDStore.renaming_cut_size = IntProperty(name="Trim Size", default=3)
+    id_store.renaming_base_numerate = IntProperty(name="Step Size", default=1)
+    id_store.renaming_start_number = IntProperty(name="Step Size", default=1)
+    id_store.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
+    id_store.renaming_cut_size = IntProperty(name="Trim Size", default=3)
 
     from bpy.utils import register_class
 

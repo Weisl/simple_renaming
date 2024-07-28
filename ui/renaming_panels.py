@@ -46,6 +46,7 @@ def draw_renaming_panel(layout, context):
     col = box.column(align=True)
     col.prop(scene, "renaming_sorting")
     if scene.renaming_sorting:
+        col.prop(scene, "renaming_sort_reverse")
         col.prop(scene, "renaming_sort_enum", expand=True)
 
     layout.separator(type='LINE')
