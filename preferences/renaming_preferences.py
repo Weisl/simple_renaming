@@ -88,7 +88,6 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
                                     ('KEYMAPS', "Keymaps", "Keymaps"),
-                                    ('VALIDATE', "Validate", "Validate"),
                                     ('SUPPORT', "Support & Donation", "Support")),
                              default='UI')
 
