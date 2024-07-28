@@ -77,6 +77,10 @@ enum_sort_items = [('X', "X Axis", "Sort the object based on the X axis."),
                    ('Z', "Z Axis", "Sort the object based on the Z axis."),
                    ('SELECTION', "Selection", "Sort the objects based on the selection order"), ]
 
+enum_sort_bone_items = [('X', "X Axis", "Sort the object based on the X axis."),
+                        ('Y', "Y Axis", "Sort the object based on the Y axis."),
+                        ('Z', "Z Axis", "Sort the object based on the Z axis."), ]
+
 
 # persistent is needed for handler to work in addons https://docs.blender.org/api/current/bpy.app.handlers.html
 @persistent
@@ -99,24 +103,24 @@ def register():
     id_store = bpy.types.Scene
 
     id_store.renaming_suffix_prefix_type = EnumProperty(name="Suffix or Prefix by Type",
-                                                       items=prefixSuffixItems,
-                                                       description="Add Prefix or Suffix to type",
-                                                       default='SUF'
-                                                       )
+                                                        items=prefixSuffixItems,
+                                                        description="Add Prefix or Suffix to type",
+                                                        default='SUF'
+                                                        )
 
     id_store.renaming_object_types = EnumProperty(name="Renaming Objects",
-                                                 items=renamingEntitiesItems,
-                                                 description="Which kind of object to rename",
-                                                 )
+                                                  items=renamingEntitiesItems,
+                                                  description="Which kind of object to rename",
+                                                  )
 
     id_store.renaming_object_types_specified = EnumProperty(name="Object Types",
-                                                           items=enumObjectTypes,
-                                                           description="Which kind of object to rename",
-                                                           options={'ENUM_FLAG'},
-                                                           default={'CURVE', 'LATTICE', 'SURFACE', 'MESH',
-                                                                    'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY', 'GPENCIL',
-                                                                    'FONT', 'SPEAKER', 'LIGHT_PROBE', 'VOLUME'}
-                                                           )
+                                                            items=enumObjectTypes,
+                                                            description="Which kind of object to rename",
+                                                            options={'ENUM_FLAG'},
+                                                            default={'CURVE', 'LATTICE', 'SURFACE', 'MESH',
+                                                                     'ARMATURE', 'LIGHT', 'CAMERA', 'EMPTY', 'GPENCIL',
+                                                                     'FONT', 'SPEAKER', 'LIGHT_PROBE', 'VOLUME'}
+                                                            )
 
     id_store.renaming_sort_enum = EnumProperty(
         name="Sort by",
@@ -124,7 +128,12 @@ def register():
         items=enum_sort_items,
         default='X',  # Set a default value
     )
-
+    id_store.renaming_sort_bone_enum = EnumProperty(
+        name="Sort by",
+        description="Sort Bones based on following attribute",
+        items=enum_sort_bone_items,
+        default='X',  # Set a default value
+    )
 
     id_store.renaming_new_name = StringProperty(name="New Name", default='')
     id_store.renaming_search = StringProperty(name='Search', default='')
@@ -141,16 +150,16 @@ def register():
     id_store.renaming_sort_reverse = BoolProperty(name="Reverse Sorting Order", default=False)
 
     id_store.renaming_only_selection = BoolProperty(name="Selected Objects", description="Rename Selected Objects",
-                                                   default=True)
+                                                    default=True)
 
     id_store.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
     id_store.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
     id_store.renaming_use_enumerate = BoolProperty(name="Numerate",
-                                                  description="Enable and Disable the numeration of objects. This can "
-                                                              "be especially useful in combination with the numeration "
-                                                              "variable @n",
-                                                  default=True,
-                                                  )
+                                                   description="Enable and Disable the numeration of objects. This can "
+                                                               "be especially useful in combination with the numeration "
+                                                               "variable @n",
+                                                   default=True,
+                                                   )
     id_store.renaming_base_numerate = IntProperty(name="Step Size", default=1)
     id_store.renaming_start_number = IntProperty(name="Step Size", default=1)
     id_store.renaming_digits_numerate = IntProperty(name="Number Length", default=3)

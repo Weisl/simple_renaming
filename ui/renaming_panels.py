@@ -43,11 +43,16 @@ def draw_renaming_panel(layout, context):
             row.label(text="Open from Outliner", icon="ERROR")
 
     box = layout
-    col = box.column(align=True)
-    col.prop(scene, "renaming_sorting")
-    if scene.renaming_sorting:
-        col.prop(scene, "renaming_sort_reverse")
-        col.prop(scene, "renaming_sort_enum", expand=True)
+    # Sorting
+    if str(scene.renaming_object_types) not in ['COLLECTION', 'IMAGE']:
+        col = box.column(align=True)
+        col.prop(scene, "renaming_sorting")
+        if scene.renaming_sorting:
+            if str(scene.renaming_object_types) == 'BONE':
+                col.prop(scene, "renaming_sort_bone_enum", expand=True)
+            else:
+                col.prop(scene, "renaming_sort_enum", expand=True)
+            col.prop(scene, "renaming_sort_reverse")
 
     layout.separator(type='LINE')
     layout.label(text="Rename")
@@ -151,7 +156,7 @@ def panel_func(self, context):
 
 class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     """Creates a renaming Panel"""
-    bl_label = "Simple Rename"
+    bl_label = "Simple Renaming"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Rename"
@@ -288,7 +293,7 @@ class VIEW3D_OT_SetVariable(bpy.types.Operator):
 
 class VIEW3D_OT_RenamingPopupOperator(bpy.types.Operator):
     bl_idname = "renaming.f_popup_operator"
-    bl_label = "Simple Renaming Panel"
+    bl_label = "Simple Renaming"
 
     my_float: bpy.props.FloatProperty(name="Some Floating Point")
     my_bool: bpy.props.BoolProperty(name="Toggle Option")

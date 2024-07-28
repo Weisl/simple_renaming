@@ -21,11 +21,16 @@ def get_renaming_list(context):
     obj_list = context.selected_objects.copy() if selection_only is True else list(bpy.data.objects).copy()
 
     if scene.renaming_sorting:
-        if scene.renaming_sort_enum == 'SELECTION':
+        if scene.renaming_object_types == 'BONE':
+            sort_enum = scene.renaming_sort_bone_enum
+        else:
+            sort_enum = scene.renaming_sort_enum
+
+        if sort_enum == 'SELECTION':
             obj_list = get_ordered_selection_objects()
-        elif scene.renaming_sort_enum == 'X':
+        elif sort_enum == 'X':
             obj_list = get_sorted_objects_x(obj_list)
-        elif scene.renaming_sort_enum == 'Y':
+        elif sort_enum == 'Y':
             obj_list = get_sorted_objects_y(obj_list)
         else:  # scene.renaming_sort_enum == 'Z':
             obj_list = get_sorted_objects_z(obj_list)
