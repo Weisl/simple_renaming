@@ -100,23 +100,21 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
             for msg in wm.renaming_messages.message:
                 if msg is not None:
                     if not msg['warning']:
-                        if (msg['newName'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg[
-                            'newName']:
+                        if (msg['newName'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg['newName']:
 
                             if i == 0:
                                 row = box.row(align=True)
                                 row.alignment = 'EXPAND'
-                                row.label(text="OBJECT TYPE")
-                                row.label(text="NEW NAME")
-                                row.label(text="OLD NAME")
-                                row.separator()
+                                row.label(text="Object Type")
+                                row.label(text="New Name")
+                                row.label(text="Old Name")
+                                box.separator(type='LINE')
 
                             row = box.row(align=True)
                             row.alignment = 'EXPAND'
 
                             if msg['obType'] is not False and msg['obIcon'] is not False:
                                 row.label(text=str(msg['obType']), icon=msg['obIcon'])
-                                # row.label(text = str(msg['obType']), icon = 'INFO')
                             else:
                                 row.label(text=str(wm.renaming_object_types))
 
