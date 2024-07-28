@@ -5,7 +5,7 @@ from bpy.types import Operator, Menu
 
 from ..ui.renaming_variables import RENAMING_MT_variableMenu
 
-# Selected objects are renamed direclty
+# Selected objects are renamed directly
 types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
 
 # Components of the selected objects are renamed
@@ -48,6 +48,7 @@ def drawAdvancedUI(layout, context):
     if scene.renaming_sorting:
         col.prop(scene, "renaming_sort_enum", expand=True)
 
+    layout.separator(type='LINE')
     layout.label(text="Rename")
 
     # NEW NAME
