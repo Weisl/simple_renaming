@@ -3,7 +3,7 @@ from bl_operators.presets import AddPresetBase
 from bpy.props import StringProperty
 from bpy.types import Operator, Menu
 
-from ..ui.renaming_proFeatures import RENAMING_MT_variableMenu
+from ..ui.renaming_variables import RENAMING_MT_variableMenu
 
 # Selected objects are renamed direclty
 types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')

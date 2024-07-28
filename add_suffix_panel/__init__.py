@@ -12,47 +12,47 @@ def variable_replacer(self, context):
     wm = bpy.context.scene
 
     # The print function works fine
-    naming_preset = context.scene.renaming_presetNaming
+    renaming_variable = context.scene.renaming_variables
     name_var = ""
 
     # System and Global Values
-    if naming_preset == 'FILE':
+    if renaming_variable == 'FILE':
         name_var = "@f"
-    if naming_preset == "DATE":
+    if renaming_variable == "DATE":
         name_var = "@d"
-    if naming_preset == "TIME":
+    if renaming_variable == "TIME":
         name_var = "@i"
-    if naming_preset == "RANDOM":
+    if renaming_variable == "RANDOM":
         name_var = "@r"
 
     # UserStrings
-    if naming_preset == "HIGH":
+    if renaming_variable == "HIGH":
         name_var = "@h"
-    if naming_preset == "LOW":
+    if renaming_variable == "LOW":
         name_var = "@l"
-    if naming_preset == "CAGE":
+    if renaming_variable == "CAGE":
         name_var = "@b"
-    if naming_preset == "USER1":
+    if renaming_variable == "USER1":
         name_var = "@u1"
-    if naming_preset == "USER2":
+    if renaming_variable == "USER2":
         name_var = "@u2"
-    if naming_preset == "USER3":
+    if renaming_variable == "USER3":
         name_var = "@u3"
-    if naming_preset == "NUMERATE":
+    if renaming_variable == "NUMERATE":
         name_var = "@n"
 
     if wm.renaming_object_types == 'OBJECT':
-        if naming_preset == 'OBJECT':
+        if renaming_variable == 'OBJECT':
             name_var = "@o"
-        if naming_preset == "TYPE":
+        if renaming_variable == "TYPE":
             name_var = "@t"
-        if naming_preset == "PARENT":
+        if renaming_variable == "PARENT":
             name_var = "@p"
-        if naming_preset == "ACTIVE":
+        if renaming_variable == "ACTIVE":
             name_var = "@a"
-        if naming_preset == "COLLECTION":
+        if renaming_variable == "COLLECTION":
             name_var = "@c"
-        if naming_preset == "DATA":
+        if renaming_variable == "DATA":
             name_var = "@m"
 
     context.scene.renaming_newName += str(name_var)
@@ -138,7 +138,7 @@ def register():
 
     id_store.renaming_inputContext = StringProperty(name="LightProps", default='')
 
-    id_store.renaming_presetNaming = EnumProperty(name="Object Types",
+    id_store.renaming_variables = EnumProperty(name="Object Types",
                                                   items=enumPresetItems,
                                                   description="Which kind of object to rename",
                                                   update=variable_replacer
