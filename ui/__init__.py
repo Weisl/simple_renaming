@@ -45,7 +45,7 @@ def unregister():
     for cls in reversed(classes):
         unregister_class(cls)
 
-    IDStore = bpy.types.Scene
-    del IDStore.renaming_messages
-    del IDStore.renaming_error_messages
-    del IDStore.renaming_info_messages
+    id_store = bpy.types.Scene
+    del id_store.renaming_messages
+    del id_store.renaming_error_messages
+    del id_store.renaming_info_messages

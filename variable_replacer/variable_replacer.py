@@ -8,10 +8,10 @@ import bpy
 from .. import __package__ as base_package
 
 
-def randomString(stringLength=10):
+def generate_random_string(string_length=10):
     """Generate a random string of fixed length """
     letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(stringLength))
+    return ''.join(random.choice(letters) for i in range(string_length))
 
 
 class VariableReplacer:
@@ -27,14 +27,14 @@ class VariableReplacer:
     def reset(cls):
         """reset all values to initial state"""
         prefs = bpy.context.preferences.addons[base_package].preferences
-        startNum = prefs.numerate_start_number
+        start_number = prefs.numerate_start_number
         numerate_step = prefs.numerate_step
         numerate_digits = prefs.numerate_digits
 
-        # print("reset = " + str(startNum))
+        # print("reset = " + str(start_number))
         cls.step = numerate_step
         cls.digits = numerate_digits
-        cls.startNum = startNum
+        cls.start_number = start_number
         cls.number = 0
 
     @classmethod
@@ -80,7 +80,7 @@ class VariableReplacer:
     @staticmethod
     def getRandomString():
         """Generate a Random String with the length of 6"""
-        return randomString(6)
+        return generate_random_string(6)
 
     @classmethod
     def get_high_variable(cls):
@@ -118,7 +118,7 @@ class VariableReplacer:
     def getNumber(cls):
         new_nr = cls.number
         step = cls.step
-        start_num = cls.startNum
+        start_num = cls.start_number
         nr = str('{num:{fill}{width}}'.format(num=(new_nr * step) + start_num, fill='0', width=cls.digits))
         cls.number = new_nr + 1
         return nr
@@ -131,7 +131,7 @@ class VariableReplacer:
             filename = bpy.path.display_name(context.blend_data.filepath)
         else:
             filename = "UNSAVED"
-            # scn.renaming_messages.addMessage(oldName, entity.name)
+            # scn.renaming_messages.add_message(oldName, entity.name)
         return filename
 
     @classmethod
@@ -180,10 +180,10 @@ class VariableReplacer:
     @classmethod
     def getCollection(cls, entity):
 
-        collectionNames = ""
+        collectionew_names = ""
         for collection in bpy.data.collections:
             collection_objects = collection.objects
             if entity.name in collection.objects and entity in collection_objects[:]:
-                collectionNames += collection.name
+                collectionew_names += collection.name
 
-        return collectionNames
+        return collectionew_names

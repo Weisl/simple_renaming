@@ -125,7 +125,7 @@ def register():
         default='X',  # Set a default value
     )
 
-    IDStore.renaming_newName = StringProperty(name="New Name", default='')
+    IDStore.renaming_new_name = StringProperty(name="New Name", default='')
     IDStore.renaming_search = StringProperty(name='Search', default='')
     IDStore.renaming_replace = StringProperty(name='Replace', default='')
     IDStore.renaming_suffix = StringProperty(name="Suffix", default='')
@@ -170,7 +170,7 @@ def unregister():
 
     IDStore = bpy.types.Scene
     del IDStore.renaming_search
-    del IDStore.renaming_newName
+    del IDStore.renaming_new_name
     del IDStore.renaming_object_types
     del IDStore.renaming_suffix_prefix_type
     del IDStore.renaming_replace

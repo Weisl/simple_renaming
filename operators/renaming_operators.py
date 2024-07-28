@@ -3,7 +3,7 @@ import bpy
 from .. import __package__ as base_package
 
 
-def switchToEditMode(context):
+def switch_to_edit_mode(context):
     """Switch to Edit Mode"""
     bpy.ops.object.mode_set(mode='EDIT')
 
@@ -16,24 +16,24 @@ def numerate_entity_name(context, basename, type_list, active_entity_name, retur
     # Preferences
     prefs = context.preferences.addons[base_package].preferences
     separator = prefs.renaming_separator
-    startNum = prefs.numerate_start_number
+    start_number = prefs.numerate_start_number
     step = prefs.numerate_step
 
     i = 0
-    newName = basename + separator + (
-        '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
+    new_name = basename + separator + (
+        '{num:{fill}{width}}'.format(num=(i * step) + start_number, fill='0', width=digits))
 
     i = 1
-    while newName in type_list and newName != active_entity_name:
-        newName = basename + separator + (
-            '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
+    while new_name in type_list and new_name != active_entity_name:
+        new_name = basename + separator + (
+            '{num:{fill}{width}}'.format(num=(i * step) + start_number, fill='0', width=digits))
         i += 1
 
     if return_type_list:  # Manually add new name to custom generated list like all bones and all shape keys
-        type_list.append(newName)
-        return newName, type_list
+        type_list.append(new_name)
+        return new_name, type_list
 
-    return newName
+    return new_name
 
 
 def getAllBones(mode):
@@ -75,13 +75,13 @@ def getAllShapeKeys():
 
 def getAllVertexGroups():
     """get list of all vertex groups"""
-    vrtxGrpNamesList = []
+    vrtx_grp_names_list = []
 
     for obj in bpy.data.objects:
         for vrtGrp in obj.vertex_groups:
-            vrtxGrpNamesList.append(vrtGrp.name)
+            vrtx_grp_names_list.append(vrtGrp.name)
 
-    return vrtxGrpNamesList
+    return vrtx_grp_names_list
 
 
 def getAllParticleNames():

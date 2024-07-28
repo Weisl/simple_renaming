@@ -100,8 +100,8 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
             for msg in wm.renaming_messages.message:
                 if msg is not None:
                     if not msg['warning']:
-                        if (msg['newName'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg[
-                            'newName']:
+                        if (msg['new_name'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg[
+                            'new_name']:
 
                             if i == 0:
                                 row = box.row(align=True)
@@ -119,13 +119,13 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
                             else:
                                 row.label(text=str(wm.renaming_object_types))
 
-                            row.label(text=str(msg['newName']), icon='FILE_TICK')
+                            row.label(text=str(msg['new_name']), icon='FILE_TICK')
                             row.label(text=str(msg['oldName']))
 
                             i += 1
 
                     else:  # if msg['warning'] == True
-                        if msg['newName'] is not None and msg['oldName'] is not None:
+                        if msg['new_name'] is not None and msg['oldName'] is not None:
                             box.label(text="Warning", icon="ERROR")
                             box.label(text="       " + "Name: " + str(msg['oldName']))
                             box.label(text="       " + msg['warning'])

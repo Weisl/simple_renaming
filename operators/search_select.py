@@ -2,8 +2,8 @@ import re
 
 import bpy
 
-from .renaming_operators import switchToEditMode
-from ..operators.renaming_utilities import getRenamingList, callErrorPopup
+from .renaming_operators import switch_to_edit_mode
+from ..operators.renaming_utilities import get_renaming_list, call_error_popup
 from ..variable_replacer.variable_replacer import VariableReplacer
 
 
@@ -34,19 +34,19 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
         # get list of objects to be selected
         selectionList = []
 
-        renamingList, switchEditMode, errMsg = getRenamingList(context)
+        renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
         if errMsg is not None:
-            errorMsg = wm.renaming_error_messages
-            errorMsg.addMessage(errMsg)
-            callErrorPopup(context)
+            error_msg = wm.renaming_error_messages
+            error_msg.add_message(errMsg)
+            call_error_popup(context)
             return {'CANCELLED'}
 
         searchName = wm.renaming_search
         msg = wm.renaming_messages  # variable to save messages
 
-        if len(renamingList) > 0:
-            for entity in renamingList:  # iterate over all objects that are to be renamed
+        if len(renaming_list) > 0:
+            for entity in renaming_list:  # iterate over all objects that are to be renamed
                 if entity is not None and searchName != '':
                     entityName = entity.name
                     searchReplaced = VariableReplacer.replaceInputString(context, searchName, entity)
@@ -54,7 +54,7 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
                     if wm.renaming_matchcase:
                         if entityName.find(searchReplaced) >= 0:
                             selectionList.append(entity)
-                            msg.addMessage("selected", entityName)
+                            msg.add_message("selected", entityName)
                     else:
                         if re.search(searchReplaced, entityName, re.IGNORECASE):
                             selectionList.append(entity)
@@ -84,7 +84,7 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
                     bone.select_head = True
                     bone.select_tail = True
 
-        # callRenamingPopup(context)
-        if switchEditMode:
-            switchToEditMode(context)
+        # call_renaming_popup(context)
+        if switch_edit_mode:
+            switch_to_edit_mode(context)
         return {'FINISHED'}

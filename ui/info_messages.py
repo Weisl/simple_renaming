@@ -3,15 +3,15 @@ class MESSAGE:
     message = []
 
     @classmethod
-    def addMessage(cls):
+    def add_message(cls):
         return
 
     @classmethod
-    def getMessages(cls):
+    def get_messages(cls):
         return cls.message
 
     @classmethod
-    def printAll(cls):
+    def print_all(cls):
         print("Print All " + str(list(cls.message)))
         return
 
@@ -28,7 +28,7 @@ class INFO_MESSAGES(MESSAGE):
     """Custom info messages"""
 
     @classmethod
-    def addMessage(cls, assetName, message='', obType=False, obIcon=False):
+    def add_message(cls, assetName, message='', obType=False, obIcon=False):
         message_dict = {'assetName': assetName, 'message': message, 'obType': obType, 'obIcon': obIcon}
         cls.message.append(message_dict)
         return
@@ -38,9 +38,9 @@ class WarningError_MESSAGES(MESSAGE):
     """Custom error warning messages"""
 
     @classmethod
-    def addMessage(cls, message='', isError=False):
-        dict = {'message': message, 'isError': isError}
-        cls.message.append(dict)
+    def add_message(cls, message='', isError=False):
+        message_dict = {'message': message, 'isError': isError}
+        cls.message.append(message_dict)
         return
 
 
@@ -49,7 +49,7 @@ class RENAMING_MESSAGES(MESSAGE):
     message = []
 
     @classmethod
-    def addMessage(cls, oldName, newName=None, obType=False, obIcon=False, warning=False):
-        dict = {'oldName': oldName, 'newName': newName, 'obType': obType, 'obIcon': obIcon, 'warning': warning}
-        cls.message.append(dict)
+    def add_message(cls, oldName, new_name=None, obType=False, obIcon=False, warning=False):
+        message_dict = {'oldName': oldName, 'new_name': new_name, 'obType': obType, 'obIcon': obIcon, 'warning': warning}
+        cls.message.append(message_dict)
         return

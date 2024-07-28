@@ -45,7 +45,7 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
 
     def execute(self, context):
         # wm = context.scene
-        # replaceName = VariableReplacer.replaceInputString(context, wm.renaming_newName)
+        # replaceName = VariableReplacer.replaceInputString(context, wm.renaming_new_name)
 
         # The print function works fine
         renaming_variables = self.renaming_variables
@@ -89,8 +89,8 @@ class VIEW3D_OT_inputVariables(bpy.types.Operator):
             name_var = "@c"
 
         scn = context.scene
-        if scn.renaming_inputContext == 'newName':
-            context.scene.renaming_newName += str(name_var)
+        if scn.renaming_inputContext == 'new_name':
+            context.scene.renaming_new_name += str(name_var)
         if scn.renaming_inputContext == 'prefix':
             context.scene.renaming_prefix += str(name_var)
         if scn.renaming_inputContext == 'suffix':

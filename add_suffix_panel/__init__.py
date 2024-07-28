@@ -55,7 +55,7 @@ def variable_replacer(self, context):
         if renaming_variable == "DATA":
             name_var = "@m"
 
-    context.scene.renaming_newName += str(name_var)
+    context.scene.renaming_new_name += str(name_var)
     return
 
 

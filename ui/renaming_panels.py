@@ -14,7 +14,7 @@ types_of_selected = (
     'COLORATTRIBUTES', 'ATTRIBUTES', 'ACTIONS')
 
 
-def drawAdvancedUI(layout, context):
+def draw_renaming_panel(layout, context):
     scene = context.scene
 
     row = layout.row(align=True)
@@ -57,10 +57,10 @@ def drawAdvancedUI(layout, context):
 
     row = col.row(align=True)
     split = row.split(factor=0.6, align=True)
-    split.prop(scene, "renaming_newName", text='')
+    split.prop(scene, "renaming_new_name", text='')
     split = split.split(factor=0.75, align=True)
     split.prop(scene, "renaming_numerate", text='')
-    split.operator("object.renaming_set_variable", text="@").inputBox = "newName"
+    split.operator("object.renaming_set_variable", text="@").inputBox = "new_name"
 
     row = col.row()
     row.operator("renaming.name_replace", icon="FORWARD")
@@ -167,7 +167,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        drawAdvancedUI(layout, context)
+        draw_renaming_panel(layout, context)
 
 
 # needed for adding direct link to settings

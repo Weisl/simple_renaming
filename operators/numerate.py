@@ -1,8 +1,8 @@
 import bpy
 
-from .renaming_operators import switchToEditMode
+from .renaming_operators import switch_to_edit_mode
 from .. import __package__ as base_package
-from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
+from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup
 
 
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
@@ -17,33 +17,33 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
 
         wm = context.scene
 
-        startNum = prefs.numerate_start_number
+        start_number = prefs.numerate_start_number
 
         step = prefs.numerate_step
         digits = prefs.numerate_digits
 
         msg = wm.renaming_messages
 
-        renamingList, switchEditMode, errMsg = getRenamingList(context)
+        renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
         if errMsg is not None:
-            errorMsg = wm.renaming_error_messages
-            errorMsg.addMessage(errMsg)
-            callErrorPopup(context)
+            error_msg = wm.renaming_error_messages
+            error_msg.add_message(errMsg)
+            call_error_popup(context)
             return {'CANCELLED'}
 
-        if len(renamingList) > 0:
+        if len(renaming_list) > 0:
             i = 0
-            for entity in renamingList:
+            for entity in renaming_list:
                 if entity is not None:
                     oldName = entity.name
-                    newName = entity.name + separator + (
-                        '{num:{fill}{width}}'.format(num=(i * step) + startNum, fill='0', width=digits))
-                    entity.name = newName
-                    msg.addMessage(oldName, entity.name)
+                    new_name = entity.name + separator + (
+                        '{num:{fill}{width}}'.format(num=(i * step) + start_number, fill='0', width=digits))
+                    entity.name = new_name
+                    msg.add_message(oldName, entity.name)
                     i = i + 1
 
-        callRenamingPopup(context)
-        if switchEditMode:
-            switchToEditMode(context)
+        call_renaming_popup(context)
+        if switch_edit_mode:
+            switch_to_edit_mode(context)
         return {'FINISHED'}

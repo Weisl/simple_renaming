@@ -1,7 +1,7 @@
 import bpy
 
-from .renaming_operators import switchToEditMode
-from ..operators.renaming_utilities import getRenamingList, callRenamingPopup, callErrorPopup
+from .renaming_operators import switch_to_edit_mode
+from .renaming_utilities import get_renaming_list, call_error_popup, call_renaming_popup
 
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
@@ -15,24 +15,24 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         wm = context.scene
         suffix_data = wm.renaming_suffix_prefix_data_02
         msg = context.scene.renaming_messages
-        renamingList, switchEditMode, errMsg = getRenamingList(context)
+        renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
         if errMsg is not None:
-            errorMsg = wm.renaming_error_messages
-            errorMsg.addMessage(errMsg)
-            callErrorPopup(context)
+            error_msg = wm.renaming_error_messages
+            error_msg.add_message(errMsg)
+            call_error_popup(context)
             return {'CANCELLED'}
 
-        for obj in renamingList:
+        for obj in renaming_list:
 
             if obj.data:
                 oldName = obj.data.name
                 new_name = obj.name + suffix_data
                 obj.data.name = new_name
-                msg.addMessage(oldName, obj.data.name)
+                msg.add_message(oldName, obj.data.name)
 
-        callRenamingPopup(context)
-        if switchEditMode:
-            switchToEditMode(context)
+        call_renaming_popup(context)
+        if switch_edit_mode:
+            switch_to_edit_mode(context)
 
         return {'FINISHED'}
