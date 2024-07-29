@@ -54,6 +54,3 @@ def unregister():
     for file in reversed(files):
         file.unregister()
 
-
-if __name__ == "__main__":
-    register()
