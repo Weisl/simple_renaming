@@ -149,7 +149,7 @@ def panel_func(self, context):
     layout = self.layout
 
     row = layout.row(align=True)
-    row.menu(OBJECT_MT_suffix_prefix_presets.__name__, text=OBJECT_MT_suffix_prefix_presets.bl_label)
+    row.menu('OBJECT_MT_suffix_prefix_presets', text=OBJECT_MT_suffix_prefix_presets.bl_label)
     row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='ADD')
     row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='REMOVE').remove_active = True
 
