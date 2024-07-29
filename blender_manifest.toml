@@ -18,7 +18,7 @@ license = [
 ]
 
 copyright = [
-    "2023 Matthias Patscheider",
+    "2024 Matthias Patscheider",
 ]
 
 [build]
