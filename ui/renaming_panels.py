@@ -308,19 +308,6 @@ class VIEW3D_OT_RenamingPopupOperator(bpy.types.Operator):
         return wm.invoke_props_dialog(self)
 
 
-class LITTLE_RENAMING_HELPERS(bpy.types.Operator):
-    """Creates a renaming Panel"""
-    bl_label = "Renaming Helpers"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = "Rename"
-
-    def draw(self, context):
-        layout = self.layout
-        scene = context.scene
-        return {'FINISHED'}
-
-
 class OBJECT_MT_suffix_prefix_presets(Menu):
     bl_label = "Type Presets"
     preset_subdir = "scene/display"
