@@ -18,10 +18,8 @@ license = [
 ]
 
 copyright = [
-    "2023 Matthias Patscheider",
+    "2024 Matthias Patscheider",
 ]
-
-platforms = ["windows-x64", "macos-arm64", "linux-x64"]
 
 [build]
 paths_exclude_pattern = [

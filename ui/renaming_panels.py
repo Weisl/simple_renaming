@@ -149,7 +149,7 @@ def panel_func(self, context):
     layout = self.layout
 
     row = layout.row(align=True)
-    row.menu(OBJECT_MT_suffix_prefix_presets.__name__, text=OBJECT_MT_suffix_prefix_presets.bl_label)
+    row.menu('OBJECT_MT_suffix_prefix_presets', text=OBJECT_MT_suffix_prefix_presets.bl_label)
     row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='ADD')
     row.operator(AddPresetRenamingPresets.bl_idname, text="", icon='REMOVE').remove_active = True
 
@@ -306,19 +306,6 @@ class VIEW3D_OT_RenamingPopupOperator(bpy.types.Operator):
     def invoke(self, context, event):
         wm = context.window_manager
         return wm.invoke_props_dialog(self)
-
-
-class LITTLE_RENAMING_HELPERS(bpy.types.Operator):
-    """Creates a renaming Panel"""
-    bl_label = "Renaming Helpers"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_category = "Rename"
-
-    def draw(self, context):
-        layout = self.layout
-        scene = context.scene
-        return {'FINISHED'}
 
 
 class OBJECT_MT_suffix_prefix_presets(Menu):
