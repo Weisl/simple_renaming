@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "simple_renaming_panel"
-version = "2.1.0"
+version = "2.1.1"
 name = "Simple Renaming Panel"
 tagline = "Effortlessly rename multiple objects with this simple addon"
 maintainer = "Matthias Patscheider <patscheider.matthias@gmail.com>"
