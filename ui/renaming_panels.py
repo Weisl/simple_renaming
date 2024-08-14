@@ -178,7 +178,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
 # needed for adding direct link to settings
 def get_addon_name():
-    return "Simple Renaming Panel"
+    return "Simple Renaming"
 
 
 # addon Panel

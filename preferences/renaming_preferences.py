@@ -380,8 +380,8 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
             col = box.column(align=True)
             row = col.row()
-            row.operator("wm.url_open", text="Collider Tools",
+            row.operator("wm.url_open", text="Simple Collider",
                          icon="URL").url = "https://blendermarket.com/products/collider-tools"
             row = col.row()
-            row.operator("wm.url_open", text="Cam-Manager",
+            row.operator("wm.url_open", text="simple_camera_manager",
                          icon="URL").url = "https://blendermarket.com/products/cam-manager"
