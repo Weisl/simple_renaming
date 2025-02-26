@@ -126,14 +126,19 @@ def draw_renaming_panel(layout, context):
 
     ###############################################
     layout.separator()
-    layout.label(text="Other")
+    layout.label(text="Trim")
 
-    row = layout.row(align=True)
-    row.operator("renaming.numerate", icon="LINENUMBERS_ON")
-
+    # TRIM
     row = layout.row(align=True)
     row.operator("renaming.cut_string", icon="X")
     row.prop(scene, "renaming_cut_size", text="")
+
+    ###############################################
+    layout.separator()
+    layout.label(text="Other")
+
+    row = layout.row(align=True)
+    row.operator("renaming.numerate", icon="LINENUMBERS_ON")    
 
     if str(scene.renaming_object_types) in ('DATA', 'OBJECT', 'ADDOBJECTS'):
         layout.label(text="Data Name")
