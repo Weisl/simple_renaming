@@ -5,9 +5,9 @@ from ..operators.renaming_utilities import get_renaming_list, trim_string, call_
 
 
 class VIEW3D_OT_trim_string(bpy.types.Operator):
-    bl_idname = "renaming.cut_string"
-    bl_label = "Trim End of String"
-    bl_description = "Deletes the in the trim size specified amount of characters at the end of object names"
+    bl_idname = "renaming.trim_string"
+    bl_label = "Trim Start and End of String"
+    bl_description = "Deletes the in the trim size specified amount of characters at the start or the end of object names"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
@@ -26,8 +26,9 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
             for entity in renaming_list:
                 if entity is not None:
                     oldName = entity.name
-                    new_name = trim_string(entity.name, wm.renaming_cut_size)
+                    new_name = trim_string(entity.name, wm.renaming_trim_indices)
                     entity.name = new_name
+                    wm.renaming_trim_indices=(0,0)
                     msg.add_message(oldName, entity.name)
 
         call_renaming_popup(context)

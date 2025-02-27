@@ -5,9 +5,7 @@ from .. import __package__ as base_package
 
 
 def trim_string(string, size):
-    list1 = string
-    list2 = list1[:-size]
-    return ''.join(list2)
+    return string[size[0]:max(0, len(string)-size[1])]
 
 
 def get_renaming_list(context):

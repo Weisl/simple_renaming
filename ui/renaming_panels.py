@@ -129,9 +129,11 @@ def draw_renaming_panel(layout, context):
     layout.label(text="Trim")
 
     # TRIM
+    col = layout.column(align=True)
+    col.prop(scene, "renaming_trim_indices",index=0,text="First")
+    col.prop(scene, "renaming_trim_indices",index=1,text="Last")
     row = layout.row(align=True)
-    row.operator("renaming.cut_string", icon="X")
-    row.prop(scene, "renaming_cut_size", text="")
+    row.operator("renaming.trim_string", icon="X")
 
     ###############################################
     layout.separator()
