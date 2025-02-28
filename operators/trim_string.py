@@ -5,7 +5,7 @@ from ..operators.renaming_utilities import get_renaming_list, trim_string, call_
     
 class VIEW3D_OT_trim_string(bpy.types.Operator):
     bl_idname = "renaming.trim_string"
-    bl_label = "Trim Start and End of String"
+    bl_label = "Trim String"
     bl_description = "Deletes the in the trim size specified amount of characters at the start or the end of object names"
     bl_options = {'REGISTER', 'UNDO'}
 
