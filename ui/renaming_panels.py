@@ -143,6 +143,7 @@ def draw_renaming_panel(layout, context):
     row.operator("renaming.numerate", icon="LINENUMBERS_ON")    
 
     if str(scene.renaming_object_types) in ('DATA', 'OBJECT', 'ADDOBJECTS'):
+        layout.separator()
         layout.label(text="Data Name")
 
         col = layout.column(align=True)
