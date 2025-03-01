@@ -1,8 +1,5 @@
 Documentation: https://weisl.github.io/renaming/
 
-<img src="img/simplePanel_title_01.jpg" alt="Teaser Banner " />
-<img src="img/simplePanel_title_02.jpg" alt="Teaser Banner " />
-
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A)
 
 <h1>Introduction</h1>
