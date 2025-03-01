@@ -28,8 +28,6 @@ class VIEW3D_OT_trim_string(bpy.types.Operator):
                     new_name = trim_string(entity.name, wm.renaming_trim_indices)
                     entity.name = new_name
                     msg.add_message(old_name, entity.name)
-
-        wm.renaming_trim_indices = (0, 0)
         
         call_renaming_popup(context)
 
