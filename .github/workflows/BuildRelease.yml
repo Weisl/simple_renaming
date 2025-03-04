@@ -1,0 +1,29 @@
+name: Build Release
+
+on:
+  push:
+    tags: [ "v[0-9]+.[0-9]+.[0-9]+" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: ${{ github.event.repository.name }}
+
+      - name: Zip Repository (excludes .git*)
+        run: |
+          version_with_underscores=$(echo ${{ github.ref_name }} | tr '.' '_')
+          zip -r simple_renaming_${version_with_underscores}.zip \
+            ${{ github.event.repository.name }} \
+            -x "${{ github.event.repository.name }}/.git*"
+
+      - name: Create versioned build with filtered zip file
+        run: |
+          version_with_underscores=$(echo ${{ github.ref_name }} | tr '.' '_')
+          cd ${{ github.event.repository.name }}
+          gh release create ${{ github.ref_name }} --generate-notes \
+            ../simple_renaming_${version_with_underscores}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
