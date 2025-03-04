@@ -1,13 +1,13 @@
 schema_version = "1.0.0"
 
-id = "simple_renaming_panel"
-version = "2.1.0"
-name = "Simple Renaming Panel"
+id = "simple_renaming"
+version = "2.1.2"
+name = "Simple Renaming"
 tagline = "Effortlessly rename multiple objects with this simple addon"
 maintainer = "Matthias Patscheider <patscheider.matthias@gmail.com>"
 type = "add-on"
 
-website = "https://weisl.github.io/renaming/"
+website = "https://weisl.github.io/renaming_overview/"
 
 tags = ["3D View", "Scene", "User Interface"]
 
