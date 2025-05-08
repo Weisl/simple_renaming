@@ -1,4 +1,4 @@
-Documentation: https://weisl.github.io/renaming/
+Documentation: https://weisl.github.io/renaming_overview/
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A)
 
@@ -11,6 +11,6 @@ Join the discussion at [Blender Artists](https://blenderartists.org/t/simple-ren
 You can thank me by leaving a rating at [Gumroad](https://gumroad.com/l/simple_renaming "Gumroad") or sponsor a
 coffee.
 
-Documentation: https://weisl.github.io/renaming/
+Documentation: https://weisl.github.io/renaming_overview/
 
 

@@ -172,7 +172,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     def draw_header(self, context):
         layout = self.layout
         row = layout.row(align=True)
-        row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/renaming/"
+        row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/renaming_overview/"
         addon_name = get_addon_name()
 
         op = row.operator("preferences.rename_addon_search", text="", icon='PREFERENCES')
@@ -186,7 +186,7 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
 
 # needed for adding direct link to settings
 def get_addon_name():
-    return "Simple Renaming Panel"
+    return "Simple Renaming"
 
 
 # addon Panel
