@@ -1,6 +1,5 @@
-import textwrap
-
 import bpy
+import textwrap
 from bpy.props import (
     EnumProperty,
     StringProperty,
@@ -361,10 +360,10 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             col = box.column(align=True)
             row = col.row()
             row.operator("wm.url_open", text="Gumroad",
-                         icon="URL").url = "https://weisl.gumroad.com/l/simple_renaming_panel"
+                         icon="URL").url = "https://weisl.gumroad.com/l/simple_renaming"
             row = col.row()
-            row.operator("wm.url_open", text="Blender Market",
-                         icon="URL").url = "https://blendermarket.com/products/simple-renaming-panel"
+            row.operator("wm.url_open", text="Superhive Market",
+                         icon="URL").url = "https://superhivemarket.com/products/simple-renaming"
             row = col.row()
             row.operator("wm.url_open", text="PayPal Donation",
                          icon="URL").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
@@ -381,7 +380,11 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             col = box.column(align=True)
             row = col.row()
             row.operator("wm.url_open", text="Simple Collider",
-                         icon="URL").url = "https://blendermarket.com/products/collider-tools"
+                         icon="URL").url = "https://superhivemarket.com/products/simple-collider"
             row = col.row()
-            row.operator("wm.url_open", text="simple_camera_manager",
-                         icon="URL").url = "https://blendermarket.com/products/cam-manager"
+            row.operator("wm.url_open", text="Simple Camera Manager",
+                         icon="URL").url = "https://superhivemarket.com/products/simple-camera-manager"
+            row = col.row()
+            row.label(text='Support & Feedback')
+            row = col.row()
+            row.operator("wm.url_open", text="Join Discord", icon="URL").url = "https://discord.gg/VRzdcFpczm"

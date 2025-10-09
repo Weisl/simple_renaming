@@ -5,9 +5,7 @@ from .. import __package__ as base_package
 
 
 def trim_string(string, size):
-    list1 = string
-    list2 = list1[:-size]
-    return ''.join(list2)
+    return string[size[0]:max(0, len(string)-size[1])]
 
 
 def get_renaming_list(context):
@@ -285,6 +283,16 @@ def update_selection_order():
             clear_order_flag(o)
         else:
             o["selection_order"] = idx
+
+            # Hackish way to prevent unwanted keyframing of custom property. 
+            # Setting custom properties non-animatable is not possible yet, see:
+            # https://projects.blender.org/blender/blender/issues/113506
+            if o.animation_data and o.animation_data.action:
+                fcurves = o.animation_data.action.fcurves
+                for fcurve in fcurves:
+                    if fcurve.data_path == '["selection_order"]':
+                        fcurves.remove(fcurve)
+
             idx += 1
     for o in bpy.context.selected_objects:
         if o not in selection_order:

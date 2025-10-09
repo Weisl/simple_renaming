@@ -5,6 +5,7 @@ from bpy.props import (
     EnumProperty,
     StringProperty,
     IntProperty,
+    IntVectorProperty,
 )
 
 from . import add_pre_suffix
@@ -163,7 +164,7 @@ def register():
     id_store.renaming_base_numerate = IntProperty(name="Step Size", default=1)
     id_store.renaming_start_number = IntProperty(name="Step Size", default=1)
     id_store.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
-    id_store.renaming_cut_size = IntProperty(name="Trim Size", default=3)
+    id_store.renaming_trim_indices = IntVectorProperty(name="Trim Size", default=(0, 0), min=0, soft_min=0, size=2)
 
     from bpy.utils import register_class
 
@@ -190,6 +191,6 @@ def unregister():
     del IDStore.renaming_only_selection
     del IDStore.renaming_base_numerate
     del IDStore.renaming_digits_numerate
-    del IDStore.renaming_cut_size
+    del IDStore.renaming_trim_indices
 
     bpy.app.handlers.depsgraph_update_post.remove(PostChange)
