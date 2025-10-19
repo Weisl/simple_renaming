@@ -29,7 +29,7 @@ def add_key(km, idname, properties_name, button_assignment_type, button_assignme
 def update_key(context, operation, operator_name, property_prefix):
     # This functions gets called when the hotkey assignment is updated in the preferences
     wm = context.window_manager
-    km = wm.keyconfigs.addon.keymaps["Window"]
+    km = wm.keyconfigs.active.keymaps["Window"]
 
     prefs = context.preferences.addons[base_package].preferences
 
