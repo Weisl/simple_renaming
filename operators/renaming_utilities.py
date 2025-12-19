@@ -277,6 +277,7 @@ def update_selection_order():
         return
     selection_order = get_ordered_selection_objects()
     idx = 0
+
     for o in selection_order:
         if not o.select_get():
             selection_order.remove(o)
@@ -284,14 +285,19 @@ def update_selection_order():
         else:
             o["selection_order"] = idx
 
-            # Hackish way to prevent unwanted keyframing of custom property. 
-            # Setting custom properties non-animatable is not possible yet, see:
-            # https://projects.blender.org/blender/blender/issues/113506
+            # Remove any existing fcurves for 'selection_order'
             if o.animation_data and o.animation_data.action:
-                fcurves = o.animation_data.action.fcurves
-                for fcurve in fcurves:
-                    if fcurve.data_path == '["selection_order"]':
-                        fcurves.remove(fcurve)
+                action = o.animation_data.action
+
+                import bpy_extras.anim_utils as anim_utils
+                # Get the default channelbag for the action (slot 0)
+                channelbag = anim_utils.action_get_channelbag_for_slot(action, 0)
+                if channelbag:
+                    fcurves = channelbag.fcurves
+                    for fcurve in fcurves:
+                        if fcurve.data_path == '["selection_order"]':
+                            fcurves.remove(fcurve)
+
 
             idx += 1
     for o in bpy.context.selected_objects:
