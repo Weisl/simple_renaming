@@ -119,8 +119,9 @@ def get_renaming_list(context):
     elif scene.renaming_object_types == 'SHAPEKEYS':
         if selection_only:
             for obj in context.selected_objects:
-                for shape in obj.data.shape_keys.key_blocks:
-                    renaming_list.append(shape)
+                if obj.data.shape_keys:
+                    for shape in obj.data.shape_keys.key_blocks:
+                        renaming_list.append(shape)
         else:  # selection_only == False:
             for key_grp in bpy.data.shape_keys:
                 for key in key_grp.key_blocks:
