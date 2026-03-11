@@ -56,8 +56,15 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
                             selectionList.append(entity)
                             msg.add_message("selected", entityName)
                     else:
-                        if re.search(searchReplaced, entityName, re.IGNORECASE):
-                            selectionList.append(entity)
+                        try:
+                            if re.search(searchReplaced, entityName, re.IGNORECASE):
+                                selectionList.append(entity)
+                        except re.error as err:
+                            # invalid regex, add message but continue so other names can still be processed
+                            error_msg = f"Invalid regular expression in search: {err}"
+                            wm.renaming_error_messages.add_message(error_msg)
+                            call_error_popup(context)
+                            return {'CANCELLED'}
 
         if str(wm.renaming_object_types) == 'OBJECT':
             # set to object mode
