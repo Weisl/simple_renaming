@@ -48,6 +48,7 @@ test/
 .AppleDesktop
 .idea/
 __pycache__/
+venv/
 
 Network Trash Folder
 Temporary Items
