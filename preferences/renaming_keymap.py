@@ -89,13 +89,14 @@ def remove_key(context, idname, properties_name):
 
 def remove_keymap():
     """Removes keys from the keymap. Currently, this is only called when unregistering the addon. """
-    # only works for menus and pie menus
     wm = bpy.context.window_manager
+    if not wm.keyconfigs.active or 'Window' not in wm.keyconfigs.active.keymaps:
+        return
     km = wm.keyconfigs.active.keymaps['Window']
 
     for kmi in km.keymap_items:
         if hasattr(kmi.properties, 'name') and kmi.properties.name in ['VIEW3D_PT_tools_renaming_panel',
-                                                                       'VIEW3D_PT_tools_type_suffix']:
+                                                                        'VIEW3D_PT_tools_type_suffix']:
             km.keymap_items.remove(kmi)
 
 
