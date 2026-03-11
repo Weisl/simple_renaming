@@ -45,35 +45,52 @@ class VariableReplacer:
         cls.addon_prefs = context.preferences.addons[base_package].preferences
 
         # System and Global Values #
-        inputText = re.sub(r'@f', cls.getfileName(context), inputText)  # file name
-        inputText = re.sub(r'@d', cls.getDateName(), inputText)  # date
-        inputText = re.sub(r'@i', cls.getTimeName(), inputText)  # time
-        inputText = re.sub(r'@r', cls.getRandomString(), inputText)
+        _f = cls.getfileName(context)
+        inputText = re.sub(r'@f', lambda m: _f, inputText)  # file name
+        _d = cls.getDateName()
+        inputText = re.sub(r'@d', lambda m: _d, inputText)  # date
+        _i = cls.getTimeName()
+        inputText = re.sub(r'@i', lambda m: _i, inputText)  # time
+        _r = cls.getRandomString()
+        inputText = re.sub(r'@r', lambda m: _r, inputText)
 
         # UserStrings #
-        inputText = re.sub(r'@h', cls.get_high_variable(), inputText)  # high
-        inputText = re.sub(r'@l', cls.get_low_variable(), inputText)  # low
-        inputText = re.sub(r'@b', cls.get_cage_variable(), inputText)  # cage
-        inputText = re.sub(r'@u1', cls.getuser1(), inputText)
-        inputText = re.sub(r'@u2', cls.getuser2(), inputText)
-        inputText = re.sub(r'@u3', cls.getuser3(), inputText)
+        _h = cls.get_high_variable()
+        inputText = re.sub(r'@h', lambda m: _h, inputText)  # high
+        _l = cls.get_low_variable()
+        inputText = re.sub(r'@l', lambda m: _l, inputText)  # low
+        _b = cls.get_cage_variable()
+        inputText = re.sub(r'@b', lambda m: _b, inputText)  # cage
+        _u1 = cls.getuser1()
+        inputText = re.sub(r'@u1', lambda m: _u1, inputText)
+        _u2 = cls.getuser2()
+        inputText = re.sub(r'@u2', lambda m: _u2, inputText)
+        _u3 = cls.getuser3()
+        inputText = re.sub(r'@u3', lambda m: _u3, inputText)
 
         # GetScene #
-        inputText = re.sub(r'@a', cls.getActive(context), inputText)  # active object
-        inputText = re.sub(r'@n', cls.getNumber(), inputText)
+        _a = cls.getActive(context)
+        inputText = re.sub(r'@a', lambda m: _a, inputText)  # active object
+        _n = cls.getNumber()
+        inputText = re.sub(r'@n', lambda m: _n, inputText)
 
         if wm.renaming_object_types == 'OBJECT':
             # Objects
-            inputText = re.sub(r'@o', cls.getObject(entity), inputText)  # object
-            inputText = re.sub(r'@t', cls.getType(entity), inputText)  # type
-            inputText = re.sub(r'@p', cls.getParent(entity), inputText)  # parent
-            inputText = re.sub(r'@m', cls.getData(entity), inputText)  # data
-            inputText = re.sub(r'@c', cls.getCollection(entity), inputText)  # collection
+            _o = cls.getObject(entity)
+            inputText = re.sub(r'@o', lambda m: _o, inputText)  # object
+            _t = cls.getType(entity)
+            inputText = re.sub(r'@t', lambda m: _t, inputText)  # type
+            _p = cls.getParent(entity)
+            inputText = re.sub(r'@p', lambda m: _p, inputText)  # parent
+            _m = cls.getData(entity)
+            inputText = re.sub(r'@m', lambda m: _m, inputText)  # data
+            _c = cls.getCollection(entity)
+            inputText = re.sub(r'@c', lambda m: _c, inputText)  # collection
 
         # IMAGES #
         if wm.renaming_object_types == 'IMAGE':
-            inputText = re.sub(r'@r', 'RESOLUTION', inputText)
-            inputText = re.sub(r'@i', 'FILETYPE', inputText)
+            inputText = re.sub(r'@r', lambda m: 'RESOLUTION', inputText)
+            inputText = re.sub(r'@i', lambda m: 'FILETYPE', inputText)
 
         return inputText
 

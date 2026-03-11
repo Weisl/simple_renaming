@@ -45,12 +45,33 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
                                 msg.add_message(oldName, entity.name)
                             else:
                                 replaceSearch = re.compile(re.escape(searchReplaced), re.IGNORECASE)
-                                new_name = replaceSearch.sub(replaceReplaced, entity.name)
+                                new_name = replaceSearch.sub(lambda m: replaceReplaced, entity.name)
                                 entity.name = new_name
                                 msg.add_message(oldName, entity.name)
                         else:  # Use regex
-                            # pattern = re.compile(re.escape(searchName))
-                            new_name = re.sub(searchReplaced, replaceReplaced, str(entity.name))
+                            # build and compile pattern once, catching errors
+                            try:
+                                # note: we want to allow user-specified regex, so don't escape
+                                flags = 0
+                                if not wm.renaming_matchcase:
+                                    flags |= re.IGNORECASE
+                                pattern = re.compile(searchReplaced, flags)
+                            except re.error as err:
+                                # invalid regex, warn user and abort operation
+                                errMsg = f"Invalid regular expression: {err}"
+                                wm.renaming_error_messages.add_message(errMsg)
+                                call_error_popup(context)
+                                return {'CANCELLED'}
+
+                            try:
+                                new_name = pattern.sub(replaceReplaced, str(entity.name))
+                            except re.error as err:
+                                # should not normally happen after compilation, but guard anyway
+                                errMsg = f"Regex substitution error: {err}"
+                                wm.renaming_error_messages.add_message(errMsg)
+                                call_error_popup(context)
+                                return {'CANCELLED'}
+
                             entity.name = new_name
                             msg.add_message(oldName, entity.name)
 
