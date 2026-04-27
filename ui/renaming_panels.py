@@ -19,7 +19,6 @@ def draw_renaming_panel(layout, context):
 
     if update_available:
         row = layout.row(align=True)
-        row.alert = True
         row.label(text=f"Update available: v{latest_version_str}", icon='ERROR')
 
     scene = context.scene
