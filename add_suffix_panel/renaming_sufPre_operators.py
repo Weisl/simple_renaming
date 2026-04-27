@@ -40,9 +40,6 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
     option: StringProperty()
 
-    def __init__(self):
-        self.context = None
-
     def get_selection_all(self):
 
         context = self.context

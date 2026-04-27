@@ -28,7 +28,12 @@ def add_key(km, idname, properties_name, button_assignment_type, button_assignme
 def update_key(context, operation, operator_name, property_prefix):
     # This functions gets called when the hotkey assignment is updated in the preferences
     wm = context.window_manager
-    km = wm.keyconfigs.active.keymaps["Window"]
+    kc = wm.keyconfigs.addon
+    if kc is None:
+        return
+    km = kc.keymaps.get("Window")
+    if km is None:
+        return
 
     prefs = context.preferences.addons[base_package].preferences
 
@@ -129,7 +134,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     numerate_digits: bpy.props.IntProperty(
         name="Digits",
-        description="Defines digits used for numerating. Number 1 with digits 3 would result in 001",
+        description="Number of digits used for the @n variable in the New Name field (e.g. @n with 3 digits: 001). To configure the auto-suffix digit count, use # characters in the Numerate field instead",
         default=3,
     )
     numerate_step: bpy.props.IntProperty(

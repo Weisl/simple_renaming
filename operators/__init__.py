@@ -150,12 +150,20 @@ def register():
         default='X',  # Set a default value
     )
 
-    id_store.renaming_new_name = StringProperty(name="New Name", default='')
+    id_store.renaming_new_name = StringProperty(
+        name="New Name",
+        description="Name pattern for renaming. Use @n for a numbered variable (configure its digits in Preferences). Use # in the Numerate field (right) to set the auto-suffix digit count",
+        default='',
+    )
     id_store.renaming_search = StringProperty(name='Search', default='')
     id_store.renaming_replace = StringProperty(name='Replace', default='')
     id_store.renaming_suffix = StringProperty(name="Suffix", default='')
     id_store.renaming_prefix = StringProperty(name="Prefix", default='')
-    id_store.renaming_numerate = StringProperty(name="Numerate", default='###')
+    id_store.renaming_numerate = StringProperty(
+        name="Numerate Pattern",
+        description="Pattern for the auto-numeration suffix appended when Numerate is enabled. Each # represents one digit (e.g. ### → 001, 002, …). This does not affect the @n variable",
+        default='###',
+    )
 
     id_store.renaming_sorting = bpy.props.BoolProperty(
         name="Sort Target Objects",
@@ -169,12 +177,11 @@ def register():
 
     id_store.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
     id_store.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
-    id_store.renaming_use_enumerate = BoolProperty(name="Numerate",
-                                                   description="Enable and Disable the numeration of objects. This can "
-                                                               "be especially useful in combination with the numeration "
-                                                               "variable @n",
-                                                   default=True,
-                                                   )
+    id_store.renaming_use_enumerate = BoolProperty(
+        name="Numerate",
+        description="Automatically appends an incrementing numeric suffix to each renamed object. Configure the suffix format with # in the Numerate field, and the digit count for the @n variable in Preferences",
+        default=True,
+    )
     id_store.renaming_base_numerate = IntProperty(name="Step Size", default=1)
     id_store.renaming_start_number = IntProperty(name="Step Size", default=1)
     id_store.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
