@@ -7,7 +7,7 @@ tagline = "Effortlessly rename multiple objects with this simple addon"
 maintainer = "Matthias Patscheider <patscheider.matthias@gmail.com>"
 type = "add-on"
 
-website = "https://weisl.github.io/renaming_overview/"
+website = "https://weisl.github.io/simple_renaming/renaming_overview/"
 
 tags = ["3D View", "Scene", "User Interface"]
 

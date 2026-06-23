@@ -18,22 +18,11 @@ Created by Matthias Patscheider
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-# support reloading sub-modules
-if "bpy" in locals():
-    import importlib
-
-    importlib.reload(add_suffix_panel)
-    importlib.reload(operators)
-    importlib.reload(preferences)
-    importlib.reload(ui)
-    importlib.reload(variable_replacer)
-
-else:
-    from . import add_suffix_panel
-    from . import operators
-    from . import preferences
-    from . import ui
-    from . import variable_replacer
+from . import add_suffix_panel
+from . import operators
+from . import preferences
+from . import ui
+from . import variable_replacer
 
 files = [
     add_suffix_panel,
