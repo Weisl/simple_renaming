@@ -15,13 +15,6 @@ types_of_selected = (
 
 
 def draw_renaming_panel(layout, context):
-    from ..operators.version_check import update_available, latest_version_str
-
-    if update_available:
-        row = layout.row(align=True)
-        row.alert = True
-        row.label(text=f"Update available: v{latest_version_str}", icon='ERROR')
-
     scene = context.scene
 
     row = layout.row(align=True)
@@ -191,13 +184,12 @@ class VIEW3D_PT_tools_renaming_panel(bpy.types.Panel):
     def draw_header(self, context):
         layout = self.layout
         row = layout.row(align=True)
-        row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/renaming_overview/"
+        row.operator("wm.url_open", text="", icon='HELP').url = "https://weisl.github.io/simple_renaming/renaming_overview/"
         addon_name = get_addon_name()
 
         op = row.operator("preferences.rename_addon_search", text="", icon='PREFERENCES')
         op.addon_name = addon_name
         op.prefs_tabs = 'UI'
-        row.operator("renaming.reload_addon", text="", icon='FILE_REFRESH')
 
     def draw(self, context):
         layout = self.layout
