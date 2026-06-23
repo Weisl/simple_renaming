@@ -347,10 +347,8 @@ if __name__ == "__main__":
         run_real_scene_benchmarks()
 
     # Warmup: trigger any first-use Blender messages before the synthetic
-    # table starts. The version-check thread makes a network request (timeout
-    # 5 s); sleep long enough for it to complete so it doesn't race the table.
+    # table starts.
     bench_name_replace(10)
-    time.sleep(2.0)
 
     # ── Synthetic scene benchmarks ──────────────────────────────────────────
     print(f"\n{'Operator':<{COL}}", end="")

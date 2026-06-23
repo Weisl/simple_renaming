@@ -1,4 +1,4 @@
-Documentation: https://weisl.github.io/renaming_overview/
+Documentation: https://weisl.github.io/simple_renaming/renaming_overview/
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A)
 

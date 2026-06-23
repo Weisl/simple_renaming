@@ -92,8 +92,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     bl_options = {'REGISTER'}
 
     prefs_tabs: EnumProperty(items=(('UI', "General", "General Settings"),
-                                    ('KEYMAPS', "Keymaps", "Keymaps"),
-                                    ('SUPPORT', "Support & Donation", "Support")),
+                                    ('KEYMAPS', "Keymaps", "Keymaps")),
                              default='UI')
 
     renaming_category: StringProperty(name="Category",
@@ -382,52 +381,3 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
             self.keymap_ui(layout, 'Renaming Sub/Prefix', 'renaming_suf_pre',
                            'wm.call_panel', "VIEW3D_PT_tools_type_suffix")
 
-
-        elif self.prefs_tabs == 'SUPPORT':
-
-            text = "Support me developing great tools!"
-            label_multiline(
-                context=context,
-                text=text,
-                parent=layout
-            )
-
-            # Donations
-            box = layout.box()
-            text = "Consider supporting the development of this addon with a donation!"
-            label_multiline(
-                context=context,
-                text=text,
-                parent=box
-            )
-            col = box.column(align=True)
-            row = col.row()
-            row.operator("wm.url_open", text="Gumroad",
-                         icon="URL").url = "https://weisl.gumroad.com/l/simple_renaming"
-            row = col.row()
-            row.operator("wm.url_open", text="Superhive Market",
-                         icon="URL").url = "https://superhivemarket.com/products/simple-renaming"
-            row = col.row()
-            row.operator("wm.url_open", text="PayPal Donation",
-                         icon="URL").url = "https://www.paypal.com/donate?hosted_button_id=JV7KRF77TY78A"
-
-            # Cross Promotion
-            box = layout.box()
-            text = "Explore my other Blender Addons designed for more efficient game asset workflows!"
-            label_multiline(
-                context=context,
-                text=text,
-                parent=box
-            )
-
-            col = box.column(align=True)
-            row = col.row()
-            row.operator("wm.url_open", text="Simple Collider",
-                         icon="URL").url = "https://superhivemarket.com/products/simple-collider"
-            row = col.row()
-            row.operator("wm.url_open", text="Simple Camera Manager",
-                         icon="URL").url = "https://superhivemarket.com/products/simple-camera-manager"
-            row = col.row()
-            row.label(text='Support & Feedback')
-            row = col.row()
-            row.operator("wm.url_open", text="Join Discord", icon="URL").url = "https://discord.gg/VRzdcFpczm"
