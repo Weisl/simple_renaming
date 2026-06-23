@@ -9,30 +9,31 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          path: simple_renaming  # Checkout directly into a folder named "simple_renaming"
+          path: ${{ github.event.repository.name }}
 
       - name: Read version from blender_manifest.toml
         id: version
         run: |
           VERSION=$(python3 -c "import tomllib; f=open('${{ github.event.repository.name }}/blender_manifest.toml','rb'); print(tomllib.load(f)['version'])")
-          echo "manifest_version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Set short SHA
         id: vars
         run: echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
-      - name: Zip addon
+      - name: Prepare add-on folder
         run: |
-          zip -r simple_renaming_v${{ steps.version.outputs.manifest_version }}_${{ steps.vars.outputs.short_sha }}.zip \
-            simple_renaming \
-            -x "simple_renaming/.git*" \
-            -x "simple_renaming/.*/*" \
-            -x "simple_renaming/tests/*" \
-            -x "simple_renaming/venv/*"
+          mkdir -p staging/simple_renaming
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.*' \
+            --exclude='tests' \
+            --exclude='venv' \
+            ${{ github.event.repository.name }}/ staging/simple_renaming/
 
       - name: Upload zip as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: simple_renaming_v${{ steps.version.outputs.manifest_version }}_${{ steps.vars.outputs.short_sha }}
-          path: simple_renaming_v${{ steps.version.outputs.manifest_version }}_${{ steps.vars.outputs.short_sha }}.zip
+          name: simple_renaming_${{ steps.version.outputs.version }}_${{ steps.vars.outputs.short_sha }}
+          path: staging/
           retention-days: 7
