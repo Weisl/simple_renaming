@@ -39,9 +39,7 @@ def get_renaming_list(context):
         else:
             sort_enum = scene.renaming_sort_enum
 
-        if sort_enum == 'SELECTION':
-            obj_list = get_ordered_selection_objects()
-        elif sort_enum == 'X':
+        if sort_enum == 'X':
             obj_list = get_sorted_objects_x(obj_list)
         elif sort_enum == 'Y':
             obj_list = get_sorted_objects_y(obj_list)
@@ -302,16 +300,6 @@ def get_global_z(obj):
     return obj.matrix_world.to_translation().z
 
 
-def get_ordered_selection_objects():
-    tagged_objects = []
-    for o in bpy.data.objects:
-        order_index = o.get("selection_order", -1)
-        if order_index >= 0:
-            tagged_objects.append((order_index, o))
-    tagged_objects = sorted(tagged_objects, key=lambda item: item[0])
-    return [o for i, o in tagged_objects]
-
-
 def get_sorted_objects_x(objects):
     # Sort objects by their global X location
     sorted_objects = sorted(objects, key=get_global_x)
@@ -370,46 +358,3 @@ def update_bone_drivers(old_name, new_name):
                             target.data_path = target.data_path.replace(old_token, new_token)
 
 
-def clear_order_flag(obj):
-    try:
-        del obj["selection_order"]
-    except KeyError:
-        pass
-
-
-def update_selection_order():
-    if not (getattr(bpy.context, 'selected_objects', None) or list(bpy.context.view_layer.objects.selected)):
-        for o in bpy.data.objects:
-            clear_order_flag(o)
-        return
-    selection_order = get_ordered_selection_objects()
-    idx = 0
-
-    for o in selection_order:
-        if not o.select_get():
-            selection_order.remove(o)
-            clear_order_flag(o)
-        else:
-            o["selection_order"] = idx
-
-            # Remove any existing fcurves for 'selection_order'
-            if o.animation_data and o.animation_data.action:
-                action = o.animation_data.action
-                if HAS_LAYERED_ACTIONS:
-                    import bpy_extras.anim_utils as anim_utils
-                    channelbag = anim_utils.action_get_channelbag_for_slot(action, 0)
-                    if channelbag:
-                        to_remove = [fc for fc in channelbag.fcurves if fc.data_path == '["selection_order"]']
-                        for fc in to_remove:
-                            channelbag.fcurves.remove(fc)
-                else:
-                    to_remove = [fc for fc in action.fcurves if fc.data_path == '["selection_order"]']
-                    for fc in to_remove:
-                        action.fcurves.remove(fc)
-
-
-            idx += 1
-    for o in bpy.context.selected_objects:
-        if o not in selection_order:
-            o["selection_order"] = len(selection_order)
-            selection_order.append(o)
