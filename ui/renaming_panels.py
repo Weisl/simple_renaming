@@ -40,7 +40,7 @@ def draw_renaming_panel(layout, context):
     elif str(scene.renaming_object_types) in types_selected:
         layout.prop(scene, "renaming_only_selection", text="Only Selected")
     elif str(scene.renaming_object_types) == 'COLLECTION':
-        if bpy.context.space_data.type == 'OUTLINER':
+        if bpy.context.space_data and bpy.context.space_data.type == 'OUTLINER':
             row = layout.row(align=True)
             row.prop(scene, "renaming_only_selection", text="Only Selected")
         else:
