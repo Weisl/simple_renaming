@@ -25,7 +25,7 @@ enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1)
                    ('CURVE', "", "Rename curve objects", 'OUTLINER_OB_CURVE', 64),
                    ('SURFACE', "", "Rename surface objects", 'OUTLINER_OB_SURFACE', 128),
                    ('FONT', "", "Rename font objects", 'OUTLINER_OB_FONT', 256),
-                   ('GPENCIL', "", "Rename greace pencil objects", 'OUTLINER_OB_GREASEPENCIL', 512),
+                   ('GPENCIL', "", "Rename grease pencil objects", 'OUTLINER_OB_GREASEPENCIL', 512),
                    ('META', "", "Rename metaball objects", 'OUTLINER_OB_META', 1024),
                    ('SPEAKER', "", "Rename empty speakers", 'OUTLINER_OB_SPEAKER', 2048),
                    ('LIGHT_PROBE', "", "Rename mesh lightpropes", 'OUTLINER_OB_LIGHTPROBE', 4096),
