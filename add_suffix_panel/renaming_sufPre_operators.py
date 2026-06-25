@@ -245,7 +245,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
         obj_list = []
 
         for obj in self.get_selection_all():
-            if obj.type == 'GPENCIL':
+            if obj.type in ('GPENCIL', 'GREASEPENCIL'):
                 obj_list.append(obj)
         self.rename_suffix_prefix(obj_list, pre_suffix=wm.renaming_suffix_prefix_gpencil, object_type='GPENCIL',
                           icon='OUTLINER_OB_GREASEPENCIL')

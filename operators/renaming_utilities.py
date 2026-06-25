@@ -49,7 +49,8 @@ def get_renaming_list(context):
 
     if scene.renaming_object_types == 'OBJECT':
         for obj in obj_list:
-            if obj.type in scene.renaming_object_types_specified:
+            effective_type = 'GPENCIL' if obj.type == 'GREASEPENCIL' else obj.type
+            if effective_type in scene.renaming_object_types_specified:
                 renaming_list.append(obj)
 
     elif scene.renaming_object_types == 'DATA':
