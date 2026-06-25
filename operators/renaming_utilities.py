@@ -3,6 +3,8 @@ import time
 import bpy
 from bpy.types import PoseBone, EditBone
 
+HAS_LAYERED_ACTIONS = bpy.app.version >= (5, 0, 0)
+
 from .. import __package__ as base_package
 
 
@@ -393,15 +395,17 @@ def update_selection_order():
             # Remove any existing fcurves for 'selection_order'
             if o.animation_data and o.animation_data.action:
                 action = o.animation_data.action
-
-                import bpy_extras.anim_utils as anim_utils
-                # Get the default channelbag for the action (slot 0)
-                channelbag = anim_utils.action_get_channelbag_for_slot(action, 0)
-                if channelbag:
-                    fcurves = channelbag.fcurves
-                    for fcurve in fcurves:
-                        if fcurve.data_path == '["selection_order"]':
-                            fcurves.remove(fcurve)
+                if HAS_LAYERED_ACTIONS:
+                    import bpy_extras.anim_utils as anim_utils
+                    channelbag = anim_utils.action_get_channelbag_for_slot(action, 0)
+                    if channelbag:
+                        to_remove = [fc for fc in channelbag.fcurves if fc.data_path == '["selection_order"]']
+                        for fc in to_remove:
+                            channelbag.fcurves.remove(fc)
+                else:
+                    to_remove = [fc for fc in action.fcurves if fc.data_path == '["selection_order"]']
+                    for fc in to_remove:
+                        action.fcurves.remove(fc)
 
 
             idx += 1
