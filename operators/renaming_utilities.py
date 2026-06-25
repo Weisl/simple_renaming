@@ -63,8 +63,8 @@ def get_renaming_list(context):
         if selection_only:
             for obj in context.selected_objects:
                 for mat in obj.material_slots:
-                    if mat is not None and mat.name != '':
-                        renaming_list.append(bpy.data.materials[mat.name])
+                    if mat.material is not None:
+                        renaming_list.append(mat.material)
         else:
             renaming_list = list(bpy.data.materials)
 
