@@ -3,8 +3,6 @@ import time
 import bpy
 from bpy.types import PoseBone, EditBone
 
-HAS_LAYERED_ACTIONS = bpy.app.version >= (5, 0, 0)
-
 from .. import __package__ as base_package
 
 
@@ -124,7 +122,7 @@ def get_renaming_list(context):
                         renaming_list.append(new_bone)
 
     elif scene.renaming_object_types == 'COLLECTION':
-        if bpy.context.space_data.type == 'OUTLINER' and selection_only is True:
+        if bpy.context.space_data and bpy.context.space_data.type == 'OUTLINER' and selection_only is True:
             selected_collections = [c for c in context.selected_ids if c.bl_rna.identifier == "Collection"]
             for col in selected_collections:
                 renaming_list.append(col)
