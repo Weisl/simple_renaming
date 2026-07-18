@@ -11,6 +11,6 @@ Join the discussion at [Blender Artists](https://blenderartists.org/t/simple-ren
 You can thank me by leaving a rating at [Gumroad](https://gumroad.com/l/simple_renaming "Gumroad") or sponsor a
 coffee.
 
-Documentation: https://weisl.github.io/renaming_overview/
+Documentation: https://weisl.github.io/simple_renaming/renaming_overview/
 
 
