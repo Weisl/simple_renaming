@@ -90,6 +90,9 @@ def purge_all_with_prefix(prefix):
     for arm in list(bpy.data.armatures):
         if arm.name.startswith(prefix):
             bpy.data.armatures.remove(arm)
+    for hc in list(bpy.data.hair_curves):
+        if hc.name.startswith(prefix):
+            bpy.data.hair_curves.remove(hc)
 
 
 def add_mesh_object(name, collection=None):
@@ -340,6 +343,41 @@ def test_bone_rename_updates_drivers():
 
 
 # ---------------------------------------------------------------------------
+# Test 8 – CURVES object type enabled by default and renamed in OBJECT mode
+# ---------------------------------------------------------------------------
+
+def test_curves_object_type():
+    print("\n[Test 8] CURVES object type – enabled by default and renamed")
+    PREFIX = "T8_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    curves_data = bpy.data.hair_curves.new(f"{PREFIX}CurvesData")
+    obj = bpy.data.objects.new(f"{PREFIX}Curves", curves_data)
+    bpy.context.scene.collection.objects.link(obj)
+    for other in bpy.context.selected_objects:
+        other.select_set(False)
+    bpy.context.view_layer.objects.active = obj
+    obj.select_set(True)
+
+    check(obj.type == 'CURVES', f"Test object has type CURVES — got '{obj.type}'")
+
+    scene = bpy.context.scene
+    check('CURVES' in scene.renaming_object_types_specified,
+          "CURVES is enabled by default in renaming_object_types_specified")
+
+    scene_prop("renaming_object_types", "OBJECT")
+    scene_prop("renaming_only_selection", True)
+    scene_prop("renaming_new_name", f"{PREFIX}Renamed")
+    bpy.ops.renaming.name_replace()
+
+    check(obj.name == f"{PREFIX}Renamed",
+          f"Curves object renamed via OBJECT mode — got '{obj.name}'")
+
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
 # Run
 # ---------------------------------------------------------------------------
 
@@ -360,6 +398,7 @@ if __name__ == "__main__":
     test_get_all_attributes()
     test_search_replace_static_pattern()
     test_bone_rename_updates_drivers()
+    test_curves_object_type()
 
     print(f"\n{'='*50}")
     if failures:
@@ -368,5 +407,5 @@ if __name__ == "__main__":
             print(f"  - {f}")
         sys.exit(1)
     else:
-        print(f"All 7 tests passed.")
+        print(f"All 8 tests passed.")
         sys.exit(0)
