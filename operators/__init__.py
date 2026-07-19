@@ -14,6 +14,7 @@ from . import name_replace
 from . import numerate
 from . import search_replace
 from . import search_select
+from . import select_in_renaming_order
 from . import trim_string
 
 enumObjectTypes = [('EMPTY', "", "Rename empty objects", 'OUTLINER_OB_EMPTY', 1),
@@ -80,15 +81,18 @@ classes = (
     case_transform.VIEW3D_OT_case_camel,
     case_transform.VIEW3D_OT_case_snake,
     case_transform.VIEW3D_OT_case_kebab,
+    select_in_renaming_order.VIEW3D_OT_select_in_renaming_order,
 )
 
 enum_sort_items = [('X', "X Axis", "Sort the object based on the X axis."),
                    ('Y', "Y Axis", "Sort the object based on the Y axis."),
-                   ('Z', "Z Axis", "Sort the object based on the Z axis."), ]
+                   ('Z', "Z Axis", "Sort the object based on the Z axis."),
+                   ('SELECTION', "Selection", "Sort the objects based on the order they were clicked in with \"Select in Renaming Order\""), ]
 
 enum_sort_bone_items = [('X', "X Axis", "Sort the object based on the X axis."),
                         ('Y', "Y Axis", "Sort the object based on the Y axis."),
-                        ('Z', "Z Axis", "Sort the object based on the Z axis."), ]
+                        ('Z', "Z Axis", "Sort the object based on the Z axis."),
+                        ('SELECTION', "Selection", "Sort the bones based on the order they were clicked in with \"Select in Renaming Order\""), ]
 
 
 def register():

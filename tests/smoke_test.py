@@ -378,6 +378,216 @@ def test_curves_object_type():
 
 
 # ---------------------------------------------------------------------------
+# Test 9 – SELECTION sort mode numbers objects in tagged click order
+# ---------------------------------------------------------------------------
+
+def test_selection_order_sort():
+    print("\n[Test 9] SELECTION sort mode – tagged objects get the first numbers "
+          "in click order, untagged ones are still renamed (not dropped) after them")
+    PREFIX = "T9_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    # Restrict to MESH so a --factory-startup scene's default Camera/Light (also
+    # enabled by default) don't get swept into the untagged-but-in-scope group below.
+    default_types_specified = set(bpy.context.scene.renaming_object_types_specified)
+    scene_prop("renaming_object_types_specified", {'MESH'})
+    # The default startup scene's own "Cube" (also MESH) would otherwise be an
+    # extra untagged-but-in-scope object, making the exact numbering below
+    # nondeterministic — clear it out so only this test's 4 objects are in play.
+    for obj in list(bpy.data.objects):
+        if obj.type == 'MESH' and not obj.name.startswith(PREFIX):
+            bpy.data.objects.remove(obj, do_unlink=True)
+
+    # Obj0..Obj2 are "clicked" (tagged) in reverse order, simulating what
+    # VIEW3D_OT_select_in_renaming_order would tag via raycasting. Obj3 is
+    # deliberately left untagged — it must still be renamed, not dropped, just
+    # sorted after the deliberately-ordered ones.
+    objs = [add_mesh_object(f"{PREFIX}Obj{i}") for i in range(4)]
+    for obj in objs:
+        obj.select_set(True)
+    bpy.context.view_layer.objects.active = objs[0]
+
+    untagged = objs[3]
+    click_order = list(reversed(objs[:3]))  # Obj2, Obj1, Obj0
+    for idx, obj in enumerate(click_order):
+        obj["selection_order"] = idx
+
+    scene_prop("renaming_object_types", "OBJECT")
+    scene_prop("renaming_sorting", True)
+    scene_prop("renaming_sort_enum", "SELECTION")
+    scene_prop("renaming_use_enumerate", True)
+    scene_prop("renaming_new_name", f"{PREFIX}Sorted")
+    bpy.ops.renaming.name_replace()
+
+    check(click_order[0].name.endswith("001") and
+          click_order[1].name.endswith("002") and
+          click_order[2].name.endswith("003"),
+          "Tagged objects numbered first, in click order — got "
+          f"{[o.name for o in click_order]}")
+    check(untagged.name.endswith("004"),
+          f"Untagged object still renamed, sorted after tagged ones — got '{untagged.name}'")
+
+    for obj in objs:
+        if "selection_order" in obj:
+            del obj["selection_order"]
+
+    scene_prop("renaming_sorting", False)
+    scene_prop("renaming_sort_enum", "X")
+    scene_prop("renaming_use_enumerate", False)
+    scene_prop("renaming_object_types_specified", default_types_specified)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
+# Test 10 – SELECTION sort mode numbers bones in tagged click order
+# ---------------------------------------------------------------------------
+
+def test_selection_order_sort_bones():
+    print("\n[Test 10] SELECTION sort mode – numbers bones in tagged (clicked) order")
+    PREFIX = "T10_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    arm_data = bpy.data.armatures.new(f"{PREFIX}Arm")
+    arm_obj = bpy.data.objects.new(f"{PREFIX}Arm", arm_data)
+    bpy.context.scene.collection.objects.link(arm_obj)
+    bpy.context.view_layer.objects.active = arm_obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    bone_names = []
+    for i in range(3):
+        b = arm_data.edit_bones.new(f"{PREFIX}Bone{i}")
+        b.head = (0, i * 0.1, 0)
+        b.tail = (0, i * 0.1, 0.1)
+        bone_names.append(b.name)
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+    # Created as Bone0, Bone1, Bone2 (in that order) but "clicked" (tagged) in reverse,
+    # simulating what VIEW3D_OT_select_in_renaming_order would tag on the persistent
+    # Bone data-block (armature.bones), same as it would from Edit or Pose mode.
+    click_order_names = list(reversed(bone_names))  # Bone2, Bone1, Bone0
+    for idx, name in enumerate(click_order_names):
+        arm_data.bones[name]["selection_order"] = idx
+    click_order_bones = [arm_data.bones[name] for name in click_order_names]
+
+    scene_prop("renaming_object_types", "BONE")
+    scene_prop("renaming_sorting", True)
+    scene_prop("renaming_sort_bone_enum", "SELECTION")
+    scene_prop("renaming_only_selection", False)
+    scene_prop("renaming_use_enumerate", True)
+    scene_prop("renaming_new_name", f"{PREFIX}Sorted")
+    bpy.ops.renaming.name_replace()
+
+    check(click_order_bones[0].name.endswith("001") and
+          click_order_bones[1].name.endswith("002") and
+          click_order_bones[2].name.endswith("003"),
+          "Bones numbered in tagged click order (first click = 001), not creation "
+          f"order — got {[b.name for b in click_order_bones]}")
+
+    scene_prop("renaming_sorting", False)
+    scene_prop("renaming_sort_bone_enum", "X")
+    scene_prop("renaming_use_enumerate", False)
+    scene_prop("renaming_only_selection", False)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
+# Test 11 – SELECTION sort mode still respects "Only Selected"
+# ---------------------------------------------------------------------------
+
+def test_selection_order_respects_only_selected():
+    print("\n[Test 11] SELECTION sort mode still respects \"Only Selected\"")
+    PREFIX = "T11_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    objs = [add_mesh_object(f"{PREFIX}Obj{i}") for i in range(4)]
+    # Tag all 4 (as if picked in an earlier session) but only keep 3 selected
+    # now — the tagged-but-unselected one must be left alone.
+    click_order = [objs[3], objs[1], objs[0], objs[2]]
+    for idx, obj in enumerate(click_order):
+        obj["selection_order"] = idx
+
+    excluded = objs[2]
+    for obj in objs:
+        obj.select_set(obj is not excluded)
+    bpy.context.view_layer.objects.active = objs[0]
+
+    scene_prop("renaming_object_types", "OBJECT")
+    scene_prop("renaming_only_selection", True)
+    scene_prop("renaming_sorting", True)
+    scene_prop("renaming_sort_enum", "SELECTION")
+    scene_prop("renaming_use_enumerate", True)
+    scene_prop("renaming_new_name", f"{PREFIX}Sorted")
+    bpy.ops.renaming.name_replace()
+
+    expected_order = [o for o in click_order if o is not excluded]  # objs[3], objs[1], objs[0]
+    check(excluded.name == f"{PREFIX}Obj2",
+          f"Tagged-but-unselected object left untouched — got '{excluded.name}'")
+    check(expected_order[0].name.endswith("001") and
+          expected_order[1].name.endswith("002") and
+          expected_order[2].name.endswith("003"),
+          "Only the selected+tagged objects renamed, in click order — got "
+          f"{[o.name for o in expected_order]}")
+
+    for obj in objs:
+        if "selection_order" in obj:
+            del obj["selection_order"]
+    scene_prop("renaming_only_selection", False)
+    scene_prop("renaming_sorting", False)
+    scene_prop("renaming_sort_enum", "X")
+    scene_prop("renaming_use_enumerate", False)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
+# Test 12 – MATERIAL renaming follows object click order under Selection sort
+# ---------------------------------------------------------------------------
+
+def test_material_follows_object_selection_order():
+    print("\n[Test 12] MATERIAL renaming follows object click order under Selection sort")
+    PREFIX = "T12_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    obj0 = add_mesh_object(f"{PREFIX}Obj0")
+    mat0 = bpy.data.materials.new(f"{PREFIX}Mat0")
+    obj0.data.materials.append(mat0)
+
+    obj1 = add_mesh_object(f"{PREFIX}Obj1")
+    mat1 = bpy.data.materials.new(f"{PREFIX}Mat1")
+    obj1.data.materials.append(mat1)
+
+    # Click order: Obj1 first, then Obj0 — reverse of creation order.
+    obj1["selection_order"] = 0
+    obj0["selection_order"] = 1
+    obj0.select_set(True)
+    obj1.select_set(True)
+    bpy.context.view_layer.objects.active = obj0
+
+    scene_prop("renaming_object_types", "MATERIAL")
+    scene_prop("renaming_only_selection", True)
+    scene_prop("renaming_sorting", True)
+    scene_prop("renaming_sort_enum", "SELECTION")
+    scene_prop("renaming_use_enumerate", True)
+    scene_prop("renaming_new_name", f"{PREFIX}Mat")
+    bpy.ops.renaming.name_replace()
+
+    check(mat1.name.endswith("001") and mat0.name.endswith("002"),
+          f"Materials renamed in object click order (Obj1's material first) — got "
+          f"mat1={mat1.name}, mat0={mat0.name}")
+
+    for obj in (obj0, obj1):
+        if "selection_order" in obj:
+            del obj["selection_order"]
+    scene_prop("renaming_only_selection", False)
+    scene_prop("renaming_sorting", False)
+    scene_prop("renaming_sort_enum", "X")
+    scene_prop("renaming_use_enumerate", False)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
 # Run
 # ---------------------------------------------------------------------------
 
@@ -399,6 +609,10 @@ if __name__ == "__main__":
     test_search_replace_static_pattern()
     test_bone_rename_updates_drivers()
     test_curves_object_type()
+    test_selection_order_sort()
+    test_selection_order_sort_bones()
+    test_selection_order_respects_only_selected()
+    test_material_follows_object_selection_order()
 
     print(f"\n{'='*50}")
     if failures:
@@ -407,5 +621,5 @@ if __name__ == "__main__":
             print(f"  - {f}")
         sys.exit(1)
     else:
-        print(f"All 8 tests passed.")
+        print(f"All 12 tests passed.")
         sys.exit(0)

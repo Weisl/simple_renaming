@@ -5,6 +5,20 @@ from bpy.types import PoseBone, EditBone
 
 from .. import __package__ as base_package
 
+SELECTION_ORDER_KEY = "selection_order"
+
+
+def count_selection_order_tags(context):
+    if context.scene.renaming_object_types == 'BONE':
+        return sum(1 for arm in bpy.data.armatures for bone in arm.bones if SELECTION_ORDER_KEY in bone)
+    return sum(1 for o in bpy.data.objects if SELECTION_ORDER_KEY in o)
+
+
+def _selection_order_key(tag):
+    """Sort key putting tagged items first (in click order), untagged items
+    last (in their existing relative order, since sorted() is stable)."""
+    return (0, tag) if tag is not None else (1, 0)
+
 
 def log_timing(context, label, t_start, entity_count):
     """Print elapsed time to the console when debug_timing is enabled."""
@@ -37,7 +51,9 @@ def get_renaming_list(context):
         else:
             sort_enum = scene.renaming_sort_enum
 
-        if sort_enum == 'X':
+        if sort_enum == 'SELECTION':
+            obj_list = sorted(obj_list, key=lambda o: _selection_order_key(o.get(SELECTION_ORDER_KEY)))
+        elif sort_enum == 'X':
             obj_list = get_sorted_objects_x(obj_list)
         elif sort_enum == 'Y':
             obj_list = get_sorted_objects_y(obj_list)
@@ -62,7 +78,7 @@ def get_renaming_list(context):
 
     elif scene.renaming_object_types == 'MATERIAL':
         if selection_only:
-            for obj in context.selected_objects:
+            for obj in obj_list:
                 for mat in obj.material_slots:
                     if mat.material is not None:
                         renaming_list.append(mat.material)
@@ -74,6 +90,12 @@ def get_renaming_list(context):
 
     elif scene.renaming_object_types == 'BONE':
         old_mode = context.mode
+        use_selection_order = scene.renaming_sorting and scene.renaming_sort_bone_enum == 'SELECTION'
+        bone_order_keys = []
+
+        def _bone_order_value(arm, name):
+            bone = arm.bones.get(name)
+            return bone.get(SELECTION_ORDER_KEY) if bone else None
 
         if selection_only:
 
@@ -105,11 +127,13 @@ def get_renaming_list(context):
                             if name == bone.name:
                                 new_bone = PoseBone(arm.bones[name])
                                 renaming_list.append(new_bone)
+                                bone_order_keys.append(_bone_order_value(arm, name))
                     else:  # old_mode == 'EDIT_ARMATURE':
                         for bone in arm.edit_bones:
                             if selected_bone == bone:
                                 new_bone = EditBone(selected_bone)
                                 renaming_list.append(new_bone)
+                                bone_order_keys.append(_bone_order_value(arm, selected_bone.name))
 
         else:  # if selection_only == False
             for arm in bpy.data.armatures:
@@ -117,10 +141,16 @@ def get_renaming_list(context):
                     for bone in arm.edit_bones:
                         new_bone = EditBone(bone)
                         renaming_list.append(new_bone)
+                        bone_order_keys.append(_bone_order_value(arm, bone.name))
                 else:  # old_mode == 'POSE' or old_mode == 'OBJECT'
                     for bone in arm.bones:
                         new_bone = PoseBone(bone)
                         renaming_list.append(new_bone)
+                        bone_order_keys.append(_bone_order_value(arm, bone.name))
+
+        if use_selection_order:
+            renaming_list = [b for _, b in sorted(zip(bone_order_keys, renaming_list),
+                                                  key=lambda pair: _selection_order_key(pair[0]))]
 
     elif scene.renaming_object_types == 'COLLECTION':
         if bpy.context.space_data and bpy.context.space_data.type == 'OUTLINER' and selection_only is True:
@@ -134,7 +164,7 @@ def get_renaming_list(context):
         filter_index = scene.renaming_filter_by_index
         idx = scene.renaming_index_target
         if selection_only:
-            for obj in context.selected_objects:
+            for obj in obj_list:
                 if obj.data and obj.data.shape_keys:
                     items = list(obj.data.shape_keys.key_blocks)
                     if filter_index:
@@ -152,20 +182,14 @@ def get_renaming_list(context):
                     renaming_list.extend(items)
 
     elif scene.renaming_object_types == 'MODIFIERS':
-        if selection_only:
-            for obj in context.selected_objects:
-                for mod in obj.modifiers:
-                    renaming_list.append(mod)
-        else:  # selection_only == False:
-            for obj in bpy.data.objects:
-                for mod in obj.modifiers:
-                    renaming_list.append(mod)
+        for obj in obj_list:
+            for mod in obj.modifiers:
+                renaming_list.append(mod)
 
     elif context.scene.renaming_object_types == 'VERTEXGROUPS':
         filter_index = scene.renaming_filter_by_index
         idx = scene.renaming_index_target
-        obj_iter = context.selected_objects if selection_only else bpy.data.objects
-        for obj in obj_iter:
+        for obj in obj_list:
             items = list(obj.vertex_groups)
             if filter_index:
                 if idx < len(items):
@@ -174,14 +198,9 @@ def get_renaming_list(context):
                 renaming_list.extend(items)
 
     elif context.scene.renaming_object_types == 'PARTICLESYSTEM':
-        if selection_only:
-            for obj in context.selected_objects:
-                for particles in obj.particle_systems:
-                    renaming_list.append(particles)
-        else:
-            for obj in bpy.data.objects:
-                for particles in obj.particle_systems:
-                    renaming_list.append(particles)
+        for obj in obj_list:
+            for particles in obj.particle_systems:
+                renaming_list.append(particles)
 
     elif context.scene.renaming_object_types == 'PARTICLESETTINGS':
         for particles in bpy.data.particles:
@@ -250,7 +269,6 @@ def get_renaming_list(context):
 
     elif scene.renaming_object_types == 'ACTIONS':
         if selection_only:
-            obj_list = context.selected_objects.copy()
             for obj in obj_list:
                 ad = obj.animation_data
                 if ad:

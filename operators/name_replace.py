@@ -61,6 +61,21 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         current_owner = None
         per_obj_name_list = set()
 
+        # Entities about to be renamed shouldn't block each other (or
+        # themselves) just because their old name still matches the target
+        # naming pattern — e.g. reordering a subset of an already-numbered
+        # "spine_001..006" chain back onto base name "spine" would otherwise
+        # collide with (or snap back to) names that are about to be vacated
+        # by this very rename. Park them under unique placeholder names
+        # first so collision-avoidance only ever sees names belonging to
+        # entities that are NOT part of this rename.
+        real_old_names = {}
+        if scene.renaming_use_enumerate and scene.renaming_object_types in per_object_types:
+            for idx, e in enumerate(renaming_list):
+                if e is not None:
+                    real_old_names[id(e)] = e.name
+                    e.name = f"__renaming_tmp_{idx}__"
+
         VariableReplacer.reset()
         VariableReplacer.prepare(context)
 
@@ -78,7 +93,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
                         replaceName = VariableReplacer.replaceInputString(context, scene.renaming_new_name, entity)
 
-                        oldName = entity.name
+                        oldName = real_old_names.get(id(entity), entity.name)
                         new_name = ''
 
                         if not scene.renaming_use_enumerate:

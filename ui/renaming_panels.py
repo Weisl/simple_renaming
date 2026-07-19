@@ -3,6 +3,7 @@ from bl_operators.presets import AddPresetBase
 from bpy.props import StringProperty
 from bpy.types import Operator, Menu
 
+from ..operators.renaming_utilities import count_selection_order_tags
 from ..ui.renaming_variables import RENAMING_MT_variableMenu
 
 # Selected objects are renamed directly
@@ -12,6 +13,19 @@ types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
 types_of_selected = (
     'MATERIAL', 'DATA', 'VERTEXGROUPS', 'PARTICLESYSTEM', 'SHAPEKEYS', 'MODIFIERS', 'UVMAPS',
     'COLORATTRIBUTES', 'ATTRIBUTES', 'ACTIONS')
+
+
+def _draw_selection_order_controls(col, context, mode_ok, wrong_mode_hint):
+    box = col.box()
+    if mode_ok:
+        count = count_selection_order_tags(context)
+        box.operator("renaming.select_in_renaming_order",
+                     text=f"Select in Renaming Order ({count} tagged)",
+                     icon='SELECT_SET')
+    else:
+        row = box.row()
+        row.enabled = False
+        row.label(text=wrong_mode_hint, icon='ERROR')
 
 
 def draw_renaming_panel(layout, context):
@@ -60,8 +74,14 @@ def draw_renaming_panel(layout, context):
         if scene.renaming_sorting:
             if str(scene.renaming_object_types) == 'BONE':
                 col.prop(scene, "renaming_sort_bone_enum", expand=True)
+                if scene.renaming_sort_bone_enum == 'SELECTION':
+                    _draw_selection_order_controls(col, context, context.mode in {'POSE', 'EDIT_ARMATURE'},
+                                                   "Enter Edit or Pose Mode")
             else:
                 col.prop(scene, "renaming_sort_enum", expand=True)
+                if scene.renaming_sort_enum == 'SELECTION':
+                    _draw_selection_order_controls(col, context, context.mode == 'OBJECT',
+                                                   "Enter Object Mode")
             col.prop(scene, "renaming_sort_reverse")
 
     layout.separator(type='LINE')
