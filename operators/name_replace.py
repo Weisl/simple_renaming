@@ -61,6 +61,19 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         current_owner = None
         per_obj_name_list = set()
 
+        # OBJECT is the one type whose variables (@o, and the no-parent/
+        # no-data fallbacks of @p/@m) read the entity's own *current* name
+        # directly, so its replacement string must be computed from the real
+        # name before that name gets parked under a placeholder below.
+        precomputed_replace_names = {}
+        if scene.renaming_use_enumerate and scene.renaming_object_types == 'OBJECT':
+            VariableReplacer.reset()
+            VariableReplacer.prepare(context)
+            for entity in renaming_list:
+                if entity is not None:
+                    precomputed_replace_names[id(entity)] = VariableReplacer.replaceInputString(
+                        context, scene.renaming_new_name, entity)
+
         # Entities about to be renamed shouldn't block each other (or
         # themselves) just because their old name still matches the target
         # naming pattern — e.g. reordering a subset of an already-numbered
@@ -68,16 +81,24 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
         # collide with (or snap back to) names that are about to be vacated
         # by this very rename. Park them under unique placeholder names
         # first so collision-avoidance only ever sees names belonging to
-        # entities that are NOT part of this rename.
+        # entities that are NOT part of this rename. This applies to every
+        # type, not just per-object sub-items — plain OBJECT/MATERIAL/...
+        # renumbering is just as prone to an entity "snapping back" to its
+        # own old slot the moment the target order doesn't match the order
+        # its old numeric suffixes were assigned in.
         real_old_names = {}
-        if scene.renaming_use_enumerate and scene.renaming_object_types in per_object_types:
+        if scene.renaming_use_enumerate:
             for idx, e in enumerate(renaming_list):
                 if e is not None:
                     real_old_names[id(e)] = e.name
-                    e.name = f"__renaming_tmp_{idx}__"
+                    try:
+                        e.name = f"__renaming_tmp_{idx}__"
+                    except AttributeError:
+                        pass  # read-only (e.g. library-linked) — leave it under its real name
 
-        VariableReplacer.reset()
-        VariableReplacer.prepare(context)
+        if not precomputed_replace_names:
+            VariableReplacer.reset()
+            VariableReplacer.prepare(context)
 
         if len(str(replaceName)) > 0:  # New name != empty
             if len(renaming_list) > 0:  # List of objects to rename != empty
@@ -91,7 +112,10 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
                                 VariableReplacer.reset()
                                 per_obj_name_list = {item.name for item in per_obj_owner_items[scene.renaming_object_types](owner)}
 
-                        replaceName = VariableReplacer.replaceInputString(context, scene.renaming_new_name, entity)
+                        if id(entity) in precomputed_replace_names:
+                            replaceName = precomputed_replace_names[id(entity)]
+                        else:
+                            replaceName = VariableReplacer.replaceInputString(context, scene.renaming_new_name, entity)
 
                         oldName = real_old_names.get(id(entity), entity.name)
                         new_name = ''
@@ -126,6 +150,9 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
                             elif scene.renaming_object_types == 'ACTIONS':
                                 new_name = numerate_entity_name(context, replaceName, bpy.data.actions, entity.name)
+
+                            elif scene.renaming_object_types == 'NODE_GROUPS':
+                                new_name = numerate_entity_name(context, replaceName, bpy.data.node_groups, entity.name)
 
                             elif scene.renaming_object_types in per_object_types:
                                 new_name, per_obj_name_list = numerate_entity_name(context, replaceName,

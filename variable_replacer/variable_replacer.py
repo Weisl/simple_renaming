@@ -56,11 +56,14 @@ class VariableReplacer:
         O(collections × objects) and O(objects) per-entity lookups into O(1).
         """
         # Collection reverse-lookup: obj_name -> concatenated collection names
+        # (separated, since an object linked into multiple/nested collections
+        # would otherwise produce a run-together name like "MainSub").
+        separator = context.preferences.addons[base_package].preferences.renaming_separator
         collection_cache = {}
         for col in bpy.data.collections:
             for obj in col.objects:
                 if obj.name in collection_cache:
-                    collection_cache[obj.name] += col.name
+                    collection_cache[obj.name] += separator + col.name
                 else:
                     collection_cache[obj.name] = col.name
         cls._collection_cache = collection_cache
