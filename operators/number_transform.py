@@ -3,6 +3,7 @@ import re
 import bpy
 
 from .renaming_operators import switch_to_edit_mode
+from .. import __package__ as base_package
 from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, apply_rename, report_rename_warnings
 
 _DIGIT_RUN_RE = re.compile(r'\d+')
@@ -23,8 +24,14 @@ def pad_number(name, width):
     return name[:match.start()] + formatted + name[match.end():]
 
 
-def number_to_letters(name, upper):
-    """Convert the last number in the name to spreadsheet-style letters (1-based, base-26)."""
+def number_to_letters(name, upper, separator):
+    """Convert the last number in the name to spreadsheet-style letters (1-based, base-26).
+
+    Inserts `separator` before the letters when they'd otherwise be glued
+    directly onto a preceding letter (e.g. "Cube9" -> "Cube_i" rather than
+    "Cubei") — without a delimiter there, the letters become indistinguishable
+    from the base name and letters_to_number() can't reverse the conversion.
+    """
     match = _last_match(_DIGIT_RUN_RE, name)
     if not match:
         return name
@@ -37,7 +44,10 @@ def number_to_letters(name, upper):
         letters = chr(65 + rem) + letters
     if not upper:
         letters = letters.lower()
-    return name[:match.start()] + letters + name[match.end():]
+    prefix = name[:match.start()]
+    if prefix and prefix[-1].isalpha():
+        prefix += separator
+    return prefix + letters + name[match.end():]
 
 
 def letters_to_number(name):
@@ -110,7 +120,8 @@ class VIEW3D_OT_number_to_letters_lower(_NumberOperatorBase):
     bl_description = "Convert the last number in the name to spreadsheet-style letters  (1 → a, 2 → b, … 26 → z, 27 → aa …)"
 
     def _transform(self, name, context):
-        return number_to_letters(name, upper=False)
+        prefs = context.preferences.addons[base_package].preferences
+        return number_to_letters(name, upper=False, separator=prefs.renaming_separator)
 
 
 class VIEW3D_OT_number_to_letters_upper(_NumberOperatorBase):
@@ -119,7 +130,8 @@ class VIEW3D_OT_number_to_letters_upper(_NumberOperatorBase):
     bl_description = "Convert the last number in the name to spreadsheet-style letters  (1 → A, 2 → B, … 26 → Z, 27 → AA …)"
 
     def _transform(self, name, context):
-        return number_to_letters(name, upper=True)
+        prefs = context.preferences.addons[base_package].preferences
+        return number_to_letters(name, upper=True, separator=prefs.renaming_separator)
 
 
 class VIEW3D_OT_letters_to_number(_NumberOperatorBase):

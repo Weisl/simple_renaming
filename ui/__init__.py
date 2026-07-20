@@ -2,7 +2,8 @@ import bpy
 
 from .info_messages import RENAMING_MESSAGES, WarningError_MESSAGES, INFO_MESSAGES
 from .renaming_panels import VIEW3D_PT_tools_renaming_panel, VIEW3D_PT_tools_type_suffix, VIEW3D_OT_SetVariable, \
-    VIEW3D_OT_RenamingPopupOperator, OBJECT_MT_suffix_prefix_presets, AddPresetRenamingPresets, RENAMING_MT_caseMenu
+    VIEW3D_OT_RenamingPopupOperator, OBJECT_MT_suffix_prefix_presets, AddPresetRenamingPresets, RENAMING_MT_caseMenu, \
+    RENAMING_MT_numberMenu
 from .renaming_panels import panel_func
 from .renaming_popup import VIEW3D_PT_renaming_popup, VIEW3D_PT_info_popup, VIEW3D_PT_error_popup
 from .renaming_variables import RENAMING_MT_variableMenu, VIEW3D_OT_inputVariables
@@ -11,6 +12,7 @@ from .ui_helpers import PREFERENCES_OT_open_addon
 classes = (
     RENAMING_MT_variableMenu,
     RENAMING_MT_caseMenu,
+    RENAMING_MT_numberMenu,
     VIEW3D_OT_inputVariables,
     VIEW3D_PT_error_popup,
     VIEW3D_PT_info_popup,
