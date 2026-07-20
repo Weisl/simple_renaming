@@ -27,6 +27,7 @@ paths_exclude_pattern = [
     "/.git/",
     "/*.zip",
     "/tests/",
+    "/tools/",
     "/venv/",
     "/.claude/",
 ]
