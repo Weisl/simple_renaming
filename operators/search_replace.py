@@ -4,7 +4,7 @@ import time
 import bpy
 
 from .renaming_operators import switch_to_edit_mode
-from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, rename_data_if_enabled, update_bone_drivers, log_timing
+from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, apply_rename, report_rename_warnings, log_timing
 from ..variable_replacer.variable_replacer import VariableReplacer
 from .case_transform import to_upper, to_lower, upper_first, lower_first
 
@@ -121,6 +121,8 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
         searchName = wm.renaming_search
 
         msg = wm.renaming_messages  # variable to save messages
+        conflicts = 0
+        protected = 0
 
         VariableReplacer.reset()
         VariableReplacer.prepare(context)
@@ -136,7 +138,6 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
             for entity in renaming_list:  # iterate over all objects that are to be renamed
                 if entity is not None:
                     if searchName != '':
-                        oldName = entity.name
                         searchReplaced = VariableReplacer.replaceInputString(context, wm.renaming_search, entity)
                         replaceReplaced = VariableReplacer.replaceInputString(context, wm.renaming_replace, entity)
                         if not wm.renaming_useRegex:
@@ -147,13 +148,14 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
                                 new_name = pattern.sub(replaceReplaced, entity.name)
                         else:  # Use regex
                             new_name = regex_case_sub(searchReplaced, replaceReplaced, str(entity.name))
-                        entity.name = new_name
-                        rename_data_if_enabled(wm, entity)
-                        if wm.renaming_object_types == 'BONE':
-                            update_bone_drivers(oldName, entity.name)
-                        msg.add_message(oldName, entity.name)
+                        _, warning, is_protected = apply_rename(wm, entity, new_name, msg)
+                        if is_protected:
+                            protected += 1
+                        elif warning:
+                            conflicts += 1
 
         log_timing(context, "search_replace", t_start, len(renaming_list))
+        report_rename_warnings(self, conflicts, protected)
         call_renaming_popup(context)
         if switch_edit_mode:
             switch_to_edit_mode(context)

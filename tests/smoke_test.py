@@ -184,9 +184,13 @@ def test_get_owner_object_name_shapekey():
     scene_prop("renaming_new_name", "@o_shape")
     bpy.ops.renaming.name_replace()
 
+    # Both shape keys resolve @o to the same owner-object name, so they're
+    # guaranteed to collide with each other — only the first one processed
+    # can claim it; apply_rename now reverts (skips) the second instead of
+    # auto-suffixing it. Just confirm @o resolved correctly at all.
     keys = [k.name for k in obj.data.shape_keys.key_blocks]
-    check(all(k.startswith(f"{PREFIX}SKHolder_shape") for k in keys),
-          f"Shape keys renamed using @o — got {keys}")
+    check(f"{PREFIX}SKHolder_shape" in keys,
+          f"Shape key renamed using @o (owner object name) — got {keys}")
 
     purge_all_with_prefix(PREFIX)
 
@@ -264,7 +268,10 @@ def test_search_replace_static_pattern():
     purge_all_with_prefix(PREFIX)
     reset_scene_props()
 
-    for name in [f"{PREFIX}Cube_Low", f"{PREFIX}cube_low", f"{PREFIX}CUBE_LOW"]:
+    # Distinct numeric suffixes keep the 3 results from colliding with each
+    # other post-replace — a genuine collision would now get reverted
+    # (skipped) instead of auto-suffixed, which isn't what this test targets.
+    for name in [f"{PREFIX}Cube_Low_1", f"{PREFIX}cube_low_2", f"{PREFIX}CUBE_LOW_3"]:
         add_mesh_object(name)
 
     scene_prop("renaming_object_types", "OBJECT")
@@ -588,6 +595,80 @@ def test_material_follows_object_selection_order():
 
 
 # ---------------------------------------------------------------------------
+# Test 13 – name_replace logs a warning when a target name collides in-batch
+# ---------------------------------------------------------------------------
+
+def test_name_replace_conflict_warning():
+    print("\n[Test 13] name_replace skips (reverts) the second object on an in-batch name collision")
+    PREFIX = "T13_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+    bpy.context.scene.renaming_messages.clear()
+
+    obj_a = add_mesh_object(f"{PREFIX}A")
+    obj_b = add_mesh_object(f"{PREFIX}B")
+    orig_a, orig_b = obj_a.name, obj_b.name
+    obj_a.select_set(True)
+    obj_b.select_set(True)
+    bpy.context.view_layer.objects.active = obj_a
+
+    scene_prop("renaming_object_types", "OBJECT")
+    scene_prop("renaming_only_selection", True)
+    scene_prop("renaming_new_name", f"{PREFIX}Same")
+    bpy.ops.renaming.name_replace()
+
+    target = f"{PREFIX}Same"
+    claimed = [o for o in (obj_a, obj_b) if o.name == target]
+    skipped = [o for o in (obj_a, obj_b) if o.name != target]
+    check(len(claimed) == 1,
+          f"Exactly one object claimed the target name — got {[obj_a.name, obj_b.name]}")
+    check(len(skipped) == 1 and skipped[0].name in (orig_a, orig_b),
+          f"The colliding object was left at its original name instead of auto-suffixed — got {[obj_a.name, obj_b.name]}")
+
+    warnings = [m for m in bpy.context.scene.renaming_messages.message if m.get('warning')]
+    check(len(warnings) == 1,
+          f"Exactly one conflict warning logged for the collision — got {len(warnings)}")
+
+    scene_prop("renaming_only_selection", False)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
+# Test 14 – trim_string warns even when the colliding result looks unchanged
+# (the exact "no objects renamed" confusion from GitHub issue #233)
+# ---------------------------------------------------------------------------
+
+def test_trim_conflict_no_visible_change_still_warns():
+    print("\n[Test 14] trim_string warns even when the colliding target name looks unchanged")
+    PREFIX = "T14_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+    bpy.context.scene.renaming_messages.clear()
+
+    obj_a = add_mesh_object(f"{PREFIX}Chest")
+    obj_b = add_mesh_object(f"{PREFIX}Chest.001")
+
+    obj_a.select_set(False)
+    obj_b.select_set(True)
+    bpy.context.view_layer.objects.active = obj_b
+
+    scene_prop("renaming_object_types", "OBJECT")
+    scene_prop("renaming_only_selection", True)
+    scene_prop("renaming_trim_indices", (0, 4))  # strip the trailing ".001"
+    bpy.ops.renaming.trim_string()
+
+    check(obj_b.name == f"{PREFIX}Chest.001",
+          f"Colliding trim silently reverted to the original name — got {obj_b.name}")
+
+    warnings = [m for m in bpy.context.scene.renaming_messages.message if m.get('warning')]
+    check(len(warnings) == 1,
+          f"Conflict warning logged even though the name looked unchanged — got {len(warnings)}")
+
+    scene_prop("renaming_only_selection", False)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
 # Run
 # ---------------------------------------------------------------------------
 
@@ -613,6 +694,8 @@ if __name__ == "__main__":
     test_selection_order_sort_bones()
     test_selection_order_respects_only_selected()
     test_material_follows_object_selection_order()
+    test_name_replace_conflict_warning()
+    test_trim_conflict_no_visible_change_still_warns()
 
     print(f"\n{'='*50}")
     if failures:
@@ -621,5 +704,5 @@ if __name__ == "__main__":
             print(f"  - {f}")
         sys.exit(1)
     else:
-        print(f"All 12 tests passed.")
+        print(f"All 14 tests passed.")
         sys.exit(0)

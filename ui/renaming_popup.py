@@ -93,45 +93,60 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
         layout = self.layout
         box = layout.box()
 
-        if len(wm.renaming_messages.message) <= 0:
+        messages = [m for m in wm.renaming_messages.message if m is not None]
+        warnings = [m for m in messages if m['warning']]
+
+        if len(messages) <= 0:
             box.label(text="No Objects Renamed", icon="INFO")
         else:
             i = 0
-            for msg in wm.renaming_messages.message:
-                if msg is not None:
-                    if not msg['warning']:
-                        if (msg['new_name'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg[
-                            'new_name']:
+            for msg in messages:
+                if not msg['warning']:
+                    if (msg['new_name'] is not None and msg['oldName'] is not None) and msg['oldName'] != msg[
+                        'new_name']:
 
-                            if i == 0:
-                                row = box.row(align=True)
-                                row.alignment = 'EXPAND'
-                                row.label(text="Object Type")
-                                row.label(text="New Name")
-                                row.label(text="Old Name")
-                                box.separator(type='LINE')
-
+                        if i == 0:
                             row = box.row(align=True)
                             row.alignment = 'EXPAND'
+                            row.label(text="Object Type")
+                            row.label(text="New Name")
+                            row.label(text="Old Name")
+                            box.separator(type='LINE')
 
-                            if msg['obType'] is not False and msg['obIcon'] is not False:
-                                row.label(text=str(msg['obType']), icon=msg['obIcon'])
-                            else:
-                                row.label(text=str(wm.renaming_object_types))
+                        row = box.row(align=True)
+                        row.alignment = 'EXPAND'
 
-                            row.label(text=str(msg['new_name']), icon='FILE_TICK')
-                            row.label(text=str(msg['oldName']))
-
-                            i += 1
-
-                    else:  # if msg['warning'] == True
-                        if msg['new_name'] is not None and msg['oldName'] is not None:
-                            box.label(text="Warning", icon="ERROR")
-                            box.label(text="       " + "Name: " + str(msg['oldName']))
-                            box.label(text="       " + msg['warning'])
+                        if msg['obType'] is not False and msg['obIcon'] is not False:
+                            row.label(text=str(msg['obType']), icon=msg['obIcon'])
                         else:
-                            box.label(text="Warning", icon="ERROR")
-                            box.label(text="       " + msg['warning'])
-            if i == 0:
+                            row.label(text=str(wm.renaming_object_types))
+
+                        row.label(text=str(msg['new_name']), icon='FILE_TICK')
+                        row.label(text=str(msg['oldName']))
+
+                        i += 1
+
+            if warnings:
+                if i > 0:
+                    box.separator(type='LINE')
+
+                # Skipped entities were left at their original name (see
+                # apply_rename), so there's no separate "current name" to
+                # show — oldName and new_name are always identical here.
+                skipped = [m for m in warnings if m['oldName'] is not None]
+                general = [m for m in warnings if m['oldName'] is None]
+
+                if skipped:
+                    box.label(text="Skipped (Name Conflicts)", icon='ERROR')
+                    for msg in skipped:
+                        row = box.row(align=True)
+                        row.label(text=str(msg['oldName']), icon='ERROR')
+                        row.label(text=str(msg['warning']))
+
+                for msg in general:
+                    row = box.row(align=True)
+                    row.label(text=str(msg['warning']), icon='ERROR')
+
+            if i == 0 and not warnings:
                 box.label(text="No Objects Renamed", icon="INFO")
         wm.renaming_messages.clear()

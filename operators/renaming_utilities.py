@@ -1,3 +1,4 @@
+import re
 import time
 
 import bpy
@@ -329,6 +330,87 @@ def rename_data_if_enabled(scene, entity):
             scene.renaming_object_types in ('OBJECT', 'ADDOBJECTS'):
         if hasattr(entity, 'data') and entity.data is not None:
             entity.data.name = entity.name
+
+
+_AUTO_SUFFIX_RE = re.compile(r'\.\d{3,}$')
+
+
+def _detect_name_conflict(intended, actual):
+    """Return a short warning reason if Blender's auto-uniquify changed the
+    name the caller asked for, else False. The caller (the popup) already
+    shows the intended vs. actual name side by side, so this only needs to
+    say why, not repeat either name. Strips any pre-existing numeric tail
+    from both sides before comparing, so an intended name that already ends
+    in e.g. '.005' (numerate/rename-by-index) is still recognized correctly
+    when Blender bumps it to '.006' instead of leaving it untouched."""
+    if intended == actual:
+        return False
+    if _AUTO_SUFFIX_RE.sub('', intended) == _AUTO_SUFFIX_RE.sub('', actual):
+        return "name already in use"
+    return "could not apply name exactly"
+
+
+def apply_rename(scene, entity, new_name, msg, old_name=None, obType=False, obIcon=False):
+    """Assign entity.name, detect any Blender-side conflict, and log a message.
+    Returns (actual_name, warning_or_None, is_protected).
+
+    If Blender can't give the entity exactly the requested name, the rename
+    is reverted rather than kept under whatever fallback name Blender's
+    auto-uniquify picked — accepting that fallback is how a batch full of
+    conflicts turns into a confusing cascade (Foo.002 silently becoming
+    Foo.001, etc., see issue #233). A conflicting entity is left untouched
+    and reported as skipped instead.
+
+    is_protected distinguishes a rename that Blender refused outright (the ID
+    is linked from an external library, or it's a built-in/intrinsic item
+    Blender hard-protects from renaming — e.g. mesh attributes like
+    "position"; nothing changed) from a plain name conflict (the rename is
+    attempted, found to collide, and reverted) — different failure modes
+    callers should track/report separately.
+
+    old_name overrides what gets reported/used for driver fixups — needed by
+    name_replace's enumerate path, which parks entities under a temporary
+    placeholder name before calling this, so entity.name at call time is
+    that placeholder, not the real original name.
+    """
+    reported_old_name = old_name if old_name is not None else entity.name
+    try:
+        entity.name = new_name
+    except AttributeError:
+        warning = "name is protected, could not rename"
+        msg.add_message(reported_old_name, reported_old_name, obType, obIcon, warning=warning)
+        return reported_old_name, warning, True
+
+    warning = _detect_name_conflict(new_name, entity.name)
+    if warning:
+        if entity.name != reported_old_name:
+            try:
+                entity.name = reported_old_name
+            except AttributeError:
+                pass
+        msg.add_message(reported_old_name, reported_old_name, obType, obIcon, warning=warning)
+        return reported_old_name, warning, False
+
+    rename_data_if_enabled(scene, entity)
+    if isinstance(entity, (bpy.types.Bone, bpy.types.EditBone, bpy.types.PoseBone)):
+        update_bone_drivers(reported_old_name, entity.name)
+
+    msg.add_message(reported_old_name, entity.name, obType, obIcon, warning=False)
+    return entity.name, False, False
+
+
+def report_rename_warnings(op, conflict_count, protected_count=0):
+    """Surface a status-bar/Info-log warning so conflicts are visible even
+    when the popup preference (renamingPanel_showPopup) is off."""
+    parts = []
+    if conflict_count:
+        noun = "item" if conflict_count == 1 else "items"
+        parts.append(f"{conflict_count} {noun} skipped due to a naming conflict")
+    if protected_count:
+        noun = "item" if protected_count == 1 else "items"
+        parts.append(f"{protected_count} protected {noun} could not be renamed")
+    if parts:
+        op.report({'WARNING'}, "; ".join(parts) + ". See the Rename Info popup for details.")
 
 
 def update_bone_drivers(old_name, new_name):

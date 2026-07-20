@@ -2,7 +2,7 @@ import time
 
 import bpy
 
-from ..operators.renaming_utilities import call_renaming_popup, call_error_popup, log_timing
+from ..operators.renaming_utilities import call_renaming_popup, call_error_popup, apply_rename, report_rename_warnings, log_timing
 
 INDEXED_TYPES = ('UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES', 'VERTEXGROUPS', 'SHAPEKEYS')
 
@@ -42,6 +42,8 @@ class VIEW3D_OT_rename_by_index(bpy.types.Operator):
 
         t_start = time.perf_counter()
         renamed = 0
+        conflicts = 0
+        protected = 0
         for obj in obj_list:
             if obj.type != 'MESH':
                 continue
@@ -49,14 +51,17 @@ class VIEW3D_OT_rename_by_index(bpy.types.Operator):
                 items = list(get_collection(obj))
                 if target_index < len(items):
                     item = items[target_index]
-                    old_name = item.name
-                    item.name = new_name
-                    msg.add_message(old_name, item.name)
+                    _, warning, is_protected = apply_rename(scene, item, new_name, msg)
+                    if is_protected:
+                        protected += 1
+                    elif warning:
+                        conflicts += 1
                     renamed += 1
             except Exception as e:
                 self.report({'WARNING'}, f"Skipped {obj.name}: {e}")
                 continue
 
         log_timing(context, "rename_by_index", t_start, renamed)
+        report_rename_warnings(self, conflicts, protected)
         call_renaming_popup(context)
         return {'FINISHED'}

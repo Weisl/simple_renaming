@@ -4,7 +4,7 @@ import bpy
 
 from .renaming_operators import switch_to_edit_mode
 from .. import __package__ as base_package
-from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, rename_data_if_enabled, update_bone_drivers, log_timing
+from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, apply_rename, report_rename_warnings, log_timing
 
 
 class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
@@ -25,6 +25,8 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         digits = prefs.numerate_digits
 
         msg = wm.renaming_messages
+        conflicts = 0
+        protected = 0
 
         renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
@@ -48,17 +50,17 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
                         if owner != current_owner:
                             current_owner = owner
                             i = 0
-                    oldName = entity.name
                     new_name = entity.name + separator + (
                         '{num:{fill}{width}}'.format(num=(i * step) + start_number, fill='0', width=digits))
-                    entity.name = new_name
-                    rename_data_if_enabled(wm, entity)
-                    if obj_type == 'BONE':
-                        update_bone_drivers(oldName, entity.name)
-                    msg.add_message(oldName, entity.name)
+                    _, warning, is_protected = apply_rename(wm, entity, new_name, msg)
+                    if is_protected:
+                        protected += 1
+                    elif warning:
+                        conflicts += 1
                     i = i + 1
 
         log_timing(context, "numerate", t_start, len(renaming_list))
+        report_rename_warnings(self, conflicts, protected)
         call_renaming_popup(context)
         if switch_edit_mode:
             switch_to_edit_mode(context)

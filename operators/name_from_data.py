@@ -1,7 +1,7 @@
 import bpy
 
 from .renaming_operators import switch_to_edit_mode
-from .renaming_utilities import get_renaming_list, call_error_popup, call_renaming_popup
+from .renaming_utilities import get_renaming_list, call_error_popup, call_renaming_popup, apply_rename, report_rename_warnings
 
 
 class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
@@ -23,14 +23,19 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
             call_error_popup(context)
             return {'CANCELLED'}
 
+        conflicts = 0
+        protected = 0
         for obj in renaming_list:
 
             if obj.data:
-                oldName = obj.data.name
                 new_name = obj.name + suffix_data
-                obj.data.name = new_name
-                msg.add_message(oldName, obj.data.name)
+                _, warning, is_protected = apply_rename(wm, obj.data, new_name, msg)
+                if is_protected:
+                    protected += 1
+                elif warning:
+                    conflicts += 1
 
+        report_rename_warnings(self, conflicts, protected)
         call_renaming_popup(context)
         if switch_edit_mode:
             switch_to_edit_mode(context)

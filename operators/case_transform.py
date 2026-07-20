@@ -3,7 +3,7 @@ import re
 import bpy
 
 from .renaming_operators import switch_to_edit_mode
-from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, rename_data_if_enabled, update_bone_drivers
+from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, apply_rename, report_rename_warnings
 
 
 # ---------------------------------------------------------------------------
@@ -86,15 +86,18 @@ class _CaseOperatorBase(bpy.types.Operator):
             return {'CANCELLED'}
 
         msg = scene.renaming_messages
+        conflicts = 0
+        protected = 0
         for entity in renaming_list:
             if entity is not None:
-                old_name = entity.name
-                entity.name = self._transform(entity.name)
-                rename_data_if_enabled(scene, entity)
-                if scene.renaming_object_types == 'BONE':
-                    update_bone_drivers(old_name, entity.name)
-                msg.add_message(old_name, entity.name)
+                new_name = self._transform(entity.name)
+                _, warning, is_protected = apply_rename(scene, entity, new_name, msg)
+                if is_protected:
+                    protected += 1
+                elif warning:
+                    conflicts += 1
 
+        report_rename_warnings(self, conflicts, protected)
         call_renaming_popup(context)
         if switch_edit_mode:
             switch_to_edit_mode(context)

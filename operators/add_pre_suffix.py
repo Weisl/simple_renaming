@@ -3,7 +3,7 @@ import time
 import bpy
 
 from .renaming_operators import switch_to_edit_mode
-from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, rename_data_if_enabled, update_bone_drivers, log_timing
+from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, apply_rename, report_rename_warnings, log_timing
 from ..variable_replacer.variable_replacer import VariableReplacer
 
 
@@ -27,6 +27,8 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
 
         t_start = time.perf_counter()
         msg = wm.renaming_messages
+        conflicts = 0
+        protected = 0
 
         VariableReplacer.reset()
         VariableReplacer.prepare(context)
@@ -35,18 +37,18 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
                 if entity is not None:
                     suffix = VariableReplacer.replaceInputString(context, wm.renaming_suffix, entity)
                     if not entity.name.endswith(suffix):
-                        oldName = entity.name
                         new_name = entity.name + suffix
-                        entity.name = new_name
-                        rename_data_if_enabled(wm, entity)
-                        if wm.renaming_object_types == 'BONE':
-                            update_bone_drivers(oldName, entity.name)
-                        msg.add_message(oldName, entity.name)
+                        _, warning, is_protected = apply_rename(wm, entity, new_name, msg)
+                        if is_protected:
+                            protected += 1
+                        elif warning:
+                            conflicts += 1
         else:
-            msg.add_message(None, None, "Insert Valid String")
+            msg.add_message(None, None, warning="Insert Valid String")
         if switch_edit_mode:
             switch_to_edit_mode(context)
         log_timing(context, "add_suffix", t_start, len(renaming_list))
+        report_rename_warnings(self, conflicts, protected)
         call_renaming_popup(context)
         return {'FINISHED'}
 
@@ -61,6 +63,8 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
         wm = context.scene
 
         msg = wm.renaming_messages
+        conflicts = 0
+        protected = 0
 
         renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
@@ -79,15 +83,17 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
                 if entity is not None:
                     pre = VariableReplacer.replaceInputString(context, wm.renaming_prefix, entity)
                     if not entity.name.startswith(pre):
-                        oldName = entity.name
                         new_name = pre + entity.name
-                        entity.name = new_name
-                        rename_data_if_enabled(wm, entity)
-                        if wm.renaming_object_types == 'BONE':
-                            update_bone_drivers(oldName, entity.name)
-                        msg.add_message(oldName, entity.name)
+                        _, warning, is_protected = apply_rename(wm, entity, new_name, msg)
+                        if is_protected:
+                            protected += 1
+                        elif warning:
+                            conflicts += 1
+        else:
+            msg.add_message(None, None, warning="Insert Valid String")
 
         log_timing(context, "add_prefix", t_start, len(renaming_list))
+        report_rename_warnings(self, conflicts, protected)
         call_renaming_popup(context)
         if switch_edit_mode:
             switch_to_edit_mode(context)
