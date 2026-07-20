@@ -1,7 +1,6 @@
 import time
 
 import bpy
-from bpy.types import PoseBone, EditBone
 
 from .. import __package__ as base_package
 
@@ -99,53 +98,43 @@ def get_renaming_list(context):
 
         if selection_only:
 
-            selection_and_active = context.selected_objects.copy()
-            if context.object not in selection_and_active:
-                selection_and_active.append(context.object)
-
             if old_mode == 'OBJECT':
                 error_msg = "Renaming only selected Bones is only supported for EDIT and POSE mode by now."
                 return None, None, error_msg
 
             elif old_mode == 'POSE':
-                selected_bones = context.selected_pose_bones.copy()
+                # context.selected_pose_bones already gives real, correctly-owned
+                # PoseBone entries — no need to re-find them by name (which used to
+                # wrap a plain Bone as a "PoseBone", a type it never actually was).
+                for selected_bone in context.selected_pose_bones.copy():
+                    renaming_list.append(selected_bone)
+                    bone_order_keys.append(selected_bone.bone.get(SELECTION_ORDER_KEY))
 
             else:  # if old_mode == 'EDIT_ARMATURE'
-                selected_bones = context.selected_editable_bones.copy()
                 switch_edit_mode = True
-
-            armatures = []
-            for obj in selection_and_active:
-                if obj.type == 'ARMATURE':
-                    armatures.append(obj.data)
-
-            for selected_bone in selected_bones:
-                for arm in armatures:
-                    if old_mode == 'POSE':
-                        name = selected_bone.name
-                        for bone in arm.bones:
-                            if name == bone.name:
-                                new_bone = PoseBone(arm.bones[name])
-                                renaming_list.append(new_bone)
-                                bone_order_keys.append(_bone_order_value(arm, name))
-                    else:  # old_mode == 'EDIT_ARMATURE':
-                        for bone in arm.edit_bones:
-                            if selected_bone == bone:
-                                new_bone = EditBone(selected_bone)
-                                renaming_list.append(new_bone)
-                                bone_order_keys.append(_bone_order_value(arm, selected_bone.name))
+                for selected_bone in context.selected_editable_bones.copy():
+                    renaming_list.append(selected_bone)
+                    bone_order_keys.append(_bone_order_value(selected_bone.id_data, selected_bone.name))
 
         else:  # if selection_only == False
+            # Bone -> owning Object, needed to reach the real PoseBone in POSE mode
+            # (a single Armature datablock can be used by several objects).
+            armature_owners = {obj.data: obj for obj in bpy.data.objects if obj.type == 'ARMATURE'}
             for arm in bpy.data.armatures:
                 if old_mode == 'EDIT_ARMATURE':
                     for bone in arm.edit_bones:
-                        new_bone = EditBone(bone)
-                        renaming_list.append(new_bone)
+                        renaming_list.append(bone)
                         bone_order_keys.append(_bone_order_value(arm, bone.name))
-                else:  # old_mode == 'POSE' or old_mode == 'OBJECT'
+                elif old_mode == 'POSE':
+                    owner_obj = armature_owners.get(arm)
+                    if owner_obj is None:
+                        continue
                     for bone in arm.bones:
-                        new_bone = PoseBone(bone)
-                        renaming_list.append(new_bone)
+                        renaming_list.append(owner_obj.pose.bones[bone.name])
+                        bone_order_keys.append(_bone_order_value(arm, bone.name))
+                else:  # old_mode == 'OBJECT'
+                    for bone in arm.bones:
+                        renaming_list.append(bone)
                         bone_order_keys.append(_bone_order_value(arm, bone.name))
 
         if use_selection_order:

@@ -82,7 +82,12 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
             if bpy.context.mode == 'POSE':
                 bpy.ops.pose.select_all(action='DESELECT')
                 for bone in selectionList:
-                    bone.bone.select = True
+                    # Bone.select was removed in favor of PoseBone.select in
+                    # Blender 5.x; 4.x only exposes it on the underlying Bone.
+                    if hasattr(bone, 'select'):
+                        bone.select = True
+                    else:
+                        bone.bone.select = True
 
             elif bpy.context.mode == 'EDIT_ARMATURE':
                 bpy.ops.armature.select_all(action='DESELECT')

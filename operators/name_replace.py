@@ -41,7 +41,11 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
             'UVMAPS': lambda o: o.uv_layers,
             'COLORATTRIBUTES': lambda o: o.color_attributes,
             'ATTRIBUTES': lambda o: o.attributes,
-            'BONE': lambda o: o.edit_bones if old_mode == 'EDIT_ARMATURE' else o.bones,
+            # EditBone.id_data and plain Bone.id_data are both the Armature
+            # (edit_bones / bones directly); PoseBone.id_data is the owning
+            # Object instead, so its bones live one level down at o.data.bones.
+            'BONE': lambda o: (o.edit_bones if old_mode == 'EDIT_ARMATURE'
+                               else (o.data.bones if o.bl_rna.identifier == 'Object' else o.bones)),
         }
 
         particleSettingsList = set()
