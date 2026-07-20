@@ -328,6 +328,7 @@ class VIEW3D_OT_add_type_suf_pre(bpy.types.Operator):
 
     def execute(self, context):
         self.context = context
+        context.scene.renaming_messages.clear()
 
         self.switch_type(self.option)
 

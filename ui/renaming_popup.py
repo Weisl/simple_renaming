@@ -34,7 +34,6 @@ class VIEW3D_PT_error_popup(bpy.types.Panel):
                         row = box.row(align=False)
                         row.label(text=str(msg['message']), icon='CANCEL')
 
-        messages.clear()
         return
 
 
@@ -75,8 +74,6 @@ class VIEW3D_PT_info_popup(bpy.types.Panel):
                         row.label(text=str(msg['oldName']))
 
                         i += 1
-
-        infos.clear()
 
 
 class VIEW3D_PT_renaming_popup(bpy.types.Panel):
@@ -149,4 +146,3 @@ class VIEW3D_PT_renaming_popup(bpy.types.Panel):
 
             if i == 0 and not warnings:
                 box.label(text="No Objects Renamed", icon="INFO")
-        wm.renaming_messages.clear()

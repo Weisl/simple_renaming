@@ -81,11 +81,13 @@ class _CaseOperatorBase(bpy.types.Operator):
         renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
         if errMsg is not None:
+            scene.renaming_error_messages.clear()
             scene.renaming_error_messages.add_message(errMsg)
             call_error_popup(context)
             return {'CANCELLED'}
 
         msg = scene.renaming_messages
+        msg.clear()
         conflicts = 0
         protected = 0
         for entity in renaming_list:

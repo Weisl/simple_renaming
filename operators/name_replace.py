@@ -24,6 +24,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
         if errMsg is not None:
             error_msg = scene.renaming_error_messages
+            error_msg.clear()
             error_msg.add_message(errMsg)
             call_error_popup(context)
             return {'CANCELLED'}
@@ -33,6 +34,7 @@ class VIEW3D_OT_replace_name(bpy.types.Operator):
 
         # settings for numerating the new name
         msg = scene.renaming_messages
+        msg.clear()
         conflicts = 0
         protected = 0
 

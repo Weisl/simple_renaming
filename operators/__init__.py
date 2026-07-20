@@ -11,6 +11,7 @@ from . import add_pre_suffix
 from . import case_transform
 from . import name_from_data
 from . import name_replace
+from . import number_transform
 from . import numerate
 from . import search_replace
 from . import search_select
@@ -81,6 +82,10 @@ classes = (
     case_transform.VIEW3D_OT_case_camel,
     case_transform.VIEW3D_OT_case_snake,
     case_transform.VIEW3D_OT_case_kebab,
+    number_transform.VIEW3D_OT_number_pad,
+    number_transform.VIEW3D_OT_number_to_letters_lower,
+    number_transform.VIEW3D_OT_number_to_letters_upper,
+    number_transform.VIEW3D_OT_letters_to_number,
     select_in_renaming_order.VIEW3D_OT_select_in_renaming_order,
 )
 
@@ -169,6 +174,14 @@ def register():
     id_store.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
     id_store.renaming_trim_indices = IntVectorProperty(name="Trim Size", default=(0, 0), min=0, soft_min=0, size=2)
 
+    id_store.renaming_number_width = IntProperty(
+        name="Number Width",
+        description="Target digit count for 'Set Number Width' — pads the last number in the name with leading "
+                    "zeros up to this many digits, or strips down to it (0 = no leading zeros)",
+        default=3,
+        min=0,
+    )
+
     id_store.renaming_active_only = BoolProperty(
         name="Active Only",
         description="Only rename the active layer on each object",
@@ -212,6 +225,7 @@ def unregister():
     del IDStore.renaming_base_numerate
     del IDStore.renaming_digits_numerate
     del IDStore.renaming_trim_indices
+    del IDStore.renaming_number_width
     del IDStore.renaming_also_rename_data
     del IDStore.renaming_active_only
     del IDStore.renaming_filter_by_index

@@ -15,10 +15,12 @@ class VIEW3D_OT_use_objectname_for_data(bpy.types.Operator):
         wm = context.scene
         suffix_data = wm.renaming_suffix_prefix_data_02
         msg = context.scene.renaming_messages
+        msg.clear()
         renaming_list, switch_edit_mode, errMsg = get_renaming_list(context)
 
         if errMsg is not None:
             error_msg = wm.renaming_error_messages
+            error_msg.clear()
             error_msg.add_message(errMsg)
             call_error_popup(context)
             return {'CANCELLED'}

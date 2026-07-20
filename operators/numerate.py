@@ -25,6 +25,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
         digits = prefs.numerate_digits
 
         msg = wm.renaming_messages
+        msg.clear()
         conflicts = 0
         protected = 0
 
@@ -32,6 +33,7 @@ class VIEW3D_OT_renaming_numerate(bpy.types.Operator):
 
         if errMsg is not None:
             error_msg = wm.renaming_error_messages
+            error_msg.clear()
             error_msg.add_message(errMsg)
             call_error_popup(context)
             return {'CANCELLED'}

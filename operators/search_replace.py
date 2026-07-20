@@ -113,6 +113,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
 
         if errMsg is not None:
             error_msg = wm.renaming_error_messages
+            error_msg.clear()
             error_msg.add_message(errMsg)
             call_error_popup(context)
             return {'CANCELLED'}
@@ -121,6 +122,7 @@ class VIEW3D_OT_search_and_replace(bpy.types.Operator):
         searchName = wm.renaming_search
 
         msg = wm.renaming_messages  # variable to save messages
+        msg.clear()
         conflicts = 0
         protected = 0
 

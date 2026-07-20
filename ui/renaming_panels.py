@@ -172,7 +172,12 @@ def draw_renaming_panel(layout, context):
     row = layout.row(align=True)
     row.operator("renaming.numerate", icon="LINENUMBERS_ON")
     row = layout.row(align=True)
-    row.menu("RENAMING_MT_case_menu", text="Case Transform")    
+    row.menu("RENAMING_MT_case_menu", text="Case Transform")
+
+    col = layout.column(align=True)
+    split = col.split(factor=0.4, align=True)
+    split.prop(scene, "renaming_number_width", text="Width")
+    split.menu("RENAMING_MT_number_menu", text="Number Transform")
 
     if str(scene.renaming_object_types) in ('DATA', 'OBJECT', 'ADDOBJECTS'):
         layout.separator()
@@ -336,6 +341,19 @@ class RENAMING_MT_caseMenu(bpy.types.Menu):
         layout.separator()
         layout.operator("renaming.case_snake",  text="snake_case")
         layout.operator("renaming.case_kebab",  text="kebab-case")
+
+
+class RENAMING_MT_numberMenu(bpy.types.Menu):
+    bl_label = "Number"
+    bl_idname = "RENAMING_MT_number_menu"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("renaming.number_pad", text="Set Number Width")
+        layout.separator()
+        layout.operator("renaming.number_to_letters_lower", text="Number → letters")
+        layout.operator("renaming.number_to_letters_upper", text="Number → LETTERS")
+        layout.operator("renaming.letters_to_number", text="Letters → Number")
 
 
 class VIEW3D_OT_SetVariable(bpy.types.Operator):

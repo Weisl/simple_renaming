@@ -27,9 +27,11 @@ class VIEW3D_OT_rename_by_index(bpy.types.Operator):
         new_name = scene.renaming_index_new_name
         entity_type = scene.renaming_object_types
         msg = scene.renaming_messages
+        msg.clear()
 
         if not new_name:
             error_msg = scene.renaming_error_messages
+            error_msg.clear()
             error_msg.add_message("Name field is empty")
             call_error_popup(context)
             return {'CANCELLED'}

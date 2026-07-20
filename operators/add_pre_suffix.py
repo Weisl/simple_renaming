@@ -21,12 +21,14 @@ class VIEW3D_OT_add_suffix(bpy.types.Operator):
 
         if errMsg is not None:
             error_msg = wm.renaming_error_messages
+            error_msg.clear()
             error_msg.add_message(errMsg)
             call_error_popup(context)
             return {'CANCELLED'}
 
         t_start = time.perf_counter()
         msg = wm.renaming_messages
+        msg.clear()
         conflicts = 0
         protected = 0
 
@@ -63,6 +65,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
         wm = context.scene
 
         msg = wm.renaming_messages
+        msg.clear()
         conflicts = 0
         protected = 0
 
@@ -70,6 +73,7 @@ class VIEW3D_OT_add_prefix(bpy.types.Operator):
 
         if errMsg is not None:
             error_msg = wm.renaming_error_messages
+            error_msg.clear()
             error_msg.add_message(errMsg)
             call_error_popup(context)
             return {'CANCELLED'}

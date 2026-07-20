@@ -39,12 +39,14 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
 
         if errMsg is not None:
             error_msg = wm.renaming_error_messages
+            error_msg.clear()
             error_msg.add_message(errMsg)
             call_error_popup(context)
             return {'CANCELLED'}
 
         searchName = wm.renaming_search
         msg = wm.renaming_messages  # variable to save messages
+        msg.clear()
 
         if len(renaming_list) > 0:
             for entity in renaming_list:  # iterate over all objects that are to be renamed
@@ -63,6 +65,7 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
                         except re.error as err:
                             # invalid regex, add message but continue so other names can still be processed
                             error_msg = f"Invalid regular expression in search: {err}"
+                            wm.renaming_error_messages.clear()
                             wm.renaming_error_messages.add_message(error_msg)
                             call_error_popup(context)
                             return {'CANCELLED'}
