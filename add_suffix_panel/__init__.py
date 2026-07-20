@@ -169,7 +169,6 @@ def unregister():
     del id_store.renaming_suffix_prefix_lattice
     del id_store.renaming_suffix_prefix_data
     del id_store.renaming_suffix_prefix_data_02
-    del id_store.renaming_start_number
 
     del id_store.renaming_suffix_prefix_lights
     del id_store.renaming_suffix_prefix_cameras

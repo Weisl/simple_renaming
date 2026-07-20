@@ -28,6 +28,7 @@ jobs:
             --exclude='.git' \
             --exclude='.*' \
             --exclude='tests' \
+            --exclude='tools' \
             --exclude='venv' \
             ${{ github.event.repository.name }}/ staging/simple_renaming/
 

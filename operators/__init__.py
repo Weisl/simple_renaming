@@ -86,6 +86,8 @@ classes = (
     number_transform.VIEW3D_OT_number_to_letters_lower,
     number_transform.VIEW3D_OT_number_to_letters_upper,
     number_transform.VIEW3D_OT_letters_to_number,
+    number_transform.VIEW3D_OT_letters_to_upper,
+    number_transform.VIEW3D_OT_letters_to_lower,
     select_in_renaming_order.VIEW3D_OT_select_in_renaming_order,
 )
 
@@ -139,17 +141,20 @@ def register():
 
     id_store.renaming_new_name = StringProperty(
         name="New Name",
-        description="Name pattern for renaming. Use @n for a numbered variable (configure its digits in Preferences). Use # in the Numerate field (right) to set the auto-suffix digit count",
+        description="Name pattern for renaming. Use @n for a numbered variable (configure its digits in Preferences). Use the Numerate section above to set the auto-suffix digit count or switch to letters",
         default='',
     )
     id_store.renaming_search = StringProperty(name='Search', default='')
     id_store.renaming_replace = StringProperty(name='Replace', default='')
     id_store.renaming_suffix = StringProperty(name="Suffix", default='')
     id_store.renaming_prefix = StringProperty(name="Prefix", default='')
-    id_store.renaming_numerate = StringProperty(
-        name="Numerate Pattern",
-        description="Pattern for the auto-numeration suffix appended when Numerate is enabled. Each # represents one digit (e.g. ### → 001, 002, …). This does not affect the @n variable",
-        default='###',
+    id_store.renaming_numerate = IntProperty(
+        name="Padding",
+        description="Digit count for the auto-numeration suffix appended when Numerate is enabled (e.g. 3 → 001, "
+                    "002, …), and for the Set Padding / Letters → Number tools. Ignored when Letters is enabled "
+                    "for the auto-numeration suffix. Does not affect the @n variable",
+        default=3,
+        min=0,
     )
 
     id_store.renaming_sorting = bpy.props.BoolProperty(
@@ -165,22 +170,11 @@ def register():
     id_store.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
     id_store.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
     id_store.renaming_use_enumerate = BoolProperty(
-        name="Numerate",
-        description="Automatically appends an incrementing numeric suffix to each renamed object. Configure the suffix format with # in the Numerate field, and the digit count for the @n variable in Preferences",
+        name="Use Numerate",
+        description="Automatically appends an incrementing numeric suffix to each renamed object. Configure the digit count or switch to letters in the Numerate section above, and the digit count for the @n variable in Preferences",
         default=True,
     )
-    id_store.renaming_base_numerate = IntProperty(name="Step Size", default=1)
-    id_store.renaming_start_number = IntProperty(name="Step Size", default=1)
-    id_store.renaming_digits_numerate = IntProperty(name="Number Length", default=3)
     id_store.renaming_trim_indices = IntVectorProperty(name="Trim Size", default=(0, 0), min=0, soft_min=0, size=2)
-
-    id_store.renaming_number_width = IntProperty(
-        name="Number Width",
-        description="Target digit count for 'Set Number Width' — pads the last number in the name with leading "
-                    "zeros up to this many digits, or strips down to it (0 = no leading zeros)",
-        default=3,
-        min=0,
-    )
 
     id_store.renaming_active_only = BoolProperty(
         name="Active Only",
@@ -222,10 +216,7 @@ def unregister():
     del IDStore.renaming_suffix
     del IDStore.renaming_prefix
     del IDStore.renaming_only_selection
-    del IDStore.renaming_base_numerate
-    del IDStore.renaming_digits_numerate
     del IDStore.renaming_trim_indices
-    del IDStore.renaming_number_width
     del IDStore.renaming_also_rename_data
     del IDStore.renaming_active_only
     del IDStore.renaming_filter_by_index

@@ -133,13 +133,27 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
 
     numerate_digits: bpy.props.IntProperty(
         name="Digits",
-        description="Number of digits used for the @n variable in the New Name field (e.g. @n with 3 digits: 001). To configure the auto-suffix digit count, use # characters in the Numerate field instead",
+        description="Number of digits used for the @n variable in the New Name field (e.g. @n with 3 digits: 001). To configure the auto-suffix digit count, use the Padding option in the Numerate section instead",
         default=3,
     )
     numerate_step: bpy.props.IntProperty(
         name="Numerate Step",
         description="Defines the steps between numbers. E.g., 1 results in 1, 2, 3, a step size ot two results in 1,3,5",
         default=1,
+    )
+
+    numerate_use_letters: bpy.props.BoolProperty(
+        name="Use Letters",
+        description="Generate spreadsheet-style letters (A, B, C… AA, AB…) instead of "
+                    "zero-padded digits for the Numerate operator, the auto-numerate "
+                    "suffix, and the @n variable",
+        default=False,
+    )
+    numerate_letters_upper: bpy.props.BoolProperty(
+        name="Uppercase Letters",
+        description="Use uppercase letters (A, B, C…) instead of lowercase (a, b, c…) "
+                    "when 'Use Letters' is enabled",
+        default=True,
     )
 
     renaming_stringHigh: StringProperty(
@@ -219,11 +233,13 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
     ]
     props_naming = [
         "renaming_separator",
-        "numerate_digits",
     ]
     props_numerate = [
         "numerate_start_number",
         "numerate_step",
+        "numerate_digits",
+        "numerate_use_letters",
+        "numerate_letters_upper",
     ]
 
     props_user_variables = [

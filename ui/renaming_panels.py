@@ -3,6 +3,7 @@ from bl_operators.presets import AddPresetBase
 from bpy.props import StringProperty
 from bpy.types import Operator, Menu
 
+from .. import __package__ as base_package
 from ..operators.renaming_utilities import count_selection_order_tags
 from ..ui.renaming_variables import RENAMING_MT_variableMenu
 
@@ -30,20 +31,23 @@ def _draw_selection_order_controls(col, context, mode_ok, wrong_mode_hint):
 
 def draw_renaming_panel(layout, context):
     scene = context.scene
+    prefs = context.preferences.addons[base_package].preferences
 
     row = layout.row(align=True)
     row.label(text="Target")
     row = layout.row(align=True)
     row.prop(scene, "renaming_object_types", text="")
 
+    col = layout.column(align = True)
     # SELECTED
     if str(scene.renaming_object_types) == 'OBJECT':
-        layout.prop(scene, "renaming_object_types_specified", expand=True)
-        layout.prop(scene, "renaming_also_rename_data")
+        row = layout.row(align=True)
+        row.prop(scene, "renaming_object_types_specified", expand=True)
+        col.prop(scene, "renaming_also_rename_data")
     if str(scene.renaming_object_types) in types_of_selected:
-        layout.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
+        col.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
     if str(scene.renaming_object_types) in ('UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES', 'VERTEXGROUPS', 'SHAPEKEYS'):
-        col = layout.column(align=True)
+        col = col.column(align=True)
         if str(scene.renaming_object_types) in ('UVMAPS', 'COLORATTRIBUTES'):
             col.prop(scene, "renaming_active_only")
         row = col.row(align=True)
@@ -52,13 +56,13 @@ def draw_renaming_panel(layout, context):
         sub.enabled = scene.renaming_filter_by_index
         sub.prop(scene, "renaming_index_target", text="")
     elif str(scene.renaming_object_types) in types_selected:
-        layout.prop(scene, "renaming_only_selection", text="Only Selected")
+        col.prop(scene, "renaming_only_selection", text="Only Selected")
     elif str(scene.renaming_object_types) == 'COLLECTION':
         if bpy.context.space_data and bpy.context.space_data.type == 'OUTLINER':
-            row = layout.row(align=True)
+            row = col.row(align=True)
             row.prop(scene, "renaming_only_selection", text="Only Selected")
         else:
-            col = layout.column(align=True)
+            col = col.column(align=True)
             row = col.row(align=True)
             row.enabled = False
             row.prop(scene, "renaming_only_selection", text="Only Selected")
@@ -66,10 +70,9 @@ def draw_renaming_panel(layout, context):
             row.enabled = False
             row.label(text="Open from Outliner", icon="ERROR")
 
-    box = layout
     # Sorting
     if str(scene.renaming_object_types) not in ['COLLECTION', 'IMAGE', 'NODE_GROUPS']:
-        col = box.column(align=True)
+        col = layout.column(align=True)
         col.prop(scene, "renaming_sorting")
         if scene.renaming_sorting:
             if str(scene.renaming_object_types) == 'BONE':
@@ -84,6 +87,14 @@ def draw_renaming_panel(layout, context):
                                                    "Enter Object Mode")
             col.prop(scene, "renaming_sort_reverse")
 
+    header, panel = layout.panel("renaming_numerate_panel", default_closed=True)
+    header.label(text="Numerate Settings", icon='SETTINGS')
+    if panel:
+        col = panel.column(align=True)
+        col.prop(prefs, "numerate_use_letters", text="Use Letters", icon='SORTALPHA')
+        col.prop(prefs, "numerate_letters_upper", text="Uppercase Letters")
+        col.prop(scene, "renaming_numerate", text="Padding")
+
     layout.separator(type='LINE')
     layout.label(text="Rename")
 
@@ -92,10 +103,8 @@ def draw_renaming_panel(layout, context):
     col.prop(scene, "renaming_use_enumerate")
 
     row = col.row(align=True)
-    split = row.split(factor=0.6, align=True)
+    split = row.split(factor=0.9, align=True)
     split.prop(scene, "renaming_new_name", text='')
-    split = split.split(factor=0.75, align=True)
-    split.prop(scene, "renaming_numerate", text='')
     split.operator("object.renaming_set_variable", text="@").inputBox = "new_name"
 
     row = col.row()
@@ -169,15 +178,13 @@ def draw_renaming_panel(layout, context):
     layout.separator()
     layout.label(text="Other")
 
-    row = layout.row(align=True)
-    row.operator("renaming.numerate", icon="LINENUMBERS_ON")
-    row = layout.row(align=True)
-    row.menu("RENAMING_MT_case_menu", text="Case Transform")
-
     col = layout.column(align=True)
-    split = col.split(factor=0.4, align=True)
-    split.prop(scene, "renaming_number_width", text="Width")
-    split.menu("RENAMING_MT_number_menu", text="Number Transform")
+    col.menu("RENAMING_MT_case_menu", text="Case Transform")
+    col.operator("renaming.numerate", icon="LINENUMBERS_ON")
+
+    col.operator("renaming.number_pad", text="Set Padding")
+
+    col.menu("RENAMING_MT_number_menu", text="Number ↔ Letters")
 
     if str(scene.renaming_object_types) in ('DATA', 'OBJECT', 'ADDOBJECTS'):
         layout.separator()
@@ -344,16 +351,17 @@ class RENAMING_MT_caseMenu(bpy.types.Menu):
 
 
 class RENAMING_MT_numberMenu(bpy.types.Menu):
-    bl_label = "Number"
+    bl_label = "Number ↔ Letters"
     bl_idname = "RENAMING_MT_number_menu"
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("renaming.number_pad", text="Set Number Width")
-        layout.separator()
         layout.operator("renaming.number_to_letters_lower", text="Number → letters")
         layout.operator("renaming.number_to_letters_upper", text="Number → LETTERS")
         layout.operator("renaming.letters_to_number", text="Letters → Number")
+        layout.separator()
+        layout.operator("renaming.letters_to_upper", text="letters → LETTERS")
+        layout.operator("renaming.letters_to_lower", text="LETTERS → letters")
 
 
 class VIEW3D_OT_SetVariable(bpy.types.Operator):

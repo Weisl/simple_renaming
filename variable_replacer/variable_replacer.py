@@ -5,6 +5,7 @@ import time
 
 import bpy
 
+from ..operators.numbering import format_number
 from .. import __package__ as base_package
 
 # Single compiled pattern covering all supported variables.
@@ -27,6 +28,8 @@ class VariableReplacer:
     digits = 3
     step = 1
     start_number = 0
+    use_letters = False
+    letters_upper = True
 
     # Per-operation lookup caches built by prepare()
     _collection_cache = {}       # obj_name -> concatenated collection names
@@ -46,6 +49,8 @@ class VariableReplacer:
         cls.step = numerate_step
         cls.digits = numerate_digits
         cls.start_number = start_number
+        cls.use_letters = prefs.numerate_use_letters
+        cls.letters_upper = prefs.numerate_letters_upper
         cls.number = 0
 
     @classmethod
@@ -215,7 +220,7 @@ class VariableReplacer:
         new_nr = cls.number
         step = cls.step
         start_num = cls.start_number
-        nr = str('{num:{fill}{width}}'.format(num=(new_nr * step) + start_num, fill='0', width=cls.digits))
+        nr = format_number((new_nr * step) + start_num, cls.digits, cls.use_letters, cls.letters_upper)
         cls.number = new_nr + 1
         return nr
 

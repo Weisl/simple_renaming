@@ -14,6 +14,8 @@ each test cleans up after itself instead of resetting the scene.
 
 import sys
 import os
+from importlib import import_module
+
 import bpy
 import addon_utils
 
@@ -102,6 +104,10 @@ def add_mesh_object(name, collection=None):
     if collection is not None:
         collection.objects.link(obj)
     return obj
+
+
+def _numbering_module():
+    return import_module(f"{ADDON_ID}.operators.numbering")
 
 
 def reset_scene_props():
@@ -669,6 +675,196 @@ def test_trim_conflict_no_visible_change_still_warns():
 
 
 # ---------------------------------------------------------------------------
+# Test 15 – shared numbering module: format_number / int_to_letters / letters_to_int
+# ---------------------------------------------------------------------------
+
+def test_numbering_module_roundtrip():
+    print("\n[Test 15] numbering module – format_number / int_to_letters / letters_to_int")
+    numbering = _numbering_module()
+
+    check(numbering.format_number(5, 3, use_letters=False) == "005",
+          "format_number digits mode zero-pads correctly")
+    check(numbering.int_to_letters(1) == "A" and numbering.int_to_letters(26) == "Z"
+          and numbering.int_to_letters(27) == "AA",
+          "int_to_letters produces spreadsheet-style base-26 letters (1->A, 26->Z, 27->AA)")
+    check(numbering.format_number(1, 3, use_letters=True, letters_upper=False) == "a",
+          "format_number letters mode respects letters_upper=False")
+
+    roundtrip_ok = all(
+        numbering.letters_to_int(numbering.int_to_letters(n)) == n
+        for n in range(1, 100)
+    )
+    check(roundtrip_ok, "int_to_letters/letters_to_int roundtrip holds for n in 1..99")
+
+
+# ---------------------------------------------------------------------------
+# Test 16 – number_transform.py output unchanged after delegating to numbering.py
+# ---------------------------------------------------------------------------
+
+def test_number_transform_regression():
+    print("\n[Test 16] number_transform – pad_number/number_to_letters/letters_to_number unchanged")
+    nt = import_module(f"{ADDON_ID}.operators.number_transform")
+
+    check(nt.pad_number("Cube9", 3) == "Cube009", "pad_number pads to width")
+    check(nt.pad_number("Cube009", 0) == "Cube9", "pad_number width=0 strips leading zeros")
+    check(nt.number_to_letters("Cube27", upper=True, separator="_") == "Cube_AA",
+          "number_to_letters converts the digit run to base-26 letters, inserting a separator")
+    check(nt.number_to_letters("CubeOnly", upper=False, separator="_") == "CubeOnly",
+          "number_to_letters leaves the name unchanged when there is no digit run")
+    check(nt.letters_to_number("Cube_AA", 3) == "Cube_027",
+          "letters_to_number reverses number_to_letters")
+    check(nt.letters_to_number("12345", 3) == "12345",
+          "letters_to_number leaves the name unchanged when there is no letter run")
+
+
+# ---------------------------------------------------------------------------
+# Test 17 – renaming.numerate operator: explicit digits vs letters kwargs
+# ---------------------------------------------------------------------------
+
+def test_numerate_operator_digits_vs_letters():
+    print("\n[Test 17] renaming.numerate – explicit operator kwargs override prefs (digits vs letters)")
+    PREFIX = "T17_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    objs = [add_mesh_object(f"{PREFIX}Obj{i}") for i in range(3)]
+    for obj in objs:
+        obj.select_set(True)
+    bpy.context.view_layer.objects.active = objs[0]
+
+    scene_prop("renaming_object_types", "OBJECT")
+    scene_prop("renaming_only_selection", True)
+    bpy.ops.renaming.numerate(start_number=1, step=1, digits=3, use_letters=False)
+
+    suffixes = sorted(o.name[-3:] for o in objs)
+    check(suffixes == ["001", "002", "003"],
+          f"Digits mode via explicit operator kwargs — got {[o.name for o in objs]}")
+
+    purge_all_with_prefix(PREFIX)
+    objs = [add_mesh_object(f"{PREFIX}Obj{i}") for i in range(3)]
+    for obj in objs:
+        obj.select_set(True)
+    bpy.context.view_layer.objects.active = objs[0]
+
+    bpy.ops.renaming.numerate(start_number=1, step=1, digits=3, use_letters=True, letters_upper=True)
+    letters_got = sorted(o.name[-1] for o in objs)
+    check(letters_got == ["A", "B", "C"],
+          f"Letters mode via explicit operator kwargs — got {[o.name for o in objs]}")
+
+    scene_prop("renaming_only_selection", False)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
+# Test 18 – renaming.numerate per-owner counter reset still works in letters mode
+# ---------------------------------------------------------------------------
+
+def test_numerate_operator_per_object_type_reset_letters():
+    print("\n[Test 18] renaming.numerate – per-owner counter resets in letters mode (shape keys)")
+    PREFIX = "T18_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    owners = []
+    for i in range(2):
+        mesh = bpy.data.meshes.new(f"{PREFIX}SKMesh{i}")
+        obj = bpy.data.objects.new(f"{PREFIX}SKHolder{i}", mesh)
+        bpy.context.scene.collection.objects.link(obj)
+        obj.shape_key_add(name="Basis")
+        obj.shape_key_add(name="Key1")
+        obj.shape_key_add(name="Key2")
+        obj.select_set(True)
+        owners.append(obj)
+    bpy.context.view_layer.objects.active = owners[0]
+
+    scene_prop("renaming_object_types", "SHAPEKEYS")
+    scene_prop("renaming_only_selection", True)
+    bpy.ops.renaming.numerate(start_number=1, step=1, digits=3, use_letters=True, letters_upper=True)
+
+    for obj in owners:
+        names = [k.name for k in obj.data.shape_keys.key_blocks]
+        check(any(n.endswith("_A") for n in names),
+              f"Counter restarts at 'A' for owner '{obj.name}' — got {names}")
+
+    scene_prop("renaming_only_selection", False)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
+# Test 19 – numerate_entity_name collision-avoidance unaffected by letters mode
+# ---------------------------------------------------------------------------
+
+def test_name_replace_letters_mode_collision_avoidance():
+    print("\n[Test 19] name_replace + Numerate checkbox – collision avoidance still works in letters mode")
+    PREFIX = "T19_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    existing = add_mesh_object(f"{PREFIX}bone_A")
+    new_obj = add_mesh_object(f"{PREFIX}Fresh")
+    existing.select_set(False)
+    new_obj.select_set(True)
+    bpy.context.view_layer.objects.active = new_obj
+
+    addon_prefs = bpy.context.preferences.addons[ADDON_ID].preferences
+    prev_use_letters = addon_prefs.numerate_use_letters
+    addon_prefs.numerate_use_letters = True
+    try:
+        scene_prop("renaming_object_types", "OBJECT")
+        scene_prop("renaming_only_selection", True)
+        scene_prop("renaming_new_name", f"{PREFIX}bone")
+        scene_prop("renaming_numerate", 1)
+        scene_prop("renaming_use_enumerate", True)
+        bpy.ops.renaming.name_replace()
+    finally:
+        addon_prefs.numerate_use_letters = prev_use_letters
+
+    check(new_obj.name == f"{PREFIX}bone_B",
+          f"Collision-avoidance search skipped the pre-existing '_A' name in letters mode — got '{new_obj.name}'")
+
+    scene_prop("renaming_only_selection", False)
+    scene_prop("renaming_use_enumerate", False)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
+# Test 20 – @n variable respects the shared numerate_use_letters preference
+# ---------------------------------------------------------------------------
+
+def test_variable_replacer_letters_mode():
+    print("\n[Test 20] @n variable respects numerate_use_letters and produces sequential letters")
+    PREFIX = "T20_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    objs = [add_mesh_object(f"{PREFIX}Obj{i}") for i in range(3)]
+    for obj in objs:
+        obj.select_set(True)
+    bpy.context.view_layer.objects.active = objs[0]
+
+    addon_prefs = bpy.context.preferences.addons[ADDON_ID].preferences
+    prev_use_letters = addon_prefs.numerate_use_letters
+    prev_start = addon_prefs.numerate_start_number
+    addon_prefs.numerate_use_letters = True
+    addon_prefs.numerate_start_number = 1
+    try:
+        scene_prop("renaming_object_types", "OBJECT")
+        scene_prop("renaming_only_selection", True)
+        scene_prop("renaming_new_name", f"{PREFIX}obj_@n")
+        bpy.ops.renaming.name_replace()
+    finally:
+        addon_prefs.numerate_use_letters = prev_use_letters
+        addon_prefs.numerate_start_number = prev_start
+
+    letters_got = sorted(o.name[-1] for o in objs)
+    check(letters_got == ["A", "B", "C"],
+          f"@n produced sequential letters across the renaming list — got {[o.name for o in objs]}")
+
+    scene_prop("renaming_only_selection", False)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
 # Run
 # ---------------------------------------------------------------------------
 
@@ -696,6 +892,12 @@ if __name__ == "__main__":
     test_material_follows_object_selection_order()
     test_name_replace_conflict_warning()
     test_trim_conflict_no_visible_change_still_warns()
+    test_numbering_module_roundtrip()
+    test_number_transform_regression()
+    test_numerate_operator_digits_vs_letters()
+    test_numerate_operator_per_object_type_reset_letters()
+    test_name_replace_letters_mode_collision_avoidance()
+    test_variable_replacer_letters_mode()
 
     print(f"\n{'='*50}")
     if failures:
@@ -704,5 +906,5 @@ if __name__ == "__main__":
             print(f"  - {f}")
         sys.exit(1)
     else:
-        print(f"All 14 tests passed.")
+        print(f"All 20 tests passed.")
         sys.exit(0)

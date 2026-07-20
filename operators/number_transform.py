@@ -2,6 +2,7 @@ import re
 
 import bpy
 
+from .numbering import format_number, int_to_letters, letters_to_int
 from .renaming_operators import switch_to_edit_mode
 from .. import __package__ as base_package
 from ..operators.renaming_utilities import get_renaming_list, call_renaming_popup, call_error_popup, apply_rename, report_rename_warnings
@@ -20,7 +21,7 @@ def pad_number(name, width):
     match = _last_match(_DIGIT_RUN_RE, name)
     if not match:
         return name
-    formatted = '{:0{width}d}'.format(int(match.group()), width=width)
+    formatted = format_number(int(match.group()), width, use_letters=False)
     return name[:match.start()] + formatted + name[match.end():]
 
 
@@ -38,27 +39,31 @@ def number_to_letters(name, upper, separator):
     n = int(match.group())
     if n <= 0:
         return name
-    letters = ''
-    while n > 0:
-        n, rem = divmod(n - 1, 26)
-        letters = chr(65 + rem) + letters
-    if not upper:
-        letters = letters.lower()
+    letters = int_to_letters(n, upper=upper)
     prefix = name[:match.start()]
     if prefix and prefix[-1].isalpha():
         prefix += separator
     return prefix + letters + name[match.end():]
 
 
-def letters_to_number(name):
-    """Convert the last letter run in the name back to its spreadsheet-style number."""
+def letters_case(name, upper):
+    """Change the case of the last letter run in the name."""
     match = _last_match(_LETTER_RUN_RE, name)
     if not match:
         return name
-    n = 0
-    for ch in match.group().upper():
-        n = n * 26 + (ord(ch) - 64)
-    return name[:match.start()] + str(n) + name[match.end():]
+    letters = match.group().upper() if upper else match.group().lower()
+    return name[:match.start()] + letters + name[match.end():]
+
+
+def letters_to_number(name, width):
+    """Convert the last letter run in the name back to its spreadsheet-style number,
+    padded to `width` digits (width=0 -> no leading zeros)."""
+    match = _last_match(_LETTER_RUN_RE, name)
+    if not match:
+        return name
+    n = letters_to_int(match.group())
+    formatted = format_number(n, width, use_letters=False)
+    return name[:match.start()] + formatted + name[match.end():]
 
 
 # ---------------------------------------------------------------------------
@@ -107,11 +112,11 @@ class _NumberOperatorBase(bpy.types.Operator):
 
 class VIEW3D_OT_number_pad(_NumberOperatorBase):
     bl_idname = "renaming.number_pad"
-    bl_label = "Set Number Width"
-    bl_description = "Pad or strip leading zeros on the last number in the name to match Number Width  (009 → 9 at width 1, 9 → 009 at width 3)"
+    bl_label = "Set Padding"
+    bl_description = "Pad or strip leading zeros on the last number in the name to match the Numerate Settings Padding  (009 → 9 at width 1, 9 → 009 at width 3)"
 
     def _transform(self, name, context):
-        return pad_number(name, context.scene.renaming_number_width)
+        return pad_number(name, context.scene.renaming_numerate)
 
 
 class VIEW3D_OT_number_to_letters_lower(_NumberOperatorBase):
@@ -137,7 +142,25 @@ class VIEW3D_OT_number_to_letters_upper(_NumberOperatorBase):
 class VIEW3D_OT_letters_to_number(_NumberOperatorBase):
     bl_idname = "renaming.letters_to_number"
     bl_label = "Letters → Number"
-    bl_description = "Convert the last letter run in the name back to its spreadsheet-style number  (A → 1, B → 2, … Z → 26, AA → 27 …)"
+    bl_description = "Convert the last letter run in the name back to its spreadsheet-style number, padded to the Numerate Settings Padding  (A → 1, B → 2, … Z → 26, AA → 27 …)"
 
     def _transform(self, name, context):
-        return letters_to_number(name)
+        return letters_to_number(name, context.scene.renaming_numerate)
+
+
+class VIEW3D_OT_letters_to_upper(_NumberOperatorBase):
+    bl_idname = "renaming.letters_to_upper"
+    bl_label = "letters → LETTERS"
+    bl_description = "Convert the last letter run in the name to uppercase  (aa → AA)"
+
+    def _transform(self, name, context):
+        return letters_case(name, upper=True)
+
+
+class VIEW3D_OT_letters_to_lower(_NumberOperatorBase):
+    bl_idname = "renaming.letters_to_lower"
+    bl_label = "LETTERS → letters"
+    bl_description = "Convert the last letter run in the name to lowercase  (AA → aa)"
+
+    def _transform(self, name, context):
+        return letters_case(name, upper=False)

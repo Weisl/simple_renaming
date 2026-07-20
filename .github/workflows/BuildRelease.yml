@@ -31,6 +31,7 @@ jobs:
             -x "${{ github.event.repository.name }}/.git*" \
             -x "${{ github.event.repository.name }}/.*/*" \
             -x "${{ github.event.repository.name }}/tests/*" \
+            -x "${{ github.event.repository.name }}/tools/*" \
             -x "${{ github.event.repository.name }}/venv/*"
 
       - name: Create versioned build with filtered zip file
