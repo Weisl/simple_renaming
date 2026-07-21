@@ -153,7 +153,7 @@ class VIEW3D_OT_renaming_preferences(bpy.types.AddonPreferences):
         name="Uppercase Letters",
         description="Use uppercase letters (A, B, C…) instead of lowercase (a, b, c…) "
                     "when 'Use Letters' is enabled",
-        default=True,
+        default=False,
     )
 
     renaming_stringHigh: StringProperty(
