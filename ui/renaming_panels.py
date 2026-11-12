@@ -29,6 +29,20 @@ def _draw_selection_order_controls(col, context, mode_ok, wrong_mode_hint):
         row.label(text=wrong_mode_hint, icon='ERROR')
 
 
+def _layout_panel(layout, idname, default_closed=False):
+    """``layout.panel()`` that also works when the panel is shown as a popup.
+
+    Blender rejects layout panels inside ``wm.call_panel`` popups (which is how
+    the "Renaming Popup" hotkey opens this panel) with "Layout panels can not
+    be used in this context". Fall back to an always-open box there.
+    """
+    try:
+        return layout.panel(idname, default_closed=default_closed)
+    except RuntimeError:
+        box = layout.box()
+        return box.row(), box
+
+
 def draw_renaming_panel(layout, context):
     scene = context.scene
     prefs = context.preferences.addons[base_package].preferences
@@ -87,7 +101,7 @@ def draw_renaming_panel(layout, context):
                                                    "Enter Object Mode")
             col.prop(scene, "renaming_sort_reverse")
 
-    header, panel = layout.panel("renaming_numerate_panel", default_closed=True)
+    header, panel = _layout_panel(layout, "renaming_numerate_panel", default_closed=True)
     header.label(text="Numerate Settings", icon='SETTINGS')
     if panel:
         col = panel.column(align=True)

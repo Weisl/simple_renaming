@@ -319,7 +319,9 @@ def test_bone_rename_updates_drivers():
     # Add a driver FCurve on the armature object that drives X location,
     # using the bone name in data_path and bone_target.
     fcurve = arm_obj.driver_add('location', 0)
-    fcurve.data_path = f'pose.bones["{PREFIX}OldBone"].location[0]'
+    # array_index is already 0 from driver_add(); an index in the path would
+    # make Blender evaluate 'location[0][0]' and warn "Invalid driver".
+    fcurve.data_path = f'pose.bones["{PREFIX}OldBone"].location'
     drv = fcurve.driver
     drv.type = 'AVERAGE'
     var = drv.variables.new()

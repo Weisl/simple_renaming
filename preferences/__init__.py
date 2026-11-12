@@ -2,7 +2,8 @@ import bpy
 
 from . import renaming_keymap
 from . import renaming_preferences
-from .renaming_preferences import update_panel_category
+from .renaming_preferences import update_panel_category, toggle_suffix_prefix_panel
+from .. import __package__ as base_package
 
 classes = (
     renaming_preferences.VIEW3D_OT_renaming_preferences,
@@ -16,7 +17,9 @@ def register():
     for cls in classes:
         register_class(cls)
 
-    # update addon categories
+    # Apply stored panel preferences (hidden Prefix/Suffix panel, tab category).
+    prefs = bpy.context.preferences.addons[base_package].preferences
+    toggle_suffix_prefix_panel(prefs, bpy.context)
     update_panel_category(None, bpy.context)
 
     renaming_keymap.add_keymap()
