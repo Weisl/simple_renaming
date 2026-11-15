@@ -14,6 +14,12 @@ history over time.
 `master` is currently in sync with the latest release, v2.1.10 — add the next
 `## Simple Renaming vX.Y.Z (Unreleased)` section here as new work lands.
 
+## Simple Renaming v2.1.11 (Unreleased)
+
+### Features
+
+- Image Textures renaming now has an "Only Of Selected Objects" option. It limits renaming to images used by the selected objects: images in their materials and modifiers (Displace and other texture modifiers, Geometry Nodes inputs and nodes), images shown by image empties, and camera background images. An "Include Node Groups" toggle sets whether images inside nested node groups are renamed too. ([#259](https://github.com/Weisl/simple_renaming/issues/259))
+
 ## Simple Renaming v2.1.10 (2026-11-12)
 
 Compatibility update for Blender 5.2 and 5.3, plus fixes to the renaming popup and panel preferences.

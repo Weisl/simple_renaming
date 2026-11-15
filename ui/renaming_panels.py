@@ -13,7 +13,7 @@ types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
 # Components of the selected objects are renamed
 types_of_selected = (
     'MATERIAL', 'DATA', 'VERTEXGROUPS', 'PARTICLESYSTEM', 'SHAPEKEYS', 'MODIFIERS', 'UVMAPS',
-    'COLORATTRIBUTES', 'ATTRIBUTES', 'ACTIONS')
+    'COLORATTRIBUTES', 'ATTRIBUTES', 'ACTIONS', 'IMAGE')
 
 
 def _draw_selection_order_controls(col, context, mode_ok, wrong_mode_hint):
@@ -60,6 +60,10 @@ def draw_renaming_panel(layout, context):
         col.prop(scene, "renaming_also_rename_data")
     if str(scene.renaming_object_types) in types_of_selected:
         col.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
+    if str(scene.renaming_object_types) == 'IMAGE':
+        row = col.row(align=True)
+        row.enabled = scene.renaming_only_selection
+        row.prop(scene, "renaming_images_include_node_groups")
     if str(scene.renaming_object_types) in ('UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES', 'VERTEXGROUPS', 'SHAPEKEYS'):
         col = col.column(align=True)
         if str(scene.renaming_object_types) in ('UVMAPS', 'COLORATTRIBUTES'):

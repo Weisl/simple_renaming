@@ -35,6 +35,91 @@ def trim_string(string, size):
     return string[size[0]:max(0, len(string)-size[1])]
 
 
+def get_geometry_nodes_input(mod, identifier):
+    """Value of a Geometry Nodes modifier input. Blender 5.3 exposes inputs as
+    ``mod.properties.inputs.<identifier>.value``; older versions store them
+    as ID properties on the modifier."""
+    props = getattr(mod, "properties", None)
+    if props is not None:
+        return getattr(getattr(props.inputs, identifier, None), "value", None)
+    return mod.get(identifier)
+
+
+class _ImageCollector:
+    """Gathers images in first-seen order without duplicates."""
+
+    def __init__(self, include_node_groups):
+        self.include_node_groups = include_node_groups
+        self.images = []
+        self._seen = set()
+        self._visited_trees = set()
+
+    def add(self, image):
+        if isinstance(image, bpy.types.Image) and image.as_pointer() not in self._seen:
+            self._seen.add(image.as_pointer())
+            self.images.append(image)
+
+    def add_node_tree(self, node_tree):
+        """Images referenced by the nodes of ``node_tree``: image properties
+        (Image Texture, Environment Texture, Image input nodes, ...) and Image
+        socket values (e.g. Geometry Nodes Image Texture). Nested node groups
+        are walked only when ``include_node_groups`` is set."""
+        if node_tree is None or node_tree.as_pointer() in self._visited_trees:
+            return
+        self._visited_trees.add(node_tree.as_pointer())
+        for node in node_tree.nodes:
+            self.add(getattr(node, "image", None))
+            for socket in node.inputs:
+                if socket.type == 'IMAGE':
+                    self.add(getattr(socket, "default_value", None))
+            if self.include_node_groups and node.type == 'GROUP':
+                self.add_node_tree(node.node_tree)
+
+    def add_material(self, mat):
+        if mat is None:
+            return
+        self.add_node_tree(mat.node_tree)
+        gp_style = getattr(mat, "grease_pencil", None)
+        if gp_style is not None:
+            self.add(getattr(gp_style, "fill_image", None))
+            self.add(getattr(gp_style, "stroke_image", None))
+
+    def add_modifier(self, mod):
+        # Displace, Warp, Wave, Vertex Weight ... modifiers use an image texture.
+        texture = getattr(mod, "texture", None)
+        if texture is not None and texture.type == 'IMAGE':
+            self.add(texture.image)
+        if mod.type == 'NODES' and mod.node_group is not None:
+            # Images assigned to the modifier's Image inputs.
+            for item in mod.node_group.interface.items_tree:
+                if (item.item_type == 'SOCKET' and item.in_out == 'INPUT'
+                        and item.socket_type == 'NodeSocketImage'):
+                    self.add(get_geometry_nodes_input(mod, item.identifier))
+            # The modifier's own tree is its top level, like a material's tree.
+            self.add_node_tree(mod.node_group)
+
+    def add_object(self, obj):
+        if obj.type == 'EMPTY':
+            self.add(obj.data)
+        elif obj.type == 'CAMERA':
+            for background in obj.data.background_images:
+                self.add(background.image)
+        for slot in obj.material_slots:
+            self.add_material(slot.material)
+        for mod in obj.modifiers:
+            self.add_modifier(mod)
+
+
+def get_images_of_objects(objects, include_node_groups=True):
+    """Images used by ``objects``: textures in their materials and modifiers
+    (optionally including nested node groups), the image of image empties and
+    camera background images. Returned in object order without duplicates."""
+    collector = _ImageCollector(include_node_groups)
+    for obj in objects:
+        collector.add_object(obj)
+    return collector.images
+
+
 def get_renaming_list(context):
     scene = context.scene
 
@@ -86,7 +171,10 @@ def get_renaming_list(context):
             renaming_list = list(bpy.data.materials)
 
     elif scene.renaming_object_types == 'IMAGE':
-        renaming_list = list(bpy.data.images)
+        if selection_only:
+            renaming_list = get_images_of_objects(obj_list, scene.renaming_images_include_node_groups)
+        else:
+            renaming_list = list(bpy.data.images)
 
     elif scene.renaming_object_types == 'BONE':
         old_mode = context.mode
