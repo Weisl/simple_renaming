@@ -3,7 +3,8 @@
 Run this before tagging the release. Tick each box, and note the Blender
 version next to any failure.
 
-**Blender versions:** run every section on **4.2** (the minimum version) and **5.3** (the latest).
+**Blender versions:** run every section on **5.3** (the latest). Blender 4.2
+(the minimum version) is covered by the automated tests in CI only; no manual pass.
 Run section 2 on **5.2** as well: Geometry Nodes modifier inputs are read one
 way on 5.3 and another way on 5.2 and older (`get_geometry_nodes_input`).
 
@@ -15,9 +16,9 @@ and keymaps don't affect the results.
 
 ## 1. Pre-flight
 
-- [ ] `python tests/run_tests.py --blender <path>` passes on 4.2 and 5.3 ("All 23 tests passed.").
+- [x] `python tests/run_tests.py --blender <path>` passes on 4.5, 5.0, 5.1, 5.2 and 5.3 ("All 23 tests passed.").
 - [ ] CI `tests.yml` is green for the whole matrix (4.2 – 5.3).
-- [ ] `blender --command extension validate .` reports no errors.
+- [x] `blender --factory-startup --command extension validate .` reports no errors.
 - [ ] The add-on enables with no errors in the console or the Info editor.
 - [ ] Disable, then re-enable the add-on: no errors, and the Rename tab reappears in the N-panel.
 
@@ -75,8 +76,12 @@ With Only Selected ON and Node Groups ON, each of these should change only the 8
 `Only Of Selected Objects` defaults to **ON**, and its value is shared with Materials, Data, etc.
 Before this release, the Image target always renamed **all** images.
 
-- [ ] Open a file saved with v2.1.9 (Target = Image Textures, no objects selected) and run Search & Replace. Result: nothing is renamed until Only Selected is turned OFF. Decide whether this is acceptable or should be mentioned in the changelog or release notes.
-- [ ] Turning Only Selected OFF for Images also turns it OFF for Materials, and the reverse (the same property is shared). Confirm this is acceptable.
+Decided: consistency within the add-on matters more than matching v2.1.9, so both
+points below are intended. The change is listed under "Changes" in the changelog
+and release notes.
+
+- [ ] Open a file saved with v2.1.9 (Target = Image Textures, no objects selected) and run Search & Replace. Result: nothing is renamed until Only Selected is turned OFF.
+- [ ] Turning Only Selected OFF for Images also turns it OFF for Materials, and the reverse (the same property is shared).
 
 ## 3. Fixes: Search and Select regex ([#257](https://github.com/Weisl/simple_renaming/issues/257)) and bone sorting ([#258](https://github.com/Weisl/simple_renaming/issues/258))
 
@@ -121,10 +126,10 @@ Make an armature with 3–4 bones spread along X, created out of X order. Turn o
 
 ## 6. Packaging & release
 
-- [ ] `version` in `blender_manifest.toml` is `2.1.10`.
-- [ ] The `CHANGELOG.md` heading for v2.1.10 has a release date and no longer says "Unreleased". Also update the "`master` is currently in sync with…" line.
+- [x] `version` in `blender_manifest.toml` is `2.1.10`.
+- [x] The `CHANGELOG.md` heading for v2.1.10 has a release date and no longer says "Unreleased". Also update the "`master` is currently in sync with…" line.
 - [ ] The built zip is named `simple_renaming_panel_2.1.10.zip`.
-- [ ] The zip contains no `tests/`, `tools/`, `.github/`, `CHANGELOG.md` or `__pycache__/`.
-- [ ] Install the built zip through Preferences > Get Extensions > Install from Disk on 4.2 and on 5.3. It enables cleanly.
+- [x] The zip contains no `tests/`, `tools/`, `.github/`, `CHANGELOG.md` or `__pycache__/`.
+- [ ] Install the built zip through Preferences > Get Extensions > Install from Disk on 5.3. It enables cleanly.
 - [ ] The release notes on the documentation site include the v2.1.10 entries (#257–#263).
 - [ ] Merge `develop` into `master` and tag `v2.1.10`.

@@ -11,16 +11,20 @@ as a new section above the previous one — existing entries are never
 overwritten, so this file (like the docs page) accumulates the full release
 history over time.
 
-`master` is currently in sync with the latest release, v2.1.9 — add the next
+`master` is currently in sync with the latest release, v2.1.10 — add the next
 `## Simple Renaming vX.Y.Z (Unreleased)` section here as new work lands.
 
-## Simple Renaming v2.1.10 (Unreleased)
+## Simple Renaming v2.1.10 (2026-11-15)
 
 Compatibility update for Blender 5.2 and 5.3, "Only Of Selected Objects" for Image Textures, plus fixes to Search and Select, bone sorting, the renaming popup and panel preferences.
 
 ### Features
 
 - Image Textures renaming now has an "Only Of Selected Objects" option. It limits renaming to images used by the selected objects: images in their materials and modifiers (Displace and other texture modifiers, Geometry Nodes inputs and nodes), images shown by image empties, and camera background images. An "Include Node Groups" toggle sets whether images inside nested node groups are renamed too. ([#259](https://github.com/Weisl/simple_renaming/issues/259))
+
+### Changes
+
+- Image Textures now follow the shared "Only Of Selected Objects" option like Materials, Object Data and the other targets, so the option behaves the same for every target. It is on by default: if nothing is renamed, select the objects that use the images or turn the option off to rename all images, as before. ([#259](https://github.com/Weisl/simple_renaming/issues/259))
 
 ### Fixes
 
