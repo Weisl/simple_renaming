@@ -997,6 +997,111 @@ def test_image_only_selected():
 
 
 # ---------------------------------------------------------------------------
+# Test 22 – Search and Select honours "Use Regex" (#257)
+# ---------------------------------------------------------------------------
+
+def test_search_select_use_regex():
+    print("\n[Test 22] Search and Select uses regex only when 'Use Regex' is on")
+    PREFIX = "T22_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    for name in ("a.b", "axb", "Cube"):
+        add_mesh_object(f"{PREFIX}{name}")
+    scene_prop("renaming_object_types", "OBJECT")
+
+    def select(search, use_regex, match_case):
+        scene_prop("renaming_search", search)
+        scene_prop("renaming_useRegex", use_regex)
+        scene_prop("renaming_matchcase", match_case)
+        bpy.ops.renaming.search_select()
+        return sorted(o.name[len(PREFIX):] for o in bpy.data.objects
+                      if o.name.startswith(PREFIX) and o.select_get())
+
+    got = select(f"{PREFIX}a.b", use_regex=True, match_case=False)
+    check(got == ["a.b", "axb"], f"Regex on: '.' matches any character — got {got}")
+
+    got = select(f"{PREFIX}a.b", use_regex=True, match_case=True)
+    check(got == ["a.b", "axb"], f"Regex on with Match Case: still a regex — got {got}")
+
+    got = select(f"{PREFIX}a.b", use_regex=False, match_case=False)
+    check(got == ["a.b"], f"Regex off, case-insensitive: '.' is literal — got {got}")
+
+    got = select(f"{PREFIX}a.b", use_regex=False, match_case=True)
+    check(got == ["a.b"], f"Regex off, Match Case: '.' is literal — got {got}")
+
+    got = select(f"{PREFIX.lower()}cube", use_regex=False, match_case=False)
+    check(got == ["Cube"], f"Regex off, case-insensitive: case ignored — got {got}")
+
+    got = select(f"{PREFIX.lower()}cube", use_regex=False, match_case=True)
+    check(got == [], f"Regex off, Match Case: case respected — got {got}")
+
+    got = select(f"{PREFIX}(", use_regex=False, match_case=False)
+    check(got == [], f"Regex off: '(' is literal, no invalid-regex error — got {got}")
+
+    scene_prop("renaming_search", "")
+    scene_prop("renaming_useRegex", False)
+    scene_prop("renaming_matchcase", True)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
+# Test 23 – Axis sorting and Reverse apply to bones (#258)
+# ---------------------------------------------------------------------------
+
+def test_bone_axis_sort_and_reverse():
+    print("\n[Test 23] Bone sorting by axis and Reverse Sorting Order")
+    PREFIX = "T23_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    arm_data = bpy.data.armatures.new(f"{PREFIX}Arm")
+    arm_obj = bpy.data.objects.new(f"{PREFIX}Arm", arm_data)
+    bpy.context.scene.collection.objects.link(arm_obj)
+    bpy.context.view_layer.objects.active = arm_obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    # Created as Bone0, Bone1, Bone2 at X = 0.3, 0.1, 0.2.
+    for i, x in enumerate((0.3, 0.1, 0.2)):
+        b = arm_data.edit_bones.new(f"{PREFIX}Bone{i}")
+        b.head = (x, 0, 0)
+        b.tail = (x, 0, 0.1)
+    bpy.ops.object.mode_set(mode='OBJECT')
+    bones = [arm_data.bones[f"{PREFIX}Bone{i}"] for i in range(3)]
+
+    scene_prop("renaming_object_types", "BONE")
+    scene_prop("renaming_only_selection", False)
+    scene_prop("renaming_sorting", True)
+    scene_prop("renaming_sort_bone_enum", "X")
+    scene_prop("renaming_use_enumerate", True)
+
+    def rename_order(new_name, reverse):
+        """Rename with enumeration and return bone indices in numbering order."""
+        scene_prop("renaming_sort_reverse", reverse)
+        scene_prop("renaming_new_name", f"{PREFIX}{new_name}")
+        bpy.ops.renaming.name_replace()
+        numbered = sorted(range(3), key=lambda i: bones[i].name)
+        return numbered, [b.name for b in bones]
+
+    order, names = rename_order("SortX", reverse=False)
+    check(order == [1, 2, 0], f"Bones numbered along +X — got {names}")
+
+    order, names = rename_order("SortXRev", reverse=True)
+    check(order == [0, 2, 1], f"Reverse Sorting Order flips bone order — got {names}")
+
+    # Rotating the armature 180° around Z flips world X, so the order flips too.
+    arm_obj.rotation_euler = (0, 0, 3.141592653589793)
+    bpy.context.view_layer.update()
+    order, names = rename_order("SortXWorld", reverse=False)
+    check(order == [0, 2, 1], f"Bones sorted in world space — got {names}")
+
+    scene_prop("renaming_sorting", False)
+    scene_prop("renaming_sort_reverse", False)
+    scene_prop("renaming_use_enumerate", False)
+    scene_prop("renaming_object_types", "OBJECT")
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
 # Run
 # ---------------------------------------------------------------------------
 
@@ -1031,6 +1136,8 @@ if __name__ == "__main__":
     test_name_replace_letters_mode_collision_avoidance()
     test_variable_replacer_letters_mode()
     test_image_only_selected()
+    test_search_select_use_regex()
+    test_bone_axis_sort_and_reverse()
 
     print(f"\n{'='*50}")
     if failures:
@@ -1039,5 +1146,5 @@ if __name__ == "__main__":
             print(f"  - {f}")
         sys.exit(1)
     else:
-        print(f"All 21 tests passed.")
+        print(f"All 23 tests passed.")
         sys.exit(0)

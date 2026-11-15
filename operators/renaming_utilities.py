@@ -130,11 +130,9 @@ def get_renaming_list(context):
 
     obj_list = context.selected_objects.copy() if selection_only is True else list(bpy.data.objects).copy()
 
-    if scene.renaming_sorting:
-        if scene.renaming_object_types == 'BONE':
-            sort_enum = scene.renaming_sort_bone_enum
-        else:
-            sort_enum = scene.renaming_sort_enum
+    # Bones are sorted in the BONE branch below, after the bone list is built.
+    if scene.renaming_sorting and scene.renaming_object_types != 'BONE':
+        sort_enum = scene.renaming_sort_enum
 
         if sort_enum == 'SELECTION':
             obj_list = sorted(obj_list, key=lambda o: _selection_order_key(o.get(SELECTION_ORDER_KEY)))
@@ -178,8 +176,11 @@ def get_renaming_list(context):
 
     elif scene.renaming_object_types == 'BONE':
         old_mode = context.mode
-        use_selection_order = scene.renaming_sorting and scene.renaming_sort_bone_enum == 'SELECTION'
         bone_order_keys = []
+        # Armature -> owning Object, needed to reach the real PoseBone in POSE
+        # mode and to sort bones in world space (a single Armature datablock
+        # can be used by several objects).
+        armature_owners = {obj.data: obj for obj in bpy.data.objects if obj.type == 'ARMATURE'}
 
         def _bone_order_value(arm, name):
             bone = arm.bones.get(name)
@@ -206,9 +207,6 @@ def get_renaming_list(context):
                     bone_order_keys.append(_bone_order_value(selected_bone.id_data, selected_bone.name))
 
         else:  # if selection_only == False
-            # Bone -> owning Object, needed to reach the real PoseBone in POSE mode
-            # (a single Armature datablock can be used by several objects).
-            armature_owners = {obj.data: obj for obj in bpy.data.objects if obj.type == 'ARMATURE'}
             for arm in bpy.data.armatures:
                 if old_mode == 'EDIT_ARMATURE':
                     for bone in arm.edit_bones:
@@ -226,9 +224,17 @@ def get_renaming_list(context):
                         renaming_list.append(bone)
                         bone_order_keys.append(_bone_order_value(arm, bone.name))
 
-        if use_selection_order:
-            renaming_list = [b for _, b in sorted(zip(bone_order_keys, renaming_list),
-                                                  key=lambda pair: _selection_order_key(pair[0]))]
+        if scene.renaming_sorting:
+            sort_enum = scene.renaming_sort_bone_enum
+            if sort_enum == 'SELECTION':
+                sort_keys = [_selection_order_key(tag) for tag in bone_order_keys]
+            else:
+                axis = 'XYZ'.index(sort_enum)
+                sort_keys = [_bone_world_head(bone, armature_owners)[axis] for bone in renaming_list]
+            # Stable sort on the key only, so ties keep their existing order.
+            renaming_list = [b for _, b in sorted(zip(sort_keys, renaming_list), key=lambda pair: pair[0])]
+            if scene.renaming_sort_reverse:
+                renaming_list.reverse()
 
     elif scene.renaming_object_types == 'COLLECTION':
         if bpy.context.space_data and bpy.context.space_data.type == 'OUTLINER' and selection_only is True:
@@ -393,6 +399,17 @@ def get_global_y(obj):
 
 def get_global_z(obj):
     return obj.matrix_world.to_translation().z
+
+
+def _bone_world_head(bone, armature_owners):
+    """World-space head of a Bone, EditBone or PoseBone. Bone and EditBone
+    belong to the Armature datablock, so the owning object comes from
+    ``armature_owners``; without an owner the armature-space head is used."""
+    if isinstance(bone, bpy.types.PoseBone):
+        return bone.id_data.matrix_world @ bone.head
+    head = bone.head if isinstance(bone, bpy.types.EditBone) else bone.head_local
+    owner = armature_owners.get(bone.id_data)
+    return owner.matrix_world @ head if owner is not None else head
 
 
 def get_sorted_objects_x(objects):

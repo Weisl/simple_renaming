@@ -20,6 +20,11 @@ history over time.
 
 - Image Textures renaming now has an "Only Of Selected Objects" option. It limits renaming to images used by the selected objects: images in their materials and modifiers (Displace and other texture modifiers, Geometry Nodes inputs and nodes), images shown by image empties, and camera background images. An "Include Node Groups" toggle sets whether images inside nested node groups are renamed too. ([#259](https://github.com/Weisl/simple_renaming/issues/259))
 
+### Fixes
+
+- "Search and Select" now follows the "Use Regex" toggle. With it off, the search text is matched literally (characters like `.` or `(` no longer act as regex). With it on, the search is a regular expression even when Match Case is enabled. ([#257](https://github.com/Weisl/simple_renaming/issues/257))
+- Sorting bones by X, Y or Z axis and "Reverse Sorting Order" now work for bones in Object, Edit and Pose mode. Bones are sorted by their head position in world space. ([#258](https://github.com/Weisl/simple_renaming/issues/258))
+
 ## Simple Renaming v2.1.10 (2026-11-12)
 
 Compatibility update for Blender 5.2 and 5.3, plus fixes to the renaming popup and panel preferences.
