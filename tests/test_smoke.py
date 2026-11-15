@@ -1102,6 +1102,60 @@ def test_bone_axis_sort_and_reverse():
 
 
 # ---------------------------------------------------------------------------
+# Test 24 – "Nothing selected" hint when Only Selected is on
+# ---------------------------------------------------------------------------
+
+def test_nothing_selected_hint():
+    print("\n[Test 24] Only Selected with nothing selected returns a hint instead of a silent no-op")
+    PREFIX = "T24_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+    utils = import_module(f"{ADDON_ID}.operators.renaming_utilities")
+
+    obj = add_mesh_object(f"{PREFIX}Obj")
+    for o in bpy.context.view_layer.objects:
+        o.select_set(False)
+
+    def err_for(target, only_selection):
+        scene_prop("renaming_object_types", target)
+        scene_prop("renaming_only_selection", only_selection)
+        return utils.get_renaming_list(bpy.context)[2]
+
+    for target, option in (("OBJECT", "Only Selected"), ("IMAGE", "Only Of Selected Objects"),
+                           ("MATERIAL", "Only Of Selected Objects"), ("DATA", "Only Of Selected Objects")):
+        err = err_for(target, True)
+        check(err is not None and "Nothing selected" in err and f'"{option}"' in err,
+              f"{target}: nothing selected gives a hint naming {option!r} — got {err!r}")
+        check(err_for(target, False) is None, f"{target}: no hint with Only Selected off")
+
+    check(err_for("NODE_GROUPS", True) is None,
+          "NODE_GROUPS: no hint (it does not depend on the object selection)")
+
+    obj.select_set(True)
+    check(err_for("IMAGE", True) is None, "IMAGE: no hint once an object is selected")
+
+    # Bones: Pose Mode with no bone selected.
+    arm_data = bpy.data.armatures.new(f"{PREFIX}Arm")
+    arm_obj = bpy.data.objects.new(f"{PREFIX}Arm", arm_data)
+    bpy.context.scene.collection.objects.link(arm_obj)
+    bpy.context.view_layer.objects.active = arm_obj
+    arm_obj.select_set(True)
+    bpy.ops.object.mode_set(mode='EDIT')
+    arm_data.edit_bones.new(f"{PREFIX}Bone").tail = (0, 0, 1)
+    bpy.ops.object.mode_set(mode='POSE')
+    bpy.ops.pose.select_all(action='DESELECT')
+    err = err_for("BONE", True)
+    check(err is not None and "Select bones" in err, f"BONE (Pose Mode): no bone selected gives a hint — got {err!r}")
+    bpy.ops.pose.select_all(action='SELECT')
+    check(err_for("BONE", True) is None, "BONE (Pose Mode): no hint once a bone is selected")
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+    scene_prop("renaming_only_selection", False)
+    scene_prop("renaming_object_types", "OBJECT")
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
 # Run
 # ---------------------------------------------------------------------------
 
@@ -1138,6 +1192,7 @@ if __name__ == "__main__":
     test_image_only_selected()
     test_search_select_use_regex()
     test_bone_axis_sort_and_reverse()
+    test_nothing_selected_hint()
 
     print(f"\n{'='*50}")
     if failures:
@@ -1146,5 +1201,5 @@ if __name__ == "__main__":
             print(f"  - {f}")
         sys.exit(1)
     else:
-        print(f"All 23 tests passed.")
+        print(f"All 24 tests passed.")
         sys.exit(0)

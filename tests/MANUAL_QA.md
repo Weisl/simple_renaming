@@ -16,11 +16,11 @@ and keymaps don't affect the results.
 
 ## 1. Pre-flight
 
-- [x] `python tests/run_tests.py --blender <path>` passes on 4.5, 5.0, 5.1, 5.2 and 5.3 ("All 23 tests passed.").
+- [x] `python tests/run_tests.py --blender <path>` passes on 4.5, 5.0, 5.1, 5.2 and 5.3 ("All 24 tests passed.").
 - [x] CI `tests.yml` is green for the whole matrix (4.2 – 5.3, macOS 4.2 – 4.5).
 - [x] `blender --factory-startup --command extension validate .` reports no errors.
-- [ ] The add-on enables with no errors in the console or the Info editor.
-- [ ] Disable, then re-enable the add-on: no errors, and the Rename tab reappears in the N-panel.
+- [x] The add-on enables with no errors in the console or the Info editor.
+- [x] Disable, then re-enable the add-on: no errors, and the Rename tab reappears in the N-panel.
 
 ## 2. New: Image Textures "Only Of Selected Objects" ([#259](https://github.com/Weisl/simple_renaming/issues/259))
 
@@ -31,35 +31,35 @@ results in Outliner > Blender File > Images, then press Ctrl+Z after each case.
 
 ### UI
 
-- [ ] With Target = Image Textures, the panel shows **Only Of Selected Objects** and **Include Node Groups**.
-- [ ] **Include Node Groups** is greyed out when Only Of Selected Objects is OFF.
-- [ ] Neither option is shown for targets other than Image Textures (Include Node Groups) or targets outside the "of selected" list (Only Of Selected Objects), e.g. Collections or Node Groups.
-- [ ] No Sorting section is shown for Image Textures (same as before).
-- [ ] Open the Renaming Popup with its hotkey: both options are drawn there too, with no "Layout panels can not be used in this context" error.
-- [ ] Hover tooltips read correctly for both options.
+- [x] With Target = Image Textures, the panel shows **Only Of Selected Objects** and **Include Node Groups**.
+- [x] **Include Node Groups** is greyed out when Only Of Selected Objects is OFF.
+- [x] Neither option is shown for targets other than Image Textures (Include Node Groups) or targets outside the "of selected" list (Only Of Selected Objects), e.g. Collections or Node Groups.
+- [x] No Sorting section is shown for Image Textures (same as before).
+- [x] Open the Renaming Popup with its hotkey: both options are drawn there too, with no "Layout panels can not be used in this context" error.
+- [x] Hover tooltips read correctly for both options.
 
-### Core cases (from the README in the .blend file)
+### Core cases (automated GUI run on 5.3 and 5.2, 2026-11-15) (from the README in the .blend file)
 
-- [ ] **Only Selected ON, Node Groups ON:** all 8 `SEL_*` images are renamed (Material, Material_InGroup, Displace, GN_Input, GN_Node, GN_InGroup, Empty, Camera). `IMG_Unselected` and `IMG_Unused` are unchanged.
-- [ ] **Only Selected ON, Node Groups OFF:** same as above, except `IMG_Material_InGroup` and `IMG_GN_InGroup` are unchanged.
-- [ ] **Only Selected OFF:** all 10 images are renamed, including `IMG_Unused` and the image of the unselected object.
-- [ ] **Nothing selected, Only Selected ON:** nothing is renamed, with no error or traceback (check what message appears, if any).
-- [ ] **Only `UNSEL_Cube` selected:** only `IMG_Unselected` is renamed.
+- [x] **Only Selected ON, Node Groups ON:** all 8 `SEL_*` images are renamed (Material, Material_InGroup, Displace, GN_Input, GN_Node, GN_InGroup, Empty, Camera). `IMG_Unselected` and `IMG_Unused` are unchanged.
+- [x] **Only Selected ON, Node Groups OFF:** same as above, except `IMG_Material_InGroup` and `IMG_GN_InGroup` are unchanged.
+- [x] **Only Selected OFF:** all 10 images are renamed, including `IMG_Unused` and the image of the unselected object.
+- [x] **Nothing selected, Only Selected ON:** nothing is renamed, no traceback, and the error popup shows "Nothing selected. Select objects, or turn off \"Only Of Selected Objects\"." ([#269](https://github.com/Weisl/simple_renaming/issues/269))
+- [x] **Only `UNSEL_Cube` selected:** only `IMG_Unselected` is renamed.
 
 ### Every operator respects the filter
 
 With Only Selected ON and Node Groups ON, each of these should change only the 8 `SEL_*` images:
 
-- [ ] Search & Replace
-- [ ] New Name / Rename (enumerate OFF): one image keeps the name, the rest get `.001`, `.002`…, and a collision warning is shown
-- [ ] New Name / Rename (enumerate ON): numbered without collisions
-- [ ] Add Prefix / Add Suffix
-- [ ] Numerate
-- [ ] Trim (start/end)
-- [ ] Case transform (upper/lower/title…)
-- [ ] Number transform
-- [ ] Search & Select: no error with the Image target (it should not change the object selection)
-- [ ] Ctrl+Z after each operator restores all image names in a single step
+- [x] Search & Replace
+- [x] New Name / Rename (enumerate OFF): one image gets the new name; the other 7 are skipped and keep their names (since #233 a conflicting rename is reverted, not given `.001`), with the warning "7 items skipped due to a naming conflict"
+- [x] New Name / Rename (enumerate ON): numbered without collisions
+- [x] Add Prefix / Add Suffix
+- [x] Numerate
+- [x] Trim (start/end)
+- [x] Case transform (upper/lower/title…)
+- [x] Number transform
+- [x] Search & Select: no error with the Image target (it should not change the object selection)
+- [x] Ctrl+Z after each operator restores all image names in a single step (all operators have the UNDO flag; checked with a scripted undo push, not a real key press)
 
 ### Edge cases
 

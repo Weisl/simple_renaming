@@ -4,7 +4,9 @@ on:
   pull_request:
     branches: [master]
   push:
-    branches: [develop]
+    # master too, so it has its own Blender cache: PRs into master and the
+    # tag-triggered release build can read master's cache, not develop's.
+    branches: [develop, master]
   workflow_dispatch:
 
 jobs:
@@ -50,7 +52,19 @@ jobs:
         run: |
           mkdir -p blender-download
           pip install blender-downloader
-          blender-downloader ${{ matrix.blender-version }} --extract --quiet --output-directory blender-download
+          # download.blender.org occasionally refuses a request (HTTP 403); retry with a pause.
+          for attempt in 1 2 3 4; do
+            if blender-downloader ${{ matrix.blender-version }} --extract --quiet --output-directory blender-download; then
+              exit 0
+            fi
+            rm -rf blender-download/*
+            if [ "$attempt" -lt 4 ]; then
+              echo "::warning::Blender ${{ matrix.blender-version }} download failed (attempt $attempt of 4), retrying in $((attempt * 30))s"
+              sleep $((attempt * 30))
+            fi
+          done
+          echo "::error::Could not download Blender ${{ matrix.blender-version }} after 4 attempts"
+          exit 1
 
       - name: Locate Blender executable
         id: blender
