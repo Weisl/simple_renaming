@@ -1,4 +1,4 @@
-# Manual QA — Simple Renaming v2.1.11
+# Manual QA — Simple Renaming v2.1.10
 
 Run this before tagging the release. Tick each box, and note the Blender
 version next to any failure.
@@ -15,7 +15,7 @@ and keymaps don't affect the results.
 
 ## 1. Pre-flight
 
-- [ ] `python tests/run_tests.py --blender <path>` passes on 4.2 and 5.3 ("All 21 tests passed.").
+- [ ] `python tests/run_tests.py --blender <path>` passes on 4.2 and 5.3 ("All 23 tests passed.").
 - [ ] CI `tests.yml` is green for the whole matrix (4.2 – 5.3).
 - [ ] `blender --command extension validate .` reports no errors.
 - [ ] The add-on enables with no errors in the console or the Info editor.
@@ -75,17 +75,42 @@ With Only Selected ON and Node Groups ON, each of these should change only the 8
 `Only Of Selected Objects` defaults to **ON**, and its value is shared with Materials, Data, etc.
 Before this release, the Image target always renamed **all** images.
 
-- [ ] Open a file saved with v2.1.10 (Target = Image Textures, no objects selected) and run Search & Replace. Result: nothing is renamed until Only Selected is turned OFF. Decide whether this is acceptable or should be mentioned in the changelog or release notes.
+- [ ] Open a file saved with v2.1.9 (Target = Image Textures, no objects selected) and run Search & Replace. Result: nothing is renamed until Only Selected is turned OFF. Decide whether this is acceptable or should be mentioned in the changelog or release notes.
 - [ ] Turning Only Selected OFF for Images also turns it OFF for Materials, and the reverse (the same property is shared). Confirm this is acceptable.
 
-## 3. Regression: v2.1.10 fixes
+## 3. Fixes: Search and Select regex ([#257](https://github.com/Weisl/simple_renaming/issues/257)) and bone sorting ([#258](https://github.com/Weisl/simple_renaming/issues/258))
+
+### Search and Select (Target = Objects)
+
+Add three objects named `a.b`, `axb` and `Cube`.
+
+- [ ] **Use Regex ON**, Search = `a.b`: selects `a.b` and `axb`. Same result with Match Case ON (it is greyed out).
+- [ ] **Use Regex OFF**, Search = `a.b`: selects only `a.b` (the `.` is literal), with Match Case ON and OFF.
+- [ ] **Use Regex OFF**, Search = `cube`: selects `Cube` with Match Case OFF, nothing with Match Case ON.
+- [ ] **Use Regex OFF**, Search = `(`: no "Invalid regular expression" error.
+- [ ] **Use Regex ON**, Search = `(`: shows the "Invalid regular expression" error, no traceback.
+- [ ] Search and Select on Bones (Pose and Edit Mode) still selects the matching bones.
+
+### Bone sorting
+
+Make an armature with 3–4 bones spread along X, created out of X order. Turn on **Sort Target Objects** and **Numerate**.
+
+- [ ] **X Axis**, Edit Mode, New Name `Bone`: bones are numbered from −X to +X.
+- [ ] Same in **Pose Mode** and in **Object Mode** (Only Selected OFF).
+- [ ] **Reverse Sorting Order** flips the numbering for X, Y, Z and Selection.
+- [ ] **Y Axis** and **Z Axis** sort along their axes.
+- [ ] Rotate the armature object 180° around Z: the X order flips (sorting uses world space).
+- [ ] **Only Selected ON** with a subset of bones selected: only those are renamed, in axis order.
+- [ ] **Selection** sort with "Select in Renaming Order" still numbers bones in click order.
+
+## 4. Fixes: renaming popup and panel preferences ([#260](https://github.com/Weisl/simple_renaming/issues/260), [#261](https://github.com/Weisl/simple_renaming/issues/261))
 
 - [ ] The Renaming Popup hotkey opens and draws Numerate Settings as a box, with no layout-panel error.
 - [ ] Hide the Prefix/Suffix by Type panel in Preferences, then change the sidebar tab category. The panel stays hidden.
 - [ ] With that panel hidden, disable the add-on, then enable it again. No error, and the add-on registers fully.
 - [ ] The "hide Prefix/Suffix by Type panel" preference is applied right after Blender restarts.
 
-## 4. Regression: other targets
+## 5. Regression: other targets
 
 - [ ] Run all the tests in the `ReadMe - Test Instructions` text in `tests/manual_test_scene.blend` (naming conflict warnings, #233).
 - [ ] **Materials, Only Of Selected Objects ON:** only the materials of selected objects are renamed (unchanged by this release).
@@ -94,12 +119,12 @@ Before this release, the Image target always renamed **all** images.
 - [ ] **Prefix/Suffix by Type panel:** add a type prefix to a mixed selection (mesh, camera, light, empty).
 - [ ] **Variable replacer:** `@n`, `@f`, `@d` and `@i` still expand in New Name.
 
-## 5. Packaging & release
+## 6. Packaging & release
 
-- [ ] `version` in `blender_manifest.toml` is bumped to `2.1.11` (it is still `2.1.10`).
-- [ ] The `CHANGELOG.md` heading for v2.1.11 has a release date and no longer says "Unreleased". Also update the "`master` is currently in sync with…" line.
-- [ ] The built zip is named `simple_renaming_panel_2.1.11.zip`.
+- [ ] `version` in `blender_manifest.toml` is `2.1.10`.
+- [ ] The `CHANGELOG.md` heading for v2.1.10 has a release date and no longer says "Unreleased". Also update the "`master` is currently in sync with…" line.
+- [ ] The built zip is named `simple_renaming_panel_2.1.10.zip`.
 - [ ] The zip contains no `tests/`, `tools/`, `.github/`, `CHANGELOG.md` or `__pycache__/`.
 - [ ] Install the built zip through Preferences > Get Extensions > Install from Disk on 4.2 and on 5.3. It enables cleanly.
-- [ ] The release notes on the documentation site include the #259 entry.
-- [ ] Merge `develop` into `master` and tag `v2.1.11`.
+- [ ] The release notes on the documentation site include the v2.1.10 entries (#257–#263).
+- [ ] Merge `develop` into `master` and tag `v2.1.10`.
