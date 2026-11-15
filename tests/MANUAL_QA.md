@@ -17,7 +17,7 @@ and keymaps don't affect the results.
 ## 1. Pre-flight
 
 - [x] `python tests/run_tests.py --blender <path>` passes on 4.5, 5.0, 5.1, 5.2 and 5.3 ("All 23 tests passed.").
-- [ ] CI `tests.yml` is green for the whole matrix (4.2 – 5.3).
+- [x] CI `tests.yml` is green for the whole matrix (4.2 – 5.3, macOS 4.2 – 4.5).
 - [x] `blender --factory-startup --command extension validate .` reports no errors.
 - [ ] The add-on enables with no errors in the console or the Info editor.
 - [ ] Disable, then re-enable the add-on: no errors, and the Rename tab reappears in the N-panel.
