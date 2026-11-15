@@ -20,13 +20,13 @@ Compatibility update for Blender 5.2 and 5.3, plus fixes to the renaming popup a
 
 ### Fixes
 
-- The "Renaming Popup" hotkey no longer fails to draw with "Layout panels can not be used in this context"; the Numerate Settings section is shown as a box inside the popup.
-- Changing the sidebar tab category no longer brings back a hidden Prefix/Suffix by Type panel.
-- Disabling the add-on while the Prefix/Suffix by Type panel is hidden no longer raises an error and leaves the add-on half-registered.
-- The "hide Prefix/Suffix by Type panel" preference is now applied when the add-on loads.
+- The "Renaming Popup" hotkey no longer fails to draw with "Layout panels can not be used in this context"; the Numerate Settings section is shown as a box inside the popup. ([#260](https://github.com/Weisl/simple_renaming/issues/260))
+- Changing the sidebar tab category no longer brings back a hidden Prefix/Suffix by Type panel. ([#261](https://github.com/Weisl/simple_renaming/issues/261))
+- Disabling the add-on while the Prefix/Suffix by Type panel is hidden no longer raises an error and leaves the add-on half-registered. ([#261](https://github.com/Weisl/simple_renaming/issues/261))
+- The "hide Prefix/Suffix by Type panel" preference is now applied when the add-on loads. ([#261](https://github.com/Weisl/simple_renaming/issues/261))
 
 ### Maintenance
 
-- Tested against Blender 5.2 and 5.3; both added to the CI test matrix.
-- The extension package no longer includes development files (tests, tools, CI config, changelog).
-- Release zips are now named `simple_renaming_panel_<version>.zip`.
+- Tested against Blender 5.2 and 5.3; both added to the CI test matrix. ([#262](https://github.com/Weisl/simple_renaming/issues/262))
+- The extension package no longer includes development files (tests, tools, CI config, changelog). ([#263](https://github.com/Weisl/simple_renaming/issues/263))
+- Release zips are now named `simple_renaming_panel_<version>.zip`. ([#263](https://github.com/Weisl/simple_renaming/issues/263))
