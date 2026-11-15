@@ -120,6 +120,13 @@ def get_images_of_objects(objects, include_node_groups=True):
     return collector.images
 
 
+# Targets that, with "Only Selected" on, rename the selected objects or parts of
+# them. Mirrors types_selected/types_of_selected in ui/renaming_panels.py.
+_TARGETS_OF_SELECTED_OBJECTS = frozenset((
+    'OBJECT', 'MATERIAL', 'DATA', 'VERTEXGROUPS', 'PARTICLESYSTEM', 'SHAPEKEYS', 'MODIFIERS',
+    'UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES', 'ACTIONS', 'IMAGE'))
+
+
 def get_renaming_list(context):
     scene = context.scene
 
@@ -129,6 +136,11 @@ def get_renaming_list(context):
     selection_only = scene.renaming_only_selection
 
     obj_list = context.selected_objects.copy() if selection_only is True else list(bpy.data.objects).copy()
+
+    object_types = scene.renaming_object_types
+    if selection_only and not obj_list and object_types in _TARGETS_OF_SELECTED_OBJECTS:
+        option = "Only Selected" if object_types == 'OBJECT' else "Only Of Selected Objects"
+        return None, None, f"Nothing selected. Select objects, or turn off \"{option}\"."
 
     # Bones are sorted in the BONE branch below, after the bone list is built.
     if scene.renaming_sorting and scene.renaming_object_types != 'BONE':
@@ -205,6 +217,9 @@ def get_renaming_list(context):
                 for selected_bone in context.selected_editable_bones.copy():
                     renaming_list.append(selected_bone)
                     bone_order_keys.append(_bone_order_value(selected_bone.id_data, selected_bone.name))
+
+            if not renaming_list:
+                return None, None, "Nothing selected. Select bones, or turn off \"Only Selected\"."
 
         else:  # if selection_only == False
             for arm in bpy.data.armatures:

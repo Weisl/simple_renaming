@@ -25,6 +25,7 @@ Compatibility update for Blender 5.2 and 5.3, "Only Of Selected Objects" for Ima
 ### Changes
 
 - Image Textures now follow the shared "Only Of Selected Objects" option like Materials, Object Data and the other targets, so the option behaves the same for every target. It is on by default: if nothing is renamed, select the objects that use the images or turn the option off to rename all images, as before. ([#259](https://github.com/Weisl/simple_renaming/issues/259))
+- With "Only Selected" / "Only Of Selected Objects" on and nothing selected, renaming now shows a hint ("Nothing selected. Select objects, or turn off …") instead of silently doing nothing. Bones in Pose and Edit Mode get the same hint when no bone is selected. ([#269](https://github.com/Weisl/simple_renaming/issues/269))
 
 ### Fixes
 

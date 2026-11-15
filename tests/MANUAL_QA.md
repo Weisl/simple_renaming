@@ -16,7 +16,7 @@ and keymaps don't affect the results.
 
 ## 1. Pre-flight
 
-- [x] `python tests/run_tests.py --blender <path>` passes on 4.5, 5.0, 5.1, 5.2 and 5.3 ("All 23 tests passed.").
+- [x] `python tests/run_tests.py --blender <path>` passes on 4.5, 5.0, 5.1, 5.2 and 5.3 ("All 24 tests passed.").
 - [x] CI `tests.yml` is green for the whole matrix (4.2 – 5.3, macOS 4.2 – 4.5).
 - [x] `blender --factory-startup --command extension validate .` reports no errors.
 - [x] The add-on enables with no errors in the console or the Info editor.
@@ -43,7 +43,7 @@ results in Outliner > Blender File > Images, then press Ctrl+Z after each case.
 - [x] **Only Selected ON, Node Groups ON:** all 8 `SEL_*` images are renamed (Material, Material_InGroup, Displace, GN_Input, GN_Node, GN_InGroup, Empty, Camera). `IMG_Unselected` and `IMG_Unused` are unchanged.
 - [x] **Only Selected ON, Node Groups OFF:** same as above, except `IMG_Material_InGroup` and `IMG_GN_InGroup` are unchanged.
 - [x] **Only Selected OFF:** all 10 images are renamed, including `IMG_Unused` and the image of the unselected object.
-- [x] **Nothing selected, Only Selected ON:** nothing is renamed, with no error or traceback. No message is shown.
+- [x] **Nothing selected, Only Selected ON:** nothing is renamed, no traceback, and the error popup shows "Nothing selected. Select objects, or turn off \"Only Of Selected Objects\"." ([#269](https://github.com/Weisl/simple_renaming/issues/269))
 - [x] **Only `UNSEL_Cube` selected:** only `IMG_Unselected` is renamed.
 
 ### Every operator respects the filter
