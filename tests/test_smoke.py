@@ -95,6 +95,12 @@ def purge_all_with_prefix(prefix):
     for hc in list(bpy.data.hair_curves):
         if hc.name.startswith(prefix):
             bpy.data.hair_curves.remove(hc)
+    for img in list(bpy.data.images):
+        if img.name.startswith(prefix):
+            bpy.data.images.remove(img)
+    for grp in list(bpy.data.node_groups):
+        if grp.name.startswith(prefix):
+            bpy.data.node_groups.remove(grp)
 
 
 def add_mesh_object(name, collection=None):
@@ -319,7 +325,9 @@ def test_bone_rename_updates_drivers():
     # Add a driver FCurve on the armature object that drives X location,
     # using the bone name in data_path and bone_target.
     fcurve = arm_obj.driver_add('location', 0)
-    fcurve.data_path = f'pose.bones["{PREFIX}OldBone"].location[0]'
+    # array_index is already 0 from driver_add(); an index in the path would
+    # make Blender evaluate 'location[0][0]' and warn "Invalid driver".
+    fcurve.data_path = f'pose.bones["{PREFIX}OldBone"].location'
     drv = fcurve.driver
     drv.type = 'AVERAGE'
     var = drv.variables.new()
@@ -870,6 +878,229 @@ def test_variable_replacer_letters_mode():
     purge_all_with_prefix(PREFIX)
 
 
+def test_image_only_selected():
+    print("\n[Test 21] IMAGE renaming with Only Selected limits to images of selected objects")
+    PREFIX = "T21_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    def new_image(label):
+        return bpy.data.images.new(f"{PREFIX}Img_{label}", 4, 4)
+
+    images = {}
+
+    # Material: direct image node + image node inside a nested node group.
+    mat_obj = add_mesh_object(f"{PREFIX}MatObj")
+    mat = bpy.data.materials.new(f"{PREFIX}Mat")
+    mat.use_nodes = True
+    images["mat"] = new_image("mat")
+    mat.node_tree.nodes.new('ShaderNodeTexImage').image = images["mat"]
+    shader_group = bpy.data.node_groups.new(f"{PREFIX}ShaderGroup", 'ShaderNodeTree')
+    images["mat_group"] = new_image("mat_group")
+    shader_group.nodes.new('ShaderNodeTexImage').image = images["mat_group"]
+    mat.node_tree.nodes.new('ShaderNodeGroup').node_tree = shader_group
+    mat_obj.data.materials.append(mat)
+
+    # Modifiers: Displace texture, Geometry Nodes input, node and nested group.
+    mod_obj = add_mesh_object(f"{PREFIX}ModObj")
+    tex = bpy.data.textures.new(f"{PREFIX}Tex", 'IMAGE')
+    images["displace"] = new_image("displace")
+    tex.image = images["displace"]
+    mod_obj.modifiers.new(f"{PREFIX}Displace", 'DISPLACE').texture = tex
+
+    gn_tree = bpy.data.node_groups.new(f"{PREFIX}GN", 'GeometryNodeTree')
+    gn_tree.interface.new_socket("Geometry", in_out='INPUT', socket_type='NodeSocketGeometry')
+    gn_tree.interface.new_socket("Geometry", in_out='OUTPUT', socket_type='NodeSocketGeometry')
+    image_socket = gn_tree.interface.new_socket("Img", in_out='INPUT', socket_type='NodeSocketImage')
+    images["gn_node"] = new_image("gn_node")
+    gn_tree.nodes.new('GeometryNodeImageTexture').inputs['Image'].default_value = images["gn_node"]
+    gn_inner = bpy.data.node_groups.new(f"{PREFIX}GNInner", 'GeometryNodeTree')
+    images["gn_group"] = new_image("gn_group")
+    gn_inner.nodes.new('GeometryNodeImageTexture').inputs['Image'].default_value = images["gn_group"]
+    gn_tree.nodes.new('GeometryNodeGroup').node_tree = gn_inner
+    gn_mod = mod_obj.modifiers.new(f"{PREFIX}GN", 'NODES')
+    gn_mod.node_group = gn_tree
+    images["gn_input"] = new_image("gn_input")
+    if hasattr(gn_mod, "properties"):  # Blender 5.3+
+        getattr(gn_mod.properties.inputs, image_socket.identifier).value = images["gn_input"]
+    else:
+        gn_mod[image_socket.identifier] = images["gn_input"]
+
+    # Image empty and camera background.
+    images["empty"] = new_image("empty")
+    empty = bpy.data.objects.new(f"{PREFIX}Empty", None)
+    empty.empty_display_type = 'IMAGE'
+    empty.data = images["empty"]
+    bpy.context.collection.objects.link(empty)
+
+    cam_data = bpy.data.cameras.new(f"{PREFIX}CamData")
+    images["camera"] = new_image("camera")
+    cam_data.background_images.new().image = images["camera"]
+    camera = bpy.data.objects.new(f"{PREFIX}Cam", cam_data)
+    bpy.context.collection.objects.link(camera)
+
+    # Unselected object and unused image must stay untouched.
+    other_obj = add_mesh_object(f"{PREFIX}Other")
+    other_mat = bpy.data.materials.new(f"{PREFIX}OtherMat")
+    other_mat.use_nodes = True
+    images["unselected"] = new_image("unselected")
+    other_mat.node_tree.nodes.new('ShaderNodeTexImage').image = images["unselected"]
+    other_obj.data.materials.append(other_mat)
+    images["unused"] = new_image("unused")
+
+    selected = (mat_obj, mod_obj, empty, camera)
+    for obj in bpy.context.view_layer.objects:
+        obj.select_set(obj in selected)
+    bpy.context.view_layer.objects.active = mat_obj
+
+    def rename_and_restore(include_groups):
+        scene_prop("renaming_object_types", "IMAGE")
+        scene_prop("renaming_only_selection", True)
+        scene_prop("renaming_images_include_node_groups", include_groups)
+        scene_prop("renaming_search", "_Img_")
+        scene_prop("renaming_replace", "_Done_")
+        bpy.ops.renaming.search_replace()
+        renamed = {key for key, img in images.items() if "_Done_" in img.name}
+        for img in images.values():
+            img.name = img.name.replace("_Done_", "_Img_")
+        return renamed
+
+    expected = {"mat", "mat_group", "displace", "gn_node", "gn_group", "gn_input", "empty", "camera"}
+    renamed = rename_and_restore(True)
+    check(renamed == expected,
+          f"With node groups: images of selected objects renamed — "
+          f"missing {sorted(expected - renamed)}, extra {sorted(renamed - expected)}")
+
+    expected_no_groups = expected - {"mat_group", "gn_group"}
+    renamed = rename_and_restore(False)
+    check(renamed == expected_no_groups,
+          f"Without node groups: nested group images skipped — "
+          f"missing {sorted(expected_no_groups - renamed)}, extra {sorted(renamed - expected_no_groups)}")
+
+    scene_prop("renaming_only_selection", False)
+    scene_prop("renaming_images_include_node_groups", True)
+    bpy.ops.renaming.search_replace()
+    check(all("_Done_" in img.name for img in images.values()),
+          "Without Only Selected, all images are renamed — got "
+          f"{sorted(img.name for img in images.values())}")
+
+    scene_prop("renaming_search", "")
+    scene_prop("renaming_replace", "")
+    scene_prop("renaming_object_types", "OBJECT")
+    purge_all_with_prefix(PREFIX)
+    for tex in list(bpy.data.textures):
+        if tex.name.startswith(PREFIX):
+            bpy.data.textures.remove(tex)
+    for cam in list(bpy.data.cameras):
+        if cam.name.startswith(PREFIX):
+            bpy.data.cameras.remove(cam)
+
+
+# ---------------------------------------------------------------------------
+# Test 22 – Search and Select honours "Use Regex" (#257)
+# ---------------------------------------------------------------------------
+
+def test_search_select_use_regex():
+    print("\n[Test 22] Search and Select uses regex only when 'Use Regex' is on")
+    PREFIX = "T22_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    for name in ("a.b", "axb", "Cube"):
+        add_mesh_object(f"{PREFIX}{name}")
+    scene_prop("renaming_object_types", "OBJECT")
+
+    def select(search, use_regex, match_case):
+        scene_prop("renaming_search", search)
+        scene_prop("renaming_useRegex", use_regex)
+        scene_prop("renaming_matchcase", match_case)
+        bpy.ops.renaming.search_select()
+        return sorted(o.name[len(PREFIX):] for o in bpy.data.objects
+                      if o.name.startswith(PREFIX) and o.select_get())
+
+    got = select(f"{PREFIX}a.b", use_regex=True, match_case=False)
+    check(got == ["a.b", "axb"], f"Regex on: '.' matches any character — got {got}")
+
+    got = select(f"{PREFIX}a.b", use_regex=True, match_case=True)
+    check(got == ["a.b", "axb"], f"Regex on with Match Case: still a regex — got {got}")
+
+    got = select(f"{PREFIX}a.b", use_regex=False, match_case=False)
+    check(got == ["a.b"], f"Regex off, case-insensitive: '.' is literal — got {got}")
+
+    got = select(f"{PREFIX}a.b", use_regex=False, match_case=True)
+    check(got == ["a.b"], f"Regex off, Match Case: '.' is literal — got {got}")
+
+    got = select(f"{PREFIX.lower()}cube", use_regex=False, match_case=False)
+    check(got == ["Cube"], f"Regex off, case-insensitive: case ignored — got {got}")
+
+    got = select(f"{PREFIX.lower()}cube", use_regex=False, match_case=True)
+    check(got == [], f"Regex off, Match Case: case respected — got {got}")
+
+    got = select(f"{PREFIX}(", use_regex=False, match_case=False)
+    check(got == [], f"Regex off: '(' is literal, no invalid-regex error — got {got}")
+
+    scene_prop("renaming_search", "")
+    scene_prop("renaming_useRegex", False)
+    scene_prop("renaming_matchcase", True)
+    purge_all_with_prefix(PREFIX)
+
+
+# ---------------------------------------------------------------------------
+# Test 23 – Axis sorting and Reverse apply to bones (#258)
+# ---------------------------------------------------------------------------
+
+def test_bone_axis_sort_and_reverse():
+    print("\n[Test 23] Bone sorting by axis and Reverse Sorting Order")
+    PREFIX = "T23_"
+    purge_all_with_prefix(PREFIX)
+    reset_scene_props()
+
+    arm_data = bpy.data.armatures.new(f"{PREFIX}Arm")
+    arm_obj = bpy.data.objects.new(f"{PREFIX}Arm", arm_data)
+    bpy.context.scene.collection.objects.link(arm_obj)
+    bpy.context.view_layer.objects.active = arm_obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    # Created as Bone0, Bone1, Bone2 at X = 0.3, 0.1, 0.2.
+    for i, x in enumerate((0.3, 0.1, 0.2)):
+        b = arm_data.edit_bones.new(f"{PREFIX}Bone{i}")
+        b.head = (x, 0, 0)
+        b.tail = (x, 0, 0.1)
+    bpy.ops.object.mode_set(mode='OBJECT')
+    bones = [arm_data.bones[f"{PREFIX}Bone{i}"] for i in range(3)]
+
+    scene_prop("renaming_object_types", "BONE")
+    scene_prop("renaming_only_selection", False)
+    scene_prop("renaming_sorting", True)
+    scene_prop("renaming_sort_bone_enum", "X")
+    scene_prop("renaming_use_enumerate", True)
+
+    def rename_order(new_name, reverse):
+        """Rename with enumeration and return bone indices in numbering order."""
+        scene_prop("renaming_sort_reverse", reverse)
+        scene_prop("renaming_new_name", f"{PREFIX}{new_name}")
+        bpy.ops.renaming.name_replace()
+        numbered = sorted(range(3), key=lambda i: bones[i].name)
+        return numbered, [b.name for b in bones]
+
+    order, names = rename_order("SortX", reverse=False)
+    check(order == [1, 2, 0], f"Bones numbered along +X — got {names}")
+
+    order, names = rename_order("SortXRev", reverse=True)
+    check(order == [0, 2, 1], f"Reverse Sorting Order flips bone order — got {names}")
+
+    # Rotating the armature 180° around Z flips world X, so the order flips too.
+    arm_obj.rotation_euler = (0, 0, 3.141592653589793)
+    bpy.context.view_layer.update()
+    order, names = rename_order("SortXWorld", reverse=False)
+    check(order == [0, 2, 1], f"Bones sorted in world space — got {names}")
+
+    scene_prop("renaming_sorting", False)
+    scene_prop("renaming_sort_reverse", False)
+    scene_prop("renaming_use_enumerate", False)
+    scene_prop("renaming_object_types", "OBJECT")
+    purge_all_with_prefix(PREFIX)
+
+
 # ---------------------------------------------------------------------------
 # Run
 # ---------------------------------------------------------------------------
@@ -904,6 +1135,9 @@ if __name__ == "__main__":
     test_numerate_operator_per_object_type_reset_letters()
     test_name_replace_letters_mode_collision_avoidance()
     test_variable_replacer_letters_mode()
+    test_image_only_selected()
+    test_search_select_use_regex()
+    test_bone_axis_sort_and_reverse()
 
     print(f"\n{'='*50}")
     if failures:
@@ -912,5 +1146,5 @@ if __name__ == "__main__":
             print(f"  - {f}")
         sys.exit(1)
     else:
-        print(f"All 20 tests passed.")
+        print(f"All 23 tests passed.")
         sys.exit(0)

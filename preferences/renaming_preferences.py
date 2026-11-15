@@ -62,23 +62,25 @@ def update_panel_category(self, context):
         VIEW3D_PT_tools_type_suffix,
     ]
 
+    prefs = context.preferences.addons[base_package].preferences
     for panel in panels:
-        try:
+        # Only re-register panels that are currently shown, so changing the
+        # category doesn't bring back a panel the user has hidden.
+        was_registered = panel.is_registered
+        if was_registered:
             bpy.utils.unregister_class(panel)
-        except:
-            print('Could not register panel')
-
-        prefs = context.preferences.addons[base_package].preferences
         panel.bl_category = prefs.renaming_category
-        bpy.utils.register_class(panel)
+        if was_registered:
+            bpy.utils.register_class(panel)
     return
 
 
 def toggle_suffix_prefix_panel(self, context):
     from ..ui.renaming_panels import VIEW3D_PT_tools_type_suffix
-    if self.renaming_show_suffix_prefix_panel:
+    show = self.renaming_show_suffix_prefix_panel
+    if show and not VIEW3D_PT_tools_type_suffix.is_registered:
         bpy.utils.register_class(VIEW3D_PT_tools_type_suffix)
-    else:
+    elif not show and VIEW3D_PT_tools_type_suffix.is_registered:
         bpy.utils.unregister_class(VIEW3D_PT_tools_type_suffix)
     return
 

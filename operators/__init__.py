@@ -167,6 +167,13 @@ def register():
     id_store.renaming_only_selection = BoolProperty(name="Selected Objects", description="Rename Selected Objects",
                                                     default=True)
 
+    id_store.renaming_images_include_node_groups = BoolProperty(
+        name="Include Node Groups",
+        description="Also rename images used inside node groups nested in the materials and "
+                    "Geometry Nodes modifiers of the selected objects",
+        default=True,
+    )
+
     id_store.renaming_matchcase = BoolProperty(name="Match Case", description="", default=True)
     id_store.renaming_useRegex = BoolProperty(name="Use Regex", description="", default=False)
     id_store.renaming_use_enumerate = BoolProperty(
@@ -216,6 +223,7 @@ def unregister():
     del IDStore.renaming_suffix
     del IDStore.renaming_prefix
     del IDStore.renaming_only_selection
+    del IDStore.renaming_images_include_node_groups
     del IDStore.renaming_trim_indices
     del IDStore.renaming_also_rename_data
     del IDStore.renaming_active_only

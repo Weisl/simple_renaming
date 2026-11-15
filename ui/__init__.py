@@ -48,7 +48,10 @@ def unregister():
     VIEW3D_PT_tools_type_suffix.remove(panel_func)
 
     for cls in reversed(classes):
-        unregister_class(cls)
+        # The Prefix/Suffix panel may already be unregistered when the user
+        # hid it in the preferences.
+        if cls.is_registered:
+            unregister_class(cls)
 
     id_store = bpy.types.Scene
     del id_store.renaming_messages

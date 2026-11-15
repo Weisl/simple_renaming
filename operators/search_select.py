@@ -54,21 +54,26 @@ class VIEW3D_OT_search_and_select(VIEW3D_OT_naming):
                     entityName = entity.name
                     searchReplaced = VariableReplacer.replaceInputString(context, searchName, entity)
 
-                    if wm.renaming_matchcase:
-                        if entityName.find(searchReplaced) >= 0:
-                            selectionList.append(entity)
-                            msg.add_message("selected", entityName)
-                    else:
+                    # Same matching rules as Search and Replace: regex is used
+                    # only when "Use Regex" is on (Match Case is ignored then),
+                    # otherwise the search text is matched literally.
+                    if wm.renaming_useRegex:
                         try:
-                            if re.search(searchReplaced, entityName, re.IGNORECASE):
-                                selectionList.append(entity)
+                            matched = re.search(searchReplaced, entityName) is not None
                         except re.error as err:
-                            # invalid regex, add message but continue so other names can still be processed
                             error_msg = f"Invalid regular expression in search: {err}"
                             wm.renaming_error_messages.clear()
                             wm.renaming_error_messages.add_message(error_msg)
                             call_error_popup(context)
                             return {'CANCELLED'}
+                    elif wm.renaming_matchcase:
+                        matched = searchReplaced in entityName
+                    else:
+                        matched = re.search(re.escape(searchReplaced), entityName, re.IGNORECASE) is not None
+
+                    if matched:
+                        selectionList.append(entity)
+                        msg.add_message("selected", entityName)
 
         if str(wm.renaming_object_types) == 'OBJECT':
             # set to object mode

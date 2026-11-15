@@ -13,7 +13,7 @@ types_selected = ('OBJECT', 'ADDOBJECTS', 'BONE')
 # Components of the selected objects are renamed
 types_of_selected = (
     'MATERIAL', 'DATA', 'VERTEXGROUPS', 'PARTICLESYSTEM', 'SHAPEKEYS', 'MODIFIERS', 'UVMAPS',
-    'COLORATTRIBUTES', 'ATTRIBUTES', 'ACTIONS')
+    'COLORATTRIBUTES', 'ATTRIBUTES', 'ACTIONS', 'IMAGE')
 
 
 def _draw_selection_order_controls(col, context, mode_ok, wrong_mode_hint):
@@ -27,6 +27,20 @@ def _draw_selection_order_controls(col, context, mode_ok, wrong_mode_hint):
         row = box.row()
         row.enabled = False
         row.label(text=wrong_mode_hint, icon='ERROR')
+
+
+def _layout_panel(layout, idname, default_closed=False):
+    """``layout.panel()`` that also works when the panel is shown as a popup.
+
+    Blender rejects layout panels inside ``wm.call_panel`` popups (which is how
+    the "Renaming Popup" hotkey opens this panel) with "Layout panels can not
+    be used in this context". Fall back to an always-open box there.
+    """
+    try:
+        return layout.panel(idname, default_closed=default_closed)
+    except RuntimeError:
+        box = layout.box()
+        return box.row(), box
 
 
 def draw_renaming_panel(layout, context):
@@ -46,6 +60,10 @@ def draw_renaming_panel(layout, context):
         col.prop(scene, "renaming_also_rename_data")
     if str(scene.renaming_object_types) in types_of_selected:
         col.prop(scene, "renaming_only_selection", text="Only Of Selected Objects")
+    if str(scene.renaming_object_types) == 'IMAGE':
+        row = col.row(align=True)
+        row.enabled = scene.renaming_only_selection
+        row.prop(scene, "renaming_images_include_node_groups")
     if str(scene.renaming_object_types) in ('UVMAPS', 'COLORATTRIBUTES', 'ATTRIBUTES', 'VERTEXGROUPS', 'SHAPEKEYS'):
         col = col.column(align=True)
         if str(scene.renaming_object_types) in ('UVMAPS', 'COLORATTRIBUTES'):
@@ -87,7 +105,7 @@ def draw_renaming_panel(layout, context):
                                                    "Enter Object Mode")
             col.prop(scene, "renaming_sort_reverse")
 
-    header, panel = layout.panel("renaming_numerate_panel", default_closed=True)
+    header, panel = _layout_panel(layout, "renaming_numerate_panel", default_closed=True)
     header.label(text="Numerate Settings", icon='SETTINGS')
     if panel:
         col = panel.column(align=True)
