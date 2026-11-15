@@ -23,7 +23,19 @@ jobs:
         run: |
           mkdir -p blender-download
           pip install blender-downloader
-          blender-downloader 4.2 --extract --quiet --output-directory blender-download
+          # download.blender.org occasionally refuses a request (HTTP 403); retry with a pause.
+          for attempt in 1 2 3 4; do
+            if blender-downloader 4.2 --extract --quiet --output-directory blender-download; then
+              exit 0
+            fi
+            rm -rf blender-download/*
+            if [ "$attempt" -lt 4 ]; then
+              echo "::warning::Blender 4.2 download failed (attempt $attempt of 4), retrying in $((attempt * 30))s"
+              sleep $((attempt * 30))
+            fi
+          done
+          echo "::error::Could not download Blender 4.2 after 4 attempts"
+          exit 1
 
       - name: Locate Blender executable
         id: blender
